@@ -20,7 +20,7 @@ class App extends Component<any, any>{
     this.state = {
       currentGame: '',
       currentPlayer: '',
-      players: [],
+      players: ['z','f'],
       possibleGames: ['tr']
     }
     this.joinGame = this.joinGame.bind(this);
@@ -46,7 +46,8 @@ class App extends Component<any, any>{
   render() {
     return (
         <div className="App">
-          {this.state.currentPlayer !== '' ? <Game/> : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame}/>}
+          {this.state.currentPlayer !== '' ? <Game players={this.state.players} currentPlayer={this.state.currentPlayer}/>
+                                            : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame}/>}
         </div>
     );
   }
