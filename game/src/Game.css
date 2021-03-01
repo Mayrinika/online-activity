@@ -1,0 +1,8 @@
+.Game {
+    width: 80%;
+    height: 80%;
+    margin: 0 auto;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+}
