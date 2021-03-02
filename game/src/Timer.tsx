@@ -1,10 +1,25 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './Timer.css';
 
-function Timer() {
+function Timer(props: any) {
+    const [seconds, setSeconds] = React.useState(props.time);
+    let timerId: ReturnType<typeof setTimeout>;
+
+    React.useEffect(() => {
+        if (seconds > 0) {
+            timerId = setTimeout(() => setSeconds(seconds - 1), 1000);
+        } else {
+            clearInterval(timerId);
+            props.timeIsOver();
+        }
+    }, [seconds]);
+    const min: number = Math.floor(seconds/60);
+    const sec: string = (seconds%60).toString(10).padStart(2,'0');
     return (
         <div className="Timer">
-            3:00
+            <div>
+                {min}:{sec}
+            </div>
         </div>
     );
 }

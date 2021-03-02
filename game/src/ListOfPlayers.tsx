@@ -9,8 +9,8 @@ class ListOfPlayers extends Component<any, any>{
                 {this.props.painter}
                 <hr />
                 <h5>Игроки:</h5>
-                {this.props.players.map((p: string)=>(
-                    <p>{p}</p>
+                {this.props.players.map((player: string)=>(
+                    <p>{player}</p>
                 ))}
             </div>
         );
