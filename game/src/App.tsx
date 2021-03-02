@@ -2,10 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import Login from './Login';
 import Game from './Game'
-// let currentGame: string | undefined;
-// let currentPlayer: string | undefined;
-// let players: string[];
-// let possibleGames: string[];
+import StartGame from "./StartGame";
 
 type appState = {
   currentGame: string | undefined;
@@ -46,7 +43,7 @@ class App extends Component<any, any>{
   render() {
     return (
         <div className="App">
-          {this.state.currentPlayer !== '' ? <Game players={this.state.players} currentPlayer={this.state.currentPlayer}/>
+          {this.state.currentPlayer !== '' ? <StartGame players={this.state.players} currentPlayer={this.state.currentPlayer}/>
                                             : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame}/>}
         </div>
     );
