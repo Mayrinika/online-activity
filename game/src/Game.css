@@ -12,6 +12,9 @@
     display: flex;
     justify-content: space-around;
 }
+.Game-Word {
+    width: 60%;
+}
 .Game main {
     position: absolute;
     left: 0;

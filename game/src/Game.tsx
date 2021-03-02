@@ -37,9 +37,11 @@ class Game extends Component<any, any> {
                 </header>
                 <main>
                     <Canvas />
-                    <ListOfPlayers players={guessers} painter={this.state.painter}/>
+                    <aside>
+                        <ListOfPlayers players={guessers} painter={this.state.painter}/>
+                        <Chat />
+                    </aside>
                 </main>
-                <Chat />
             </div>
         );
     }
