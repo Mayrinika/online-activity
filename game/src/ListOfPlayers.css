@@ -5,6 +5,7 @@
     background-color: white;
     border: 1px solid black;
     border-radius: 10px;
+    overflow-y: auto;
 }
 .ListOfPlayers h5 {
     margin: 10px auto;

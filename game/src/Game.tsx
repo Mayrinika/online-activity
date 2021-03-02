@@ -17,7 +17,8 @@ class Game extends Component<any, any> {
         this.state = {
             wordToGuess: getRandomWord(),
             painter: getPainter(this),
-            timeIsOver: false
+            timeIsOver: false,
+            gameIsIOver: false
         }
         this.timeIsOver = this.timeIsOver.bind(this);
     }

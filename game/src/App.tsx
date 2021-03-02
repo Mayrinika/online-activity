@@ -17,7 +17,7 @@ class App extends Component<any, any>{
     this.state = {
       currentGame: '',
       currentPlayer: '',
-      players: ['z','f'],
+      players: ['z','f', 'r', 'g', 'u', 'd'],
       possibleGames: ['tr']
     }
     this.joinGame = this.joinGame.bind(this);

@@ -6,12 +6,13 @@ class ListOfPlayers extends Component<any, any>{
         return (
             <div className="ListOfPlayers">
                 <h5>Художник:</h5>
-                {this.props.painter}
-                <hr />
+                <p>{this.props.painter}</p>
                 <h5>Игроки:</h5>
-                {this.props.players.map((player: string)=>(
-                    <p>{player}</p>
-                ))}
+                <div className="ListOfPlayers-list">
+                    {this.props.players.map((player: string)=>(
+                        <p>{player}</p>
+                    ))}
+                </div>
             </div>
         );
     }
