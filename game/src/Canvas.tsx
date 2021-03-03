@@ -6,13 +6,14 @@ import ColorPalette from "./ColorPalette";
 const Canvas = () => {
     const [tool, setTool]: [any, any] = React.useState('pen');
     const [lines, setLines]: [any, any] = React.useState([]);
+    const [currentLine, setCurrentLine]: [any, any] = React.useState(null);
     const [color, setColor]: [any, any] = React.useState('#03161d');
     const isDrawing = React.useRef(false);
 
     const handleMouseDown = (e: any) => {
         isDrawing.current = true;
         const pos = e.target.getStage().getPointerPosition();
-        setLines([...lines, { tool, points: [pos.x, pos.y] }]);
+        setCurrentLine({ tool, points: [pos.x, pos.y], color });
     };
 
     const handleMouseMove = (e: any) => {
@@ -20,20 +21,33 @@ const Canvas = () => {
         if (!isDrawing.current) {
             return;
         }
-        const stage = e.target.getStage();
-        const point = stage.getPointerPosition();
-        let lastLine = lines[lines.length - 1];
-        // add point
-        lastLine.points = lastLine.points.concat([point.x, point.y]);
+        const pos = e.target.getStage().getPointerPosition();
+        setCurrentLine({
+            ...currentLine,
+            points: [...currentLine.points, pos.x, pos.y]
+        });
 
-        // replace last
-        lines.splice(lines.length - 1, 1, lastLine);
-        setLines(lines.concat());
+        // const stage = e.target.getStage();
+        // const point = stage.getPointerPosition();
+        // let lastLine = lines[lines.length - 1];
+        // // add point
+        // lastLine.points = lastLine.points.concat([point.x, point.y]);
+        //
+        // // replace last
+        // lines.splice(lines.length - 1, 1, lastLine);
+        // setLines(lines.concat());
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUp = (e: any) => {
         isDrawing.current = false;
+        const pos = e.target.getStage().getPointerPosition();
+        setCurrentLine(null);
+        setLines([
+            ...lines,
+            { ...currentLine, points: [...currentLine.points, pos.x, pos.y] }
+        ]);
     };
+
     const changeColor = (color: any) => {
         setColor(color)
     };
@@ -66,7 +80,7 @@ const Canvas = () => {
                         <Line
                             key={i}
                             points={line.points}
-                            stroke={color}
+                            stroke={line.color}
                             strokeWidth={
                                 line.tool === 'eraser' ? 20 : 5
                             }
