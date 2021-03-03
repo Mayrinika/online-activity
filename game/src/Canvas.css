@@ -5,3 +5,11 @@
     border: 1px solid black;
     border-radius: 10px;
 }
+.Canvas-Stage {
+    width: 100%;
+    height: 100%
+}
+.Canvas-Layer {
+    width: 100%;
+    height: 100%
+}
