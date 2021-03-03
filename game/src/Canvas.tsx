@@ -29,7 +29,7 @@ const Canvas = () => {
 
     };
 
-    const handleMouseUp = (e: any) => {
+    const handleMouseUp = (e: any) => { //todo: if start to draw line outside Canvas and mouse up inside Canvas => error
         isDrawing.current = false;
         const pos = e.target.getStage().getPointerPosition();
         setCurrentLine(null);
@@ -46,7 +46,7 @@ const Canvas = () => {
     return (
         <div className="Canvas">
             <div className="Canvas-ControlPanel">
-                <ColorPalette color='black' onChangeColor={changeColor}/>
+                <ColorPalette currentColor={color} onChangeColor={changeColor}/>
                 <select
                     className="Canvas-Selector"
                     value={tool}
@@ -67,11 +67,13 @@ const Canvas = () => {
                 onMouseup={handleMouseUp}
             >
                 <Layer className="Canvas-Layer">
+                    {tool === 'pen' &&
                     <Line
                         {...currentLine}
                         strokeWidth={2}
                         stroke={color}
                     />
+                    }
                     {lines.map((line: any, i: any) => (
                         <Line
                             key={i}

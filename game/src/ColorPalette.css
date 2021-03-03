@@ -11,3 +11,6 @@
     margin-top: 5px;
     justify-content: space-around;
 }
+.active {
+    border: 1px solid black;
+}

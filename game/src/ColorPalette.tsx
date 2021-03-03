@@ -8,7 +8,7 @@ function ColorPalette(props: any) {
             {colors.map(color => (
                 <div
                     key={color}
-                    className="color-item"
+                    className={`color-item ${(props.currentColor === color) ? "active" : ""}`}
                     style={{ backgroundColor: color }}
                     onClick={() => {
                         props.onChangeColor(color);
