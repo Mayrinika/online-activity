@@ -27,15 +27,6 @@ const Canvas = () => {
             points: [...currentLine.points, pos.x, pos.y]
         });
 
-        // const stage = e.target.getStage();
-        // const point = stage.getPointerPosition();
-        // let lastLine = lines[lines.length - 1];
-        // // add point
-        // lastLine.points = lastLine.points.concat([point.x, point.y]);
-        //
-        // // replace last
-        // lines.splice(lines.length - 1, 1, lastLine);
-        // setLines(lines.concat());
     };
 
     const handleMouseUp = (e: any) => {
@@ -76,13 +67,18 @@ const Canvas = () => {
                 onMouseup={handleMouseUp}
             >
                 <Layer className="Canvas-Layer">
+                    <Line
+                        {...currentLine}
+                        strokeWidth={2}
+                        stroke={color}
+                    />
                     {lines.map((line: any, i: any) => (
                         <Line
                             key={i}
                             points={line.points}
                             stroke={line.color}
                             strokeWidth={
-                                line.tool === 'eraser' ? 20 : 5
+                                line.tool === 'eraser' ? 20 : 2
                             }
                             tension={0.5}
                             lineCap="round"
