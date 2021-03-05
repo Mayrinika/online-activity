@@ -6,11 +6,6 @@
     width: 20px;
     height: 20px;
 }
-.Canvas-ControlPanel{
-    display: flex;
-    margin-top: 5px;
-    justify-content: space-around;
-}
 .active {
     border: 1px solid black;
 }

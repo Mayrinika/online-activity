@@ -8,9 +8,10 @@
     border-radius: 10px;
 }
 .Game header {
-    margin: 30px auto;
+    height: 10%;
     display: flex;
     justify-content: space-around;
+    align-items: center;
 }
 .Game-Word {
     width: 60%;

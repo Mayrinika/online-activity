@@ -1,14 +1,19 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import './Canvas.css';
 import {Layer, Stage, Line} from "react-konva";
 import ColorPalette from "./ColorPalette";
+
 
 const Canvas = () => {
     const [tool, setTool]: [any, any] = React.useState('pen');
     const [lines, setLines]: [any, any] = React.useState([]);
     const [currentLine, setCurrentLine]: [any, any] = React.useState(null);
     const [color, setColor]: [any, any] = React.useState('#03161d');
+    const [[stageWidth, stageHeight], setStageSize] = React.useState([550, 750]);
     const isDrawing = React.useRef(false);
+    useEffect(() => {
+        setStageSize([document.getElementsByClassName('Canvas')[0].clientWidth, document.getElementsByClassName('Canvas')[0].clientHeight])
+    }, []);
 
     const handleMouseDown = (e: any) => {
         isDrawing.current = true;
@@ -26,20 +31,21 @@ const Canvas = () => {
             ...currentLine,
             points: [...currentLine.points, pos.x, pos.y]
         });
-
     };
 
-    const handleMouseUp = (e: any) => { //todo: if start to draw line outside Canvas and mouse up inside Canvas => error
+    const handleMouseUp = (e: any) => {
         isDrawing.current = false;
         const pos = e.target.getStage().getPointerPosition();
         setCurrentLine(null);
-        setLines([
-            ...lines,
-            { ...currentLine, points: [...currentLine.points, pos.x, pos.y] }
-        ]);
+        if (currentLine) {
+            setLines([
+                ...lines,
+                {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
+            ]);
+        }
     };
 
-    const changeColor = (color: any) => {
+    const changeColor = (color: string) => {
         setColor(color)
     };
 
@@ -60,8 +66,8 @@ const Canvas = () => {
             </div>
             <Stage
                 className="Canvas-Stage"
-                width={550} //todo make responsive
-                height={700}
+                width={stageWidth}
+                height={stageHeight}
                 onMouseDown={handleMouseDown}
                 onMousemove={handleMouseMove}
                 onMouseup={handleMouseUp}
@@ -94,5 +100,6 @@ const Canvas = () => {
         </div>
     );
 };
+
 
 export default Canvas;
