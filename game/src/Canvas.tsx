@@ -50,7 +50,7 @@ const Canvas = () => {
     };
 
     return (
-        <div className="Canvas">
+        <div className={"Canvas "+tool}>
             <div className="Canvas-ControlPanel">
                 <ColorPalette currentColor={color} onChangeColor={changeColor}/>
                 <select
@@ -86,7 +86,7 @@ const Canvas = () => {
                             points={line.points}
                             stroke={line.color}
                             strokeWidth={
-                                line.tool === 'eraser' ? 20 : 2
+                                line.tool === 'eraser' ? 100 : 2
                             }
                             tension={0.5}
                             lineCap="round"
