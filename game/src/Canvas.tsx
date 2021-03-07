@@ -3,27 +3,28 @@ import './Canvas.css';
 import {Layer, Stage, Line} from "react-konva";
 import ColorPalette from "./ColorPalette";
 
-
+let isDrawing = false;
 const Canvas = () => {
     const [tool, setTool]: [any, any] = React.useState('pen');
     const [lines, setLines]: [any, any] = React.useState([]);
     const [currentLine, setCurrentLine]: [any, any] = React.useState(null);
     const [color, setColor]: [any, any] = React.useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = React.useState([550, 750]);
-    const isDrawing = React.useRef(false);
+    //const isDrawing = React.useRef(false);
+    const stageRef: any = React.useRef(null);
     useEffect(() => {
         setStageSize([document.getElementsByClassName('Canvas')[0].clientWidth, document.getElementsByClassName('Canvas')[0].clientHeight])
     }, []);
 
     const handleMouseDown = (e: any) => {
-        isDrawing.current = true;
+        isDrawing = true;
         const pos = e.target.getStage().getPointerPosition();
         setCurrentLine({ tool, points: [pos.x, pos.y], color });
     };
 
     const handleMouseMove = (e: any) => {
         // no drawing - skipping
-        if (!isDrawing.current) {
+        if (!isDrawing) {
             return;
         }
         const pos = e.target.getStage().getPointerPosition();
@@ -34,7 +35,7 @@ const Canvas = () => {
     };
 
     const handleMouseUp = (e: any) => {
-        isDrawing.current = false;
+        isDrawing = false;
         const pos = e.target.getStage().getPointerPosition();
         setCurrentLine(null);
         if (currentLine) {
@@ -43,7 +44,19 @@ const Canvas = () => {
                 {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
             ]);
         }
+        const uri = stageRef.current.toDataURL();
+        //downloadURI(uri, 'stage.png');
+        console.log(uri);
     };
+
+    const downloadURI = (uri: any, name: any) => {
+        let link = document.createElement('a');
+        link.download = name;
+        link.href = uri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
 
     const changeColor = (color: string) => {
         setColor(color)
@@ -73,6 +86,7 @@ const Canvas = () => {
                 </select>
             </div>
             <Stage
+                ref={stageRef}
                 className="Canvas-Stage"
                 width={stageWidth}
                 height={stageHeight}
