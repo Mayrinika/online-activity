@@ -49,8 +49,16 @@ const Canvas = () => {
         setColor(color)
     };
 
+    const ctrZ = (e: any) => {
+        if (e.keyCode === 90 && e.ctrlKey) {
+            let newLines = [...lines];
+            newLines.pop();
+            setLines(newLines);
+        };
+    }
+
     return (
-        <div className={"Canvas "+tool}>
+        <div className={"Canvas "+tool} tabIndex={0} onKeyDown={ctrZ}>
             <div className="Canvas-ControlPanel">
                 <ColorPalette currentColor={color} onChangeColor={changeColor}/>
                 <select
@@ -100,6 +108,7 @@ const Canvas = () => {
         </div>
     );
 };
+
 
 
 export default Canvas;
