@@ -40,7 +40,7 @@ class Game extends Component<any, any> {
                     <Canvas />
                     <aside>
                         <ListOfPlayers players={guessers} painter={this.state.painter}/>
-                        <Chat />
+                        <Chat currentPlayer={this.props.currentPlayer}/>
                     </aside>
                 </main>
             </div>

@@ -17,3 +17,6 @@
 .Chat form {
     margin-bottom: 10px;
 }
+.Chat-message-name {
+    font-weight: 700;
+}
