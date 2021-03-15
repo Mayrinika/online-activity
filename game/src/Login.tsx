@@ -17,15 +17,13 @@ class Login extends Component<any, any>{
             name: '',
             code: '',
         }
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
-    handleChange(evt: any): void {
+    handleChange = (evt: any):void => {
         this.setState({
             [evt.target.name]: evt.target.value
         })
     }
-    handleSubmit(evt: any) {
+    handleSubmit = (evt: any) => {
         evt.preventDefault();
         if (this.state.code === '') {
             const newCode = makeRandomStr()

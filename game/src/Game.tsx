@@ -20,9 +20,8 @@ class Game extends Component<any, any> {
             timeIsOver: false,
             gameIsIOver: false
         }
-        this.timeIsOver = this.timeIsOver.bind(this);
     }
-    timeIsOver() {
+    timeIsOver = () => {
         this.setState({ timeIsOver: true });
     }
     render() {

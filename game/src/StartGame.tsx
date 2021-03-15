@@ -8,9 +8,8 @@ class StartGame extends Component<any, any> {
         this.state= {
             areYouReady: false,
         }
-        this.startGame = this.startGame.bind(this);
     }
-    startGame() {
+    startGame = () => {
         this.setState({areYouReady: true});
     }
     render() {

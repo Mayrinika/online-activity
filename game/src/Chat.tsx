@@ -8,17 +8,15 @@ class Chat extends Component<any, any> {
             message: '',
             messages: []
         }
-        this.addMessage = this.addMessage.bind(this);
-        this.enterMessage = this.enterMessage.bind(this);
     }
-    addMessage(evt: any) {
+    addMessage = (evt: any) => {
         evt.preventDefault();
         this.setState({message: '', messages: [...this.state.messages, {name: this.props.currentPlayer, text: this.state.message}]});
         let json = JSON.stringify({name: this.props.currentPlayer, text: this.state.message});
         console.log(json);
 
     }
-    enterMessage(evt: any) {
+    enterMessage = (evt: any) => {
         this.setState({...this.state, message: evt.target.value});
     }
     render() {

@@ -20,9 +20,8 @@ class App extends Component<any, any>{
       players: ['z','f'],
       possibleGames: ['tr']
     }
-    this.joinGame = this.joinGame.bind(this);
-  }
-  joinGame(player: string, game: string) {
+      }
+  joinGame = (player: string, game: string): void => {
     if (this.state.possibleGames.includes(game)) {
       this.setState((st: appState) => (
           {
