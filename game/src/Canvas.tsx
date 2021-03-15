@@ -13,7 +13,8 @@ const Canvas = () => {
     //const isDrawing = React.useRef(false);
     const stageRef: any = React.useRef(null);
     useEffect(() => {
-        setStageSize([document.getElementsByClassName('Canvas')[0].clientWidth, document.getElementsByClassName('Canvas')[0].clientHeight])
+        const canvas = document.getElementsByClassName('Canvas')[0];
+        setStageSize([canvas.clientWidth, canvas.clientHeight]);
     }, []);
 
     const handleMouseDown = (e: any) => {
