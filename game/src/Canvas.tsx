@@ -63,16 +63,16 @@ const Canvas = () => {
         setColor(color)
     };
 
-    const ctrZ = (e: any) => {
+    const undoLastDrawing = (e: any) => {
         if (e.keyCode === 90 && e.ctrlKey) {
             let newLines = [...lines];
             newLines.pop();
             setLines(newLines);
-        };
+        }
     }
 
     return (
-        <div className={"Canvas "+tool} tabIndex={0} onKeyDown={ctrZ}>
+        <div className={"Canvas "+tool} tabIndex={0} onKeyDown={undoLastDrawing}>
             <div className="Canvas-ControlPanel">
                 <ColorPalette currentColor={color} onChangeColor={changeColor}/>
                 <select
@@ -92,8 +92,8 @@ const Canvas = () => {
                 width={stageWidth}
                 height={stageHeight}
                 onMouseDown={handleMouseDown}
-                onMousemove={handleMouseMove}
-                onMouseup={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
             >
                 <Layer className="Canvas-Layer">
                     {tool === 'pen' &&
