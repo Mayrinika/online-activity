@@ -23,19 +23,19 @@ class App extends Component<any, any>{
       }
   joinGame = (player: string, game: string): void => {
     if (this.state.possibleGames.includes(game)) {
-      this.setState((st: appState) => (
+      this.setState((previousState: appState) => (
           {
             currentPlayer: player,
             currentGame: game,
-            players: [...st.players, player]
+            players: [...previousState.players, player]
           }));
     } else {
-      this.setState((st: appState) => (
+      this.setState((previousState: appState) => (
           {
             currentPlayer: player,
             currentGame: game,
-            players: [...st.players, player],
-            possibleGames: [...st.possibleGames, game]
+            players: [...previousState.players, player],
+            possibleGames: [...previousState.possibleGames, game]
           }));
     }
   }
