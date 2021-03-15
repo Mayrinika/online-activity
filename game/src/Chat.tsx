@@ -25,10 +25,11 @@ class Chat extends Component<chatProps, chatState> {
     }
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
-        this.setState({inputMessage: '', chatMessages: [...this.state.chatMessages, {name: this.props.currentPlayer, text: this.state.inputMessage}]});
-        let json = JSON.stringify({name: this.props.currentPlayer, text: this.state.inputMessage});
+        const {inputMessage, chatMessages} = this.state;
+        const {currentPlayer} = this.props;
+        this.setState({inputMessage: '', chatMessages: [...chatMessages, {name: currentPlayer, text: inputMessage}]});
+        let json = JSON.stringify({name: currentPlayer, text: inputMessage});
         console.log(json);
-
     }
     enterMessage = (evt: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({...this.state, inputMessage: evt.target.value});
