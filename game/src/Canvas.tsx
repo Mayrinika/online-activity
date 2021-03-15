@@ -3,13 +3,19 @@ import './Canvas.css';
 import {Layer, Stage, Line} from "react-konva";
 import ColorPalette from "./ColorPalette";
 
+type lineType = {
+    tool: string;
+    color: string;
+    points: number[];
+}
+
 let isDrawing = false;
 const Canvas = () => {
-    const [tool, setTool]: [any, any] = React.useState('pen');
-    const [lines, setLines]: [any, any] = React.useState([]);
-    const [currentLine, setCurrentLine]: [any, any] = React.useState(null);
-    const [color, setColor]: [any, any] = React.useState('#03161d');
-    const [[stageWidth, stageHeight], setStageSize] = React.useState([550, 750]);
+    const [tool, setTool]: [string, React.Dispatch<React.SetStateAction<string>>] = useState('pen');
+    const [lines, setLines]: [lineType[], React.Dispatch<React.SetStateAction<lineType[]>>] = useState([{tool: 'pen', color: '#03161d', points: [0,0]}]);
+    const [currentLine, setCurrentLine]: [lineType, React.Dispatch<React.SetStateAction<lineType>>] = useState({tool: 'pen', color: '#03161d', points: [0,0]});
+    const [color, setColor]: [string, React.Dispatch<React.SetStateAction<string>>] = useState('#03161d');
+    const [[stageWidth, stageHeight], setStageSize]: [[number, number], React.Dispatch<React.SetStateAction<[number, number]>>] = useState([550, 750]);
     //const isDrawing = React.useRef(false);
     const stageRef: any = React.useRef(null);
     useEffect(() => {
@@ -36,21 +42,22 @@ const Canvas = () => {
     };
 
     const handleMouseUp = (e: any) => {
-        isDrawing = false;
         const pos = e.target.getStage().getPointerPosition();
-        setCurrentLine(null);
-        if (currentLine) {
+        //setCurrentLine(null);
+        if (isDrawing) {
             setLines([
                 ...lines,
                 {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
             ]);
         }
+        isDrawing = false;
+
         const uri = stageRef.current.toDataURL();
         //downloadURI(uri, 'stage.png');
         console.log(uri);
     };
 
-    const downloadURI = (uri: any, name: any) => {
+    const downloadURI = (uri: string, name: string) => {
         let link = document.createElement('a');
         link.download = name;
         link.href = uri;
