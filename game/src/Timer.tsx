@@ -1,7 +1,12 @@
 import React from 'react';
 import './Timer.css';
 
-function Timer(props: any) {
+type TimerProps = {
+    time: number;
+    timeIsOver: () => void;
+}
+
+function Timer(props: TimerProps) {
     const [seconds, setSeconds] = React.useState(props.time);
     let timerId: ReturnType<typeof setTimeout>;
 

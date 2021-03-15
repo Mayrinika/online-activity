@@ -2,8 +2,17 @@ import React, {Component} from "react";
 import Game from "./Game";
 import './StartGame.css'
 
-class StartGame extends Component<any, any> {
-    constructor(props: any) {
+type startGameProps = {
+    players: string[];
+    currentPlayer : string;
+}
+
+type startGameState = {
+    areYouReady: boolean;
+}
+
+class StartGame extends Component<startGameProps, startGameState> {
+    constructor(props: startGameProps) {
         super(props);
         this.state= {
             areYouReady: false,

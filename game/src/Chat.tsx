@@ -1,29 +1,43 @@
 import React, {Component} from 'react';
 import './Chat.css';
 
-class Chat extends Component<any, any> {
-    constructor(props: any) {
+type chatProps = {
+    currentPlayer: string;
+}
+
+type chatState = {
+    inputMessage: string;
+    chatMessages: messageType[];
+}
+
+type messageType = {
+    name: string;
+    text: string;
+}
+
+class Chat extends Component<chatProps, chatState> {
+    constructor(props: chatProps) {
         super(props);
         this.state = {
             inputMessage: '',
             chatMessages: []
         }
     }
-    addMessage = (evt: any) => {
+    addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
         this.setState({inputMessage: '', chatMessages: [...this.state.chatMessages, {name: this.props.currentPlayer, text: this.state.inputMessage}]});
         let json = JSON.stringify({name: this.props.currentPlayer, text: this.state.inputMessage});
         console.log(json);
 
     }
-    enterMessage = (evt: any) => {
+    enterMessage = (evt: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({...this.state, inputMessage: evt.target.value});
     }
     render() {
         return (
             <div className="Chat">
                 <div className="Chat-messages">
-                    {this.state.chatMessages.map((message: any) => (
+                    {this.state.chatMessages.map((message: messageType) => (
                         <p><span className="Chat-message-name">{message.name}: </span>{message.text}</p>
                     ))}
                 </div>

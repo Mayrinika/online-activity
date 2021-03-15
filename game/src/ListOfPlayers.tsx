@@ -1,7 +1,12 @@
 import React, {Component} from 'react';
 import './ListOfPlayers.css'
 
-class ListOfPlayers extends Component<any, any>{
+type listOfPlayersProps = {
+    players: string[];
+    painter: string;
+}
+
+class ListOfPlayers extends Component<listOfPlayersProps, {}>{
     render() {
         return (
             <div className="ListOfPlayers">

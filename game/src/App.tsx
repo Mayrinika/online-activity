@@ -1,41 +1,42 @@
 import React, {Component} from 'react';
 import './App.css';
 import Login from './Login';
-import Game from './Game'
 import StartGame from "./StartGame";
 
 type appState = {
-  currentGame: string | undefined;
-  currentPlayer: string | undefined;
+  currentGameId: string;
+  currentPlayer: string;
   players: string[];
   possibleGames: string[];
-}
+};
 
-class App extends Component<any, any>{
-  constructor(props: any) {
+type appProps = {};
+
+class App extends Component<appProps, appState>{
+  constructor(props: appProps) {
     super(props);
     this.state = {
-      currentGame: '',
+      currentGameId: '',
       currentPlayer: '',
       players: ['z','f'],
       possibleGames: ['tr']
     }
       }
-  joinGame = (player: string, game: string): void => {
-    if (this.state.possibleGames.includes(game)) {
+  joinGame = (player: string, gameId: string): void => {
+    if (this.state.possibleGames.includes(gameId)) {
       this.setState((previousState: appState) => (
           {
             currentPlayer: player,
-            currentGame: game,
+            currentGameId: gameId,
             players: [...previousState.players, player]
           }));
     } else {
       this.setState((previousState: appState) => (
           {
             currentPlayer: player,
-            currentGame: game,
+            currentGameId: gameId,
             players: [...previousState.players, player],
-            possibleGames: [...previousState.possibleGames, game]
+            possibleGames: [...previousState.possibleGames, gameId]
           }));
     }
   }

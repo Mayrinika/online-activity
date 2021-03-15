@@ -3,14 +3,15 @@ import './Login.css';
 import crocoImg from './img/cocodrilo.png'
 
 type loginProps = {
-    possibleGames:string[];
+    possibleGames: string[];
+    joinGame: (player: string, gameId: string) => void;
 }
 type loginState = {
     name: string,
     code: string
 }
 
-class Login extends Component<any, any>{
+class Login extends Component<loginProps, loginState>{
     constructor(props: loginProps) {
         super(props);
         this.state = {
@@ -18,12 +19,13 @@ class Login extends Component<any, any>{
             code: '',
         }
     }
-    handleChange = (evt: any):void => {
-        this.setState({
+    handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
+        this.setState((state) => ({
+            ...state,
             [evt.target.name]: evt.target.value
-        })
+        }))
     }
-    handleSubmit = (evt: any) => {
+    handleSubmit = (evt: React.ChangeEvent<HTMLFormElement>): void => {
         evt.preventDefault();
         if (this.state.code === '') {
             const newCode = makeRandomStr()

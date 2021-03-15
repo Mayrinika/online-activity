@@ -8,17 +8,25 @@ import words from "./words";
 const TIME: number = 3*60;
 
 type gameState = {
-    wordToGuess: string | undefined;
+    wordToGuess: string;
+    painter: string;
+    timeIsOver: boolean;
+    gameIsOver: boolean;
 }
 
-class Game extends Component<any, any> {
-    constructor(props:any) {
+type gameProps = {
+    players: string[];
+    currentPlayer: string;
+}
+
+class Game extends Component<gameProps, gameState> {
+    constructor(props: gameProps) {
         super(props);
         this.state = {
             wordToGuess: getRandomWord(),
             painter: getPainter(this),
             timeIsOver: false,
-            gameIsIOver: false
+            gameIsOver: false
         }
     }
     timeIsOver = () => {
