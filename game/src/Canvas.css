@@ -1,0 +1,30 @@
+.Canvas {
+    width: 60%;
+    height: 100%;
+    background-color: white;
+    border: 1px solid black;
+    position: relative;
+}
+.Canvas-ControlPanel{
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    justify-content: space-around;
+    z-index: 1;
+    cursor: auto;
+}
+.Canvas-Stage {
+    width: 100%;
+    height: 100%
+}
+.Canvas-Layer {
+    width: 100%;
+    height: 100%
+}
+.Canvas.pen {
+    cursor: url("img/pen.png") 0 40, auto;
+}
+.Canvas.eraser {
+    cursor: url("img/circle.png"), auto;
+}

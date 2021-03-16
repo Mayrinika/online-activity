@@ -1,0 +1,15 @@
+.StartGame {
+    width: 40%;
+    height: 20%;
+    margin: 0 auto;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.StartGame h3, .StartGame button {
+    margin: 20px;
+}

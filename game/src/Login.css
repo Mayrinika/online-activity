@@ -1,0 +1,28 @@
+.Login {
+    width: 1000px;
+    height: 500px;
+    margin: 0 auto;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+.Login-Container {
+    display: flex;
+}
+.Login-Img {
+    margin-left: 80px;
+    width: 300px;
+}
+.Login-Form {
+    width: 400px;
+    text-align: left;
+    margin: 50px;
+    display: flex;
+    flex-direction: column;
+}
+.Login-Form input {
+    margin-bottom: 20px;
+}
+.red {
+    color: red;
+}
