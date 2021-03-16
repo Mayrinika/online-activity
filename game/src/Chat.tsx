@@ -1,8 +1,11 @@
 import React, {Component} from 'react';
 import './Chat.css';
 
+const serverURL = 'http://localhost:9000/';
+
 type chatProps = {
     currentPlayer: string;
+    currentGameId: string;
 }
 
 type chatState = {
@@ -25,33 +28,36 @@ class Chat extends Component<chatProps, chatState> {
     }
 
     componentDidMount() {
-        fetch('http://localhost:9000/chatMessages')
+        fetch(`${serverURL}${this.props.currentGameId}`)
             .then(res => res.json())
-            .then(chatMessages => {
+            .then(game => {
+                console.log(game);
                 this.setState({
-                    chatMessages
-                });
-            });
+                    chatMessages: game.chatMessages
+                })
+            })
     }
 
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
         const {inputMessage, chatMessages} = this.state;
-        const {currentPlayer} = this.props;
+        const {currentPlayer, currentGameId} = this.props;
+        const updatedChatMessages = [...chatMessages, {name: currentPlayer, text: inputMessage}];
 
-        fetch('http://localhost:9000/chatMessages', {
+        fetch(`${serverURL}${currentGameId}`, {
             method: 'POST',
-            body: JSON.stringify({name: currentPlayer, text: inputMessage}),
             headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: currentGameId, chatMessages: updatedChatMessages})
         })
             .then(res => {
                 if (res.ok)
                     this.setState({
                         inputMessage: '',
-                        chatMessages: [...chatMessages, {name: currentPlayer, text: inputMessage}]
-                    });
+                        chatMessages: updatedChatMessages
+                    })
             })
     }
+
     enterMessage = (evt: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({...this.state, inputMessage: evt.target.value});
     }

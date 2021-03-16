@@ -35,7 +35,11 @@ class StartGame extends Component<startGameProps, startGameState> {
         this.setState({areYouReady: true});
     }
     render() {
-        const gameComponent = <Game players={this.state.players} currentPlayer={this.props.currentPlayer}/>
+        const gameComponent = <Game
+            players={this.state.players}
+            currentPlayer={this.props.currentPlayer}
+            currentGameId = {this.props.currentGameId}
+        />
         const startGame =
             <div className="StartGame">
                 <h3>Игроки: {this.state.players.join(', ')}</h3>

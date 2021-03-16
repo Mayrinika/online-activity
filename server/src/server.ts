@@ -38,7 +38,12 @@ app.get('/:gameId', (req, res) => {
 })
 
 app.post('/:gameId', (req, res) => {
-
+    const gameIndex = games.findIndex(game => game.id === req.body.id);
+    games[gameIndex] = {
+        ...games[gameIndex],
+        ...req.body
+    };
+    res.status(200).send(games);
 })
 
 app.listen(port, (err) => {

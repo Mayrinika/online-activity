@@ -17,6 +17,7 @@ type gameState = {
 type gameProps = {
     players: string[];
     currentPlayer: string;
+    currentGameId: string;
 }
 
 class Game extends Component<gameProps, gameState> {
@@ -47,7 +48,7 @@ class Game extends Component<gameProps, gameState> {
                     <Canvas />
                     <aside>
                         <ListOfPlayers players={guessers} painter={this.state.painter}/>
-                        <Chat currentPlayer={this.props.currentPlayer}/>
+                        <Chat currentPlayer={this.props.currentPlayer} currentGameId={this.props.currentGameId}/>
                     </aside>
                 </main>
             </div>
