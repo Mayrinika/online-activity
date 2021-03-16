@@ -2,52 +2,76 @@ import React, {Component} from 'react';
 import './App.css';
 import Login from './Login';
 import StartGame from "./StartGame";
+const serverURL = "http://localhost:9000/"
+
+type gameType = {
+    id: string;
+    players: string[];
+}
 
 type appState = {
   currentGameId: string;
   currentPlayer: string;
-  players: string[];
-  possibleGames: string[];
+  possibleGames: gameType[];
 };
 
-type appProps = {};
-
-class App extends Component<appProps, appState>{
-  constructor(props: appProps) {
-    super(props);
-    this.state = {
-      currentGameId: '',
-      currentPlayer: '',
-      players: ['z','f'],
-      possibleGames: ['tr']
+class App extends Component<{}, appState>{
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+          currentGameId: '',
+          currentPlayer: '',
+          possibleGames: []
+        }
     }
-      }
-  joinGame = (player: string, gameId: string): void => {
-    if (this.state.possibleGames.includes(gameId)) {
-      this.setState((previousState: appState) => (
-          {
+    async componentDidMount() {
+        await this.getAllGames();
+    }
+    addPlayer = async (gameId: string, player: string) => {
+        await fetch(`${serverURL}addPlayer`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({gameId, player})
+        });
+        await this.getAllGames();
+    }
+    addGame = async (gameId: string) => {
+        await fetch(`${serverURL}addGame`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({gameId})
+        });
+        await this.getAllGames();
+    }
+    getAllGames = async () => {
+        const res = await fetch(serverURL);
+        const data = await res.text();
+        this.setState({ possibleGames: JSON.parse(data)});
+    }
+    joinGame = async (player: string, gameId: string) => {
+        if (this.state.possibleGames.some(game => game.id === gameId)) {
+            await this.addPlayer(gameId, player);
+        } else {
+            await this.addGame(gameId);
+            await this.addPlayer(gameId, player);
+        }
+        this.setState({
             currentPlayer: player,
             currentGameId: gameId,
-            players: [...previousState.players, player]
-          }));
-    } else {
-      this.setState((previousState: appState) => (
-          {
-            currentPlayer: player,
-            currentGameId: gameId,
-            players: [...previousState.players, player],
-            possibleGames: [...previousState.possibleGames, gameId]
-          }));
+        });
     }
-  }
-  render() {
-    return (
-        <div className="App">
-          {this.state.currentPlayer !== '' ? <StartGame players={this.state.players} currentPlayer={this.state.currentPlayer}/>
-                                            : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame}/>}
-        </div>
-    );
-  }
+    render() {
+        return (
+            <div className="App">
+                {this.state.currentPlayer !== '' ? <StartGame currentGameId={this.state.currentGameId} currentPlayer={this.state.currentPlayer}/>
+                                                : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame}/>}
+            </div>
+        );
+    }
 }
 
 export default App;

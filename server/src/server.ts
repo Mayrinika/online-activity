@@ -4,22 +4,41 @@ import cors from "cors";
 const app = express();
 const port = 9000;
 
-const chatMessages = [];
+type gameType = {
+    id: string;
+    players: string[];
+    wordToGuess: string;
+    painter: string;
+    img: string;
+    chatMessages: string[];
+}
+
+const games: gameType[] = [];
 
 app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.status(200).send('Hello World!');
+    res.status(200).send(games);
 })
 
-app.get('/chatMessages', (req, res) => {
-    res.status(200).json(chatMessages);
+app.post('/addPlayer', (req, res) => {
+    let game = games.filter(game => game.id === req.body.gameId)[0];
+    game.players.push(req.body.player);
+    res.status(200).send(games);
+})
+app.post('/addGame', (req, res) => {
+    games.push({id: req.body.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages:[]});
+    res.status(200).send(games);
 })
 
-app.post('/chatMessages', (req, res) => {
-    chatMessages.push(req.body);
-    res.status(200).json(chatMessages);
+app.get('/:gameId', (req, res) => {
+    const game = games.filter(game => game.id === req.params.gameId)[0];
+    res.status(200).send(game);
+})
+
+app.post('/:gameId', (req, res) => {
+
 })
 
 app.listen(port, (err) => {

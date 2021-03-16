@@ -1,9 +1,14 @@
 import React, {Component} from 'react';
 import './Login.css';
-import crocoImg from './img/cocodrilo.png'
+import crocoImg from './img/cocodrilo.png';
+
+type gameType = {
+    id: string;
+    players: string []
+}
 
 type loginProps = {
-    possibleGames: string[];
+    possibleGames: gameType[];
     joinGame: (player: string, gameId: string) => void;
 }
 type loginState = {
@@ -31,7 +36,7 @@ class Login extends Component<loginProps, loginState>{
             const newCode = makeRandomStr()
             alert(`code is: ${newCode}`)
             this.props.joinGame(this.state.name, newCode);
-        } else if (this.props.possibleGames.includes(this.state.code)) {
+        } else if (this.props.possibleGames.some(game => game.id === this.state.code)) {
             this.props.joinGame(this.state.name, this.state.code);
         } else {
             alert('no such play');
