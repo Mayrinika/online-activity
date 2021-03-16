@@ -45,7 +45,7 @@ class Game extends Component<gameProps, gameState> {
                     <Timer time={TIME} timeIsOver={this.timeIsOver}/>
                 </header>
                 <main>
-                    <Canvas />
+                    <Canvas currentGameId={this.props.currentGameId}/>
                     <aside>
                         <ListOfPlayers players={guessers} painter={this.state.painter}/>
                         <Chat currentPlayer={this.props.currentPlayer} currentGameId={this.props.currentGameId}/>

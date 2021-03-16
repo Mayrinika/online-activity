@@ -3,18 +3,35 @@ import './Canvas.css';
 import {Layer, Stage, Line} from "react-konva";
 import ColorPalette from "./ColorPalette";
 
+const serverURL = 'http://localhost:9000/';
+
+type canvasProps = {
+    currentGameId: string;
+}
+
+
 let isDrawing = false;
-const Canvas = () => {
+const Canvas = (props: canvasProps) => {
     const [tool, setTool] = useState('pen');
     const [lines, setLines] = useState([{tool: 'pen', color: '#03161d', points: [0,0]}]);
     const [currentLine, setCurrentLine] = useState({tool: 'pen', color: '#03161d', points: [0,0]});
     const [color, setColor] = useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = useState([550, 750]);
+
+    //const [uri, setUri] = ('');
+    let uri: string; //TODO
+
     //const isDrawing = React.useRef(false);
     const stageRef: any = React.useRef(null);
     useEffect(() => {
         const canvas = document.getElementsByClassName('Canvas')[0];
         setStageSize([canvas.clientWidth, canvas.clientHeight]);
+
+        fetch(`${serverURL}${props.currentGameId}`)
+            .then(res => res.json())
+            .then(game => {
+                uri = game.img
+            })
     }, []);
 
     const handleMouseDown = (e: any) => {
@@ -46,9 +63,20 @@ const Canvas = () => {
         }
         isDrawing = false;
 
-        const uri = stageRef.current.toDataURL();
+        // setUri(stageRef.current.toDataURL());
+        uri = stageRef.current.toDataURL();
         //downloadURI(uri, 'stage.png');
         console.log(uri);
+
+        fetch(`${serverURL}${props.currentGameId}`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: props.currentGameId, img: uri})
+        })
+            .then(res => {
+                if (res.ok)
+                    uri = stageRef.current.toDataURL();
+            })
     };
 
     const downloadURI = (uri: string, name: string) => {
