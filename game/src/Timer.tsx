@@ -18,6 +18,7 @@ function Timer(props: TimerProps) {
             props.timeIsOver();
         }
     }, [seconds]);
+
     const min: number = Math.floor(seconds/60);
     const sec: string = (seconds%60).toString(10).padStart(2,'0');
     return (
