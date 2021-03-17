@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import Login from './Login';
 import StartGame from "./StartGame";
-const serverURL = "http://localhost:9000/"
+import getRoutes from './routes';
 
 type gameType = {
     id: string;
@@ -28,7 +28,7 @@ class App extends Component<{}, appState>{
         await this.getAllGames();
     }
     addPlayer = async (gameId: string, player: string) => {
-        await fetch(`${serverURL}${gameId}/addPlayer`, {
+        await fetch(getRoutes(gameId).addPlayer, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -38,7 +38,7 @@ class App extends Component<{}, appState>{
         await this.getAllGames();
     }
     addGame = async (gameId: string) => {
-        await fetch(`${serverURL}${gameId}`, {
+        await fetch(getRoutes(gameId).gameId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -48,7 +48,7 @@ class App extends Component<{}, appState>{
         await this.getAllGames();
     }
     getAllGames = async () => {
-        const res = await fetch(serverURL);
+        const res = await fetch(getRoutes().root);
         const data = await res.text();
         this.setState({ possibleGames: JSON.parse(data)});
     }

@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './Chat.css';
-
-const serverURL = 'http://localhost:9000/';
+import getRoutes from './routes';
 
 type chatProps = {
     currentPlayer: string;
@@ -28,7 +27,7 @@ class Chat extends Component<chatProps, chatState> {
     }
 
     componentDidMount() { //TODO нужно добиться просто /chatMessages
-        fetch(`${serverURL}${this.props.currentGameId}/chatMessages`)
+        fetch(getRoutes(this.props.currentGameId).chatMessages)
             .then(res => res.json())
             .then(chatMessages => {
                 console.log(chatMessages);
@@ -43,7 +42,7 @@ class Chat extends Component<chatProps, chatState> {
         const {inputMessage, chatMessages} = this.state;
         const {currentPlayer, currentGameId} = this.props;
 
-        fetch(`${serverURL}${currentGameId}/chatMessages`, {
+        fetch(getRoutes(currentGameId).chatMessages, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({name: currentPlayer, text: inputMessage})

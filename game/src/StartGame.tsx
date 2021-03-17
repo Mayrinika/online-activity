@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import Game from "./Game";
 import './StartGame.css';
-const serverURL = "http://localhost:9000/"
+import getRoutes from './routes';
 
 type startGameProps = {
     currentGameId: string;
@@ -25,7 +25,7 @@ class StartGame extends Component<startGameProps, startGameState> {
         await this.getCurrentGame();
     }
     getCurrentGame = async () => {
-        const res = await fetch(`${serverURL}${this.props.currentGameId}`);
+        const res = await fetch(getRoutes(this.props.currentGameId).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
         this.setState({ players: game.players});
