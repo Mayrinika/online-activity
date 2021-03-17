@@ -6,5 +6,6 @@ export default function getRoutes(currentGameId?: string) {
         gameId: `${serverURL}${currentGameId}`,
         chatMessages: `${serverURL}${currentGameId}/chatMessages`,
         addPlayer: `${serverURL}${currentGameId}/addPlayer`,
+        addImg: `${serverURL}${currentGameId}/addImg`,
     }
 }

@@ -6,7 +6,7 @@ import Chat from "../Chat/Chat";
 import ListOfPlayers from "../ListOfPlayers/ListOfPlayers";
 import words from "../../utils/words";
 const TIME: number = 3*60;
-const serverURL = "http://localhost:9000/"
+import getRoutes from '../../utils/routes';
 
 type gameState = {
     wordToGuess: string;
@@ -41,7 +41,7 @@ class Game extends Component<gameProps, gameState> {
         this.setState({ timeIsOver: true });
     }
     getImage = async () => {
-        const res = await fetch(`${serverURL}${this.props.currentGameId}`);
+        const res = await fetch(getRoutes(this.props.currentGameId).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
         console.log(game, game.img);

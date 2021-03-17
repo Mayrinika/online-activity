@@ -2,8 +2,7 @@ import React, {useState, useEffect} from 'react';
 import './Canvas.css';
 import {Layer, Stage, Line} from "react-konva";
 import ColorPalette from "../ColorPalette/ColorPalette";
-
-const serverURL = 'http://localhost:9000/';
+import getRoutes from '../../utils/routes';
 
 type canvasProps = {
     currentGameId: string;
@@ -51,7 +50,7 @@ const Canvas = (props: canvasProps) => {
     };
 
     const addImage = async (gameId: string, img: string) => {
-        await fetch(`${serverURL}${gameId}/addImg`, {
+        await fetch(getRoutes(gameId).addImg, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
