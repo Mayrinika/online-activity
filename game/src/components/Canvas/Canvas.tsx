@@ -9,7 +9,6 @@ type canvasProps = {
     currentGameId: string;
 }
 
-
 let isDrawing = false; // TODO вообще-то это лучше сделать useRef, а не глобальной переменной. Но у меня не получилось создать два useRef в компоненте
 const Canvas = (props: canvasProps) => {
     const [tool, setTool] = useState('pen');
@@ -51,7 +50,17 @@ const Canvas = (props: canvasProps) => {
         });
     };
 
-    const handleMouseUp = (e: any) => { //TODO поправить тип
+    const addImage = async (gameId: string, img: string) => {
+        await fetch(`${serverURL}${gameId}/addImg`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({img})
+        });
+    }
+
+    const handleMouseUp = async (e: any) => { //TODO поправить тип
         const pos = e.target.getStage().getPointerPosition();
         //setCurrentLine(null);
         if (isDrawing) {
@@ -67,15 +76,7 @@ const Canvas = (props: canvasProps) => {
         //downloadURI(uri, 'stage.png');
         console.log(uri);
 
-        fetch(`${serverURL}${props.currentGameId}`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({id: props.currentGameId, img: uri})
-        })
-            // .then(res => {
-            //     if (res.ok)
-            //         uri = stageRef.current.toDataURL();
-            // })
+        await addImage(props.currentGameId, uri);
     };
 
     //TODO удалить потом. Нужно только для визуализации

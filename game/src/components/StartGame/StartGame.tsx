@@ -27,7 +27,6 @@ class StartGame extends Component<startGameProps, startGameState> {
     getCurrentGame = async () => {
         const res = await fetch(getRoutes(this.props.currentGameId).gameId);
         const data = await res.text();
-        console.log(data);
         const game = JSON.parse(data);
         this.setState({ players: game.players});
     }

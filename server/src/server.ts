@@ -49,6 +49,13 @@ app.post('/:gameId/chatMessages', (req, res) => {
     res.status(200).send(games);
 })
 
+app.post('/:gameId/addImg', (req, res) => {
+    console.log(req.body.img);
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    currentGame.img = req.body.img;
+    res.status(200).send(games);
+})
+
 app.listen(port, (err) => {
     if (err) {
         return console.log('something bad happened', err);

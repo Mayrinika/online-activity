@@ -6,12 +6,14 @@ import Chat from "../Chat/Chat";
 import ListOfPlayers from "../ListOfPlayers/ListOfPlayers";
 import words from "../../utils/words";
 const TIME: number = 3*60;
+const serverURL = "http://localhost:9000/"
 
 type gameState = {
     wordToGuess: string;
     painter: string;
     timeIsOver: boolean;
     gameIsOver: boolean;
+    imgURL: string;
 }
 
 type gameProps = {
@@ -27,17 +29,29 @@ class Game extends Component<gameProps, gameState> {
             wordToGuess: getRandomWord(),
             painter: getPainter(this),
             timeIsOver: false,
-            gameIsOver: false
+            gameIsOver: false,
+            imgURL: ''
         }
     }
+    async componentDidMount() {
+        await this.getImage();
+    }
+
     timeIsOver = () => {
         this.setState({ timeIsOver: true });
     }
+    getImage = async () => {
+        const res = await fetch(`${serverURL}${this.props.currentGameId}`);
+        const data = await res.text();
+        const game = JSON.parse(data);
+        console.log(game, game.img);
+        this.setState({ imgURL: game.img});
+    }
     render() {
-
         const wordToDisplay = (this.props.currentPlayer === this.state.painter) ? this.state.wordToGuess : this.state.wordToGuess.replace(/[А-Яа-я]/g,'?'); //либо убрать регулярку, либо не показывать вопросительные знаки вместо слова. В общем, решить, что будут видеть "нехудожники"
         const guessers = [...this.props.players];
         guessers.splice(this.props.players.indexOf(this.state.painter), 1);
+        const isPainter = this.props.currentPlayer === this.state.painter
         return (
             <div className="Game">
                 <header>
@@ -45,7 +59,7 @@ class Game extends Component<gameProps, gameState> {
                     <Timer time={TIME} timeIsOver={this.timeIsOver}/>
                 </header>
                 <main>
-                    <Canvas currentGameId={this.props.currentGameId}/>
+                    {isPainter ? <Canvas currentGameId={this.props.currentGameId}/> : <img src={this.state.imgURL} alt='img from server'/>}
                     <aside>
                         <ListOfPlayers players={guessers} painter={this.state.painter}/>
                         <Chat currentPlayer={this.props.currentPlayer} currentGameId={this.props.currentGameId}/>
