@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import './App.css';
-import Login from './Login';
-import StartGame from "./StartGame";
-import getRoutes from './routes';
+import Login from '../Login/Login';
+import StartGame from "../StartGame/StartGame";
+import getRoutes from '../../utils/routes';
 
 type gameType = {
     id: string;

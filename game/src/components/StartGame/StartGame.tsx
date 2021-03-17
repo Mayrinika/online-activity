@@ -1,7 +1,7 @@
 import React, {Component} from "react";
-import Game from "./Game";
+import Game from "../Game/Game";
 import './StartGame.css';
-import getRoutes from './routes';
+import getRoutes from '../../utils/routes';
 
 type startGameProps = {
     currentGameId: string;

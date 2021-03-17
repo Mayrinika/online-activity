@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Login.css';
-import crocoImg from './img/cocodrilo.png';
+import crocoImg from '../../img/cocodrilo.png';
 
 type gameType = {
     id: string;

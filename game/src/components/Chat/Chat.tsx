@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './Chat.css';
-import getRoutes from './routes';
+import getRoutes from '../../utils/routes';
 
 type chatProps = {
     currentPlayer: string;

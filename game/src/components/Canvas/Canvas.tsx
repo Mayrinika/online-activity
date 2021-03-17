@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import './Canvas.css';
 import {Layer, Stage, Line} from "react-konva";
-import ColorPalette from "./ColorPalette";
+import ColorPalette from "../ColorPalette/ColorPalette";
 
 const serverURL = 'http://localhost:9000/';
 

@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import './Game.css';
-import Timer from './Timer';
-import Canvas from "./Canvas";
-import Chat from "./Chat";
-import ListOfPlayers from "./ListOfPlayers";
-import words from "./words";
+import Timer from '../Timer/Timer';
+import Canvas from "../Canvas/Canvas";
+import Chat from "../Chat/Chat";
+import ListOfPlayers from "../ListOfPlayers/ListOfPlayers";
+import words from "../../utils/words";
 const TIME: number = 3*60;
 
 type gameState = {
