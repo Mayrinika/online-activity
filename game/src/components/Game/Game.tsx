@@ -5,8 +5,8 @@ import Canvas from "../Canvas/Canvas";
 import Chat from "../Chat/Chat";
 import ListOfPlayers from "../ListOfPlayers/ListOfPlayers";
 import words from "../../utils/words";
-const TIME: number = 3*60;
 import getRoutes from '../../utils/routes';
+const TIME: number = 3*60;
 
 type gameState = {
     wordToGuess: string;
