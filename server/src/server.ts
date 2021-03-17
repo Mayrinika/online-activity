@@ -23,8 +23,8 @@ app.get('/', (req, res) => {
 })
 
 app.get('/:gameId', (req, res) => {
-    const game = games.filter(game => game.id === req.params.gameId)[0];
-    res.status(200).send(game);
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    res.status(200).send(currentGame);
 })
 
 app.post('/:gameId', (req, res) => {
@@ -33,19 +33,19 @@ app.post('/:gameId', (req, res) => {
 })
 
 app.post('/:gameId/addPlayer', (req, res) => {
-    let game = games.filter(game => game.id === req.params.gameId)[0];
-    game.players.push(req.body.player);
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    currentGame.players.push(req.body.player);
     res.status(200).send(games);
 })
 
 app.get('/:gameId/chatMessages', (req, res) => {
-    const game = games.find(game => game.id === req.params.gameId);
-    res.status(200).send(game.chatMessages);
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    res.status(200).send(currentGame.chatMessages);
 })
 
 app.post('/:gameId/chatMessages', (req, res) => {
-    const game = games.find(game => game.id === req.params.gameId);
-    game.chatMessages.push(req.body);
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    currentGame.chatMessages.push(req.body);
     res.status(200).send(games);
 })
 
