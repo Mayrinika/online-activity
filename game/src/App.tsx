@@ -28,22 +28,22 @@ class App extends Component<{}, appState>{
         await this.getAllGames();
     }
     addPlayer = async (gameId: string, player: string) => {
-        await fetch(`${serverURL}addPlayer`, {
+        await fetch(`${serverURL}${gameId}/addPlayer`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify({gameId, player})
+            body: JSON.stringify({player})
         });
         await this.getAllGames();
     }
     addGame = async (gameId: string) => {
-        await fetch(`${serverURL}addGame`, {
+        await fetch(`${serverURL}${gameId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify({gameId})
+            //body: JSON.stringify({})
         });
         await this.getAllGames();
     }
