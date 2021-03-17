@@ -35,7 +35,7 @@ class Game extends Component<gameProps, gameState> {
     }
     render() {
 
-        const wordToDisplay = (this.props.currentPlayer === this.state.painter) ? this.state.wordToGuess : this.state.wordToGuess.replace(/[А-Яа-я]/g,'?');
+        const wordToDisplay = (this.props.currentPlayer === this.state.painter) ? this.state.wordToGuess : this.state.wordToGuess.replace(/[А-Яа-я]/g,'?'); //либо убрать регулярку, либо не показывать вопросительные знаки вместо слова. В общем, решить, что будут видеть "нехудожники"
         const guessers = [...this.props.players];
         guessers.splice(this.props.players.indexOf(this.state.painter), 1);
         return (

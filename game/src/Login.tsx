@@ -34,12 +34,12 @@ class Login extends Component<loginProps, loginState>{
         evt.preventDefault();
         if (this.state.code === '') {
             const newCode = makeRandomStr()
-            alert(`code is: ${newCode}`)
+            alert(`code is: ${newCode}`) //TODO использовать библиотеку TOAST вместо alarm
             this.props.joinGame(this.state.name, newCode);
         } else if (this.props.possibleGames.some(game => game.id === this.state.code)) {
             this.props.joinGame(this.state.name, this.state.code);
         } else {
-            alert('no such play');
+            alert('no such play'); //TODO использовать библиотеку TOAST вместо alarm
         }
     }
     render() {
@@ -77,7 +77,7 @@ class Login extends Component<loginProps, loginState>{
 
 function makeRandomStr(): string {
     let text = "";
-    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; //TODO либо переделать красиво, либо использовать библиотеку uuid
 
     for (let i = 0; i < 10; i++)
         text += possible.charAt(Math.floor(Math.random() * possible.length));
