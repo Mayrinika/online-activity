@@ -1,29 +1,35 @@
 import React, {useState, useEffect} from 'react';
 import './Canvas.css';
 import {Layer, Stage, Line} from "react-konva";
-import ColorPalette from "./ColorPalette";
+import ColorPalette from "../ColorPalette/ColorPalette";
+import getRoutes from '../../utils/routes';
 
-let isDrawing = false;
-const Canvas = () => {
+type canvasProps = {
+    currentGameId: string;
+}
+
+let isDrawing = false; // TODO вообще-то это лучше сделать useRef, а не глобальной переменной. Но у меня не получилось создать два useRef в компоненте
+const Canvas = (props: canvasProps) => {
     const [tool, setTool] = useState('pen');
     const [lines, setLines] = useState([{tool: 'pen', color: '#03161d', points: [0,0]}]);
     const [currentLine, setCurrentLine] = useState({tool: 'pen', color: '#03161d', points: [0,0]});
     const [color, setColor] = useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = useState([550, 750]);
+
     //const isDrawing = React.useRef(false);
-    const stageRef: any = React.useRef(null);
+    const stageRef: any = React.useRef(null); //TODO поправить тип
     useEffect(() => {
         const canvas = document.getElementsByClassName('Canvas')[0];
         setStageSize([canvas.clientWidth, canvas.clientHeight]);
     }, []);
 
-    const handleMouseDown = (e: any) => {
+    const handleMouseDown = (e: any) => { //TODO поправить тип
         isDrawing = true;
         const pos = e.target.getStage().getPointerPosition();
         setCurrentLine({ tool, points: [pos.x, pos.y], color });
     };
 
-    const handleMouseMove = (e: any) => {
+    const handleMouseMove = (e: any) => { //TODO поправить тип
         // no drawing - skipping
         if (!isDrawing) {
             return;
@@ -35,7 +41,17 @@ const Canvas = () => {
         });
     };
 
-    const handleMouseUp = (e: any) => {
+    const addImage = async (gameId: string, img: string) => {
+        await fetch(getRoutes(gameId).addImg, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({img})
+        });
+    }
+
+    const handleMouseUp = async (e: any) => { //TODO поправить тип
         const pos = e.target.getStage().getPointerPosition();
         //setCurrentLine(null);
         if (isDrawing) {
@@ -46,23 +62,26 @@ const Canvas = () => {
         }
         isDrawing = false;
 
-        const uri = stageRef.current.toDataURL();
+        let uri = stageRef.current.toDataURL();
         //downloadURI(uri, 'stage.png');
         console.log(uri);
+
+        await addImage(props.currentGameId, uri);
     };
 
-    const downloadURI = (uri: string, name: string) => {
-        let link = document.createElement('a');
-        link.download = name;
-        link.href = uri;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
+    //TODO удалить потом. Нужно только для визуализации
+    // const downloadURI = (uri: string, name: string) => {
+    //     let link = document.createElement('a');
+    //     link.download = name;
+    //     link.href = uri;
+    //     document.body.appendChild(link);
+    //     link.click();
+    //     document.body.removeChild(link);
+    // }
 
     const changeColor = (color: string) => {setColor(color)};
 
-    const undoLastDrawing = (e: any) => {
+    const undoLastDrawing = (e: any) => { //TODO поправить тип
         if (e.keyCode === 90 && e.ctrlKey) {
             let newLines = [...lines];
             newLines.pop();
@@ -102,7 +121,7 @@ const Canvas = () => {
                         stroke={color}
                     />
                     }
-                    {lines.map((line: any, i: any) => (
+                    {lines.map((line: {tool: string, points: number[], color: string}, i: number) => (
                         <Line
                             key={i}
                             points={line.points}

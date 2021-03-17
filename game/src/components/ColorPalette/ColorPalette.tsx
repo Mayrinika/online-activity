@@ -1,5 +1,5 @@
 import React from "react";
-import colors from "./colors";
+import colors from "../../utils/colors";
 import './ColorPalette.css'
 
 function ColorPalette(props: any) {

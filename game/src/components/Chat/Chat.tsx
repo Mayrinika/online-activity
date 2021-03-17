@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import './Chat.css';
+import getRoutes from '../../utils/routes';
 
 type chatProps = {
     currentPlayer: string;
+    currentGameId: string;
 }
 
 type chatState = {
@@ -24,34 +26,35 @@ class Chat extends Component<chatProps, chatState> {
         }
     }
 
-    componentDidMount() {
-        fetch('http://localhost:9000/chatMessages')
+    componentDidMount() { //TODO нужно добиться просто /chatMessages
+        fetch(getRoutes(this.props.currentGameId).chatMessages)
             .then(res => res.json())
             .then(chatMessages => {
                 this.setState({
                     chatMessages
-                });
-            });
+                })
+            })
     }
 
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
         const {inputMessage, chatMessages} = this.state;
-        const {currentPlayer} = this.props;
+        const {currentPlayer, currentGameId} = this.props;
 
-        fetch('http://localhost:9000/chatMessages', {
+        fetch(getRoutes(currentGameId).chatMessages, {
             method: 'POST',
-            body: JSON.stringify({name: currentPlayer, text: inputMessage}),
             headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name: currentPlayer, text: inputMessage})
         })
             .then(res => {
                 if (res.ok)
                     this.setState({
                         inputMessage: '',
                         chatMessages: [...chatMessages, {name: currentPlayer, text: inputMessage}]
-                    });
+                    })
             })
     }
+
     enterMessage = (evt: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({...this.state, inputMessage: evt.target.value});
     }
