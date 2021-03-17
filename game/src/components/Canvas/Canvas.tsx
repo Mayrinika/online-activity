@@ -15,20 +15,12 @@ const Canvas = (props: canvasProps) => {
     const [currentLine, setCurrentLine] = useState({tool: 'pen', color: '#03161d', points: [0,0]});
     const [color, setColor] = useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = useState([550, 750]);
-    //const [uri, setUri] = useState('');
-    //let uri: string; //TODO
 
     //const isDrawing = React.useRef(false);
     const stageRef: any = React.useRef(null); //TODO поправить тип
     useEffect(() => {
         const canvas = document.getElementsByClassName('Canvas')[0];
         setStageSize([canvas.clientWidth, canvas.clientHeight]);
-
-        // fetch(`${serverURL}${props.currentGameId}`)
-        //     .then(res => res.json())
-        //     .then(game => {
-        //         uri = game.img
-        //     })
     }, []);
 
     const handleMouseDown = (e: any) => { //TODO поправить тип
@@ -70,7 +62,6 @@ const Canvas = (props: canvasProps) => {
         }
         isDrawing = false;
 
-        // setUri(stageRef.current.toDataURL());
         let uri = stageRef.current.toDataURL();
         //downloadURI(uri, 'stage.png');
         console.log(uri);

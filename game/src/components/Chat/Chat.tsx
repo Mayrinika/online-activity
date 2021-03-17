@@ -30,7 +30,6 @@ class Chat extends Component<chatProps, chatState> {
         fetch(getRoutes(this.props.currentGameId).chatMessages)
             .then(res => res.json())
             .then(chatMessages => {
-                console.log(chatMessages);
                 this.setState({
                     chatMessages
                 })
