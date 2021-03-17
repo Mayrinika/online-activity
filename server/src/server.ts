@@ -28,13 +28,24 @@ app.get('/:gameId', (req, res) => {
 })
 
 app.post('/:gameId', (req, res) => {
-    games.push({id: req.params.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages:[]});
+    games.push({id: req.params.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages: []});
     res.status(200).send(games);
 })
 
 app.post('/:gameId/addPlayer', (req, res) => {
     let game = games.filter(game => game.id === req.params.gameId)[0];
     game.players.push(req.body.player);
+    res.status(200).send(games);
+})
+
+app.get('/:gameId/chatMessages', (req, res) => {
+    const game = games.find(game => game.id === req.params.gameId);
+    res.status(200).send(game.chatMessages);
+})
+
+app.post('/:gameId/chatMessages', (req, res) => {
+    const game = games.find(game => game.id === req.params.gameId);
+    game.chatMessages.push(req.body);
     res.status(200).send(games);
 })
 

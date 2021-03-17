@@ -27,13 +27,13 @@ class Chat extends Component<chatProps, chatState> {
         }
     }
 
-    componentDidMount() {
-        fetch(`${serverURL}${this.props.currentGameId}`)
+    componentDidMount() { //TODO нужно добиться просто /chatMessages
+        fetch(`${serverURL}${this.props.currentGameId}/chatMessages`)
             .then(res => res.json())
-            .then(game => {
-                console.log(game);
+            .then(chatMessages => {
+                console.log(chatMessages);
                 this.setState({
-                    chatMessages: game.chatMessages
+                    chatMessages
                 })
             })
     }
@@ -42,18 +42,17 @@ class Chat extends Component<chatProps, chatState> {
         evt.preventDefault();
         const {inputMessage, chatMessages} = this.state;
         const {currentPlayer, currentGameId} = this.props;
-        const updatedChatMessages = [...chatMessages, {name: currentPlayer, text: inputMessage}];
 
-        fetch(`${serverURL}${currentGameId}`, {
+        fetch(`${serverURL}${currentGameId}/chatMessages`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({id: currentGameId, chatMessages: updatedChatMessages})
+            body: JSON.stringify({name: currentPlayer, text: inputMessage})
         })
             .then(res => {
                 if (res.ok)
                     this.setState({
                         inputMessage: '',
-                        chatMessages: updatedChatMessages
+                        chatMessages: [...chatMessages, {name: currentPlayer, text: inputMessage}]
                     })
             })
     }
