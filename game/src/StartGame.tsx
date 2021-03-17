@@ -27,7 +27,6 @@ class StartGame extends Component<startGameProps, startGameState> {
     getCurrentGame = async () => {
         const res = await fetch(`${serverURL}${this.props.currentGameId}`);
         const data = await res.text();
-        console.log(data);
         const game = JSON.parse(data);
         this.setState({ players: game.players});
     }
