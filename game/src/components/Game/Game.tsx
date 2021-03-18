@@ -44,8 +44,16 @@ class Game extends Component<gameProps, gameState> {
         const res = await fetch(getRoutes(this.props.currentGameId).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
-        console.log(game, game.img);
         this.setState({ imgURL: game.img});
+    }
+    addWordToGuess = async (gameId: string, img: string) => {
+        await fetch(getRoutes(gameId).addWord, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({})
+        });
     }
     render() {
         const wordToDisplay = (this.props.currentPlayer === this.state.painter) ? this.state.wordToGuess : this.state.wordToGuess.replace(/[А-Яа-я]/g,'?'); //либо убрать регулярку, либо не показывать вопросительные знаки вместо слова. В общем, решить, что будут видеть "нехудожники"

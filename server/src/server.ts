@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from "cors";
+import {readFileSync} from 'file-system';
 
 const app = express();
 const port = 9000;
@@ -50,11 +51,19 @@ app.post('/:gameId/chatMessages', (req, res) => {
 })
 
 app.post('/:gameId/addImg', (req, res) => {
-    console.log(req.body.img);
     const currentGame = games.find(game => game.id === req.params.gameId);
     currentGame.img = req.body.img;
     res.status(200).send(games);
 })
+
+app.post('/:gameId/addWord', (req, res) => {
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    if (currentGame.wordToGuess === '') {
+        const words = readFileSync("./src/words.txt",'utf8').split('\r\n');
+        currentGame.wordToGuess = getRandomWord(words);
+    }
+    res.status(200).send(games);
+});
 
 app.listen(port, (err) => {
     if (err) {
@@ -62,3 +71,9 @@ app.listen(port, (err) => {
     }
     console.log(`Example app listening at http://localhost:${port}`);
 })
+
+
+function getRandomWord(words): string {
+    let randomIdx = Math.floor(Math.random()*words.length);
+    return words[randomIdx];
+}
