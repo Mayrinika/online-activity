@@ -59,7 +59,11 @@ class Game extends Component<gameProps, gameState> {
                     <Timer time={TIME} timeIsOver={this.timeIsOver}/>
                 </header>
                 <main>
-                    {isPainter ? <Canvas currentGameId={this.props.currentGameId}/> : <img src={this.state.imgURL} alt='img from server'/>}
+                    {isPainter ?
+                        <Canvas currentGameId={this.props.currentGameId}/> :
+                        this.state.imgURL !== '' ?
+                            <img src={this.state.imgURL} alt='img from server' /> :
+                            <div className="Game emptyDiv"/>}
                     <aside>
                         <ListOfPlayers players={guessers} painter={this.state.painter}/>
                         <Chat currentPlayer={this.props.currentPlayer} currentGameId={this.props.currentGameId}/>

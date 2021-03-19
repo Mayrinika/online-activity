@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './Login.css';
 import crocoImg from '../../img/cocodrilo.png';
+import getRoutes from "../../utils/routes";
 
 type gameType = {
     id: string;
@@ -13,7 +14,8 @@ type loginProps = {
 }
 type loginState = {
     name: string,
-    code: string
+    code: string,
+    possibleGames: gameType[]
 }
 
 class Login extends Component<loginProps, loginState>{
@@ -22,7 +24,13 @@ class Login extends Component<loginProps, loginState>{
         this.state = {
             name: '',
             code: '',
+            possibleGames: []
         }
+    }
+    getAllGames = async () => {
+        const res = await fetch(getRoutes().root);
+        const data = await res.text();
+        this.setState({ possibleGames: JSON.parse(data)});
     }
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
@@ -30,13 +38,14 @@ class Login extends Component<loginProps, loginState>{
             [evt.target.name]: evt.target.value
         }))
     }
-    handleSubmit = (evt: React.ChangeEvent<HTMLFormElement>): void => {
+    handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
+        await this.getAllGames();
         if (this.state.code === '') {
             const newCode = makeRandomStr()
             alert(`code is: ${newCode}`) //TODO использовать библиотеку TOAST вместо alarm
             this.props.joinGame(this.state.name, newCode);
-        } else if (this.props.possibleGames.some(game => game.id === this.state.code)) {
+        } else if (this.state.possibleGames.some(game => game.id === this.state.code)) {
             this.props.joinGame(this.state.name, this.state.code);
         } else {
             alert('no such play'); //TODO использовать библиотеку TOAST вместо alarm
