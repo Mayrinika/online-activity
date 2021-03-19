@@ -1,18 +1,21 @@
 import React, {useState, useEffect} from 'react';
-import './Canvas.css';
 import {Layer, Stage, Line} from "react-konva";
+//components
 import ColorPalette from "../ColorPalette/ColorPalette";
+//utils
 import getRoutes from '../../utils/routes';
+//styles
+import './Canvas.css';
 
-type canvasProps = {
+interface canvasProps {
     currentGameId: string;
 }
 
 let isDrawing = false; // TODO вообще-то это лучше сделать useRef, а не глобальной переменной. Но у меня не получилось создать два useRef в компоненте
 const Canvas = (props: canvasProps) => {
     const [tool, setTool] = useState('pen');
-    const [lines, setLines] = useState([{tool: 'pen', color: '#03161d', points: [0,0]}]);
-    const [currentLine, setCurrentLine] = useState({tool: 'pen', color: '#03161d', points: [0,0]});
+    const [lines, setLines] = useState([{tool: 'pen', color: '#03161d', points: [0, 0]}]);
+    const [currentLine, setCurrentLine] = useState({tool: 'pen', color: '#03161d', points: [0, 0]});
     const [color, setColor] = useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = useState([550, 750]);
 
@@ -26,7 +29,7 @@ const Canvas = (props: canvasProps) => {
     const handleMouseDown = (e: any) => { //TODO поправить тип
         isDrawing = true;
         const pos = e.target.getStage().getPointerPosition();
-        setCurrentLine({ tool, points: [pos.x, pos.y], color });
+        setCurrentLine({tool, points: [pos.x, pos.y], color});
     };
 
     const handleMouseMove = (e: any) => { //TODO поправить тип
@@ -79,7 +82,9 @@ const Canvas = (props: canvasProps) => {
     //     document.body.removeChild(link);
     // }
 
-    const changeColor = (color: string) => {setColor(color)};
+    const changeColor = (color: string) => {
+        setColor(color)
+    };
 
     const undoLastDrawing = (e: any) => { //TODO поправить тип
         if (e.keyCode === 90 && e.ctrlKey) {
@@ -90,7 +95,7 @@ const Canvas = (props: canvasProps) => {
     }
 
     return (
-        <div className={"Canvas "+tool} tabIndex={0} onKeyDown={undoLastDrawing}>
+        <div className={"Canvas " + tool} tabIndex={0} onKeyDown={undoLastDrawing}>
             <div className="Canvas-ControlPanel">
                 <ColorPalette currentColor={color} onChangeColor={changeColor}/>
                 <select
@@ -121,7 +126,7 @@ const Canvas = (props: canvasProps) => {
                         stroke={color}
                     />
                     }
-                    {lines.map((line: {tool: string, points: number[], color: string}, i: number) => (
+                    {lines.map((line: { tool: string, points: number[], color: string }, i: number) => (
                         <Line
                             key={i}
                             points={line.points}
@@ -141,7 +146,6 @@ const Canvas = (props: canvasProps) => {
         </div>
     );
 };
-
 
 
 export default Canvas;

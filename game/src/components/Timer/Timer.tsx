@@ -1,7 +1,8 @@
 import React from 'react';
+//styles
 import './Timer.css';
 
-type TimerProps = {
+interface TimerProps {
     time: number;
     timeIsOver: () => void;
 }

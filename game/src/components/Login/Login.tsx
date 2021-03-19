@@ -1,24 +1,29 @@
 import React, {Component} from 'react';
-import './Login.css';
+import { v4 as uuidv4 } from 'uuid';
 import crocoImg from '../../img/cocodrilo.png';
+//components
+//utils
 import getRoutes from "../../utils/routes";
+//styles
+import './Login.css';
 
-type gameType = {
+
+interface gameType {
     id: string;
     players: string []
 }
 
-type loginProps = {
+interface loginProps {
     possibleGames: gameType[];
     joinGame: (player: string, gameId: string) => void;
 }
-type loginState = {
+interface loginState {
     name: string,
     code: string,
     possibleGames: gameType[]
 }
 
-class Login extends Component<loginProps, loginState>{
+class Login extends Component<loginProps, loginState> {
     constructor(props: loginProps) {
         super(props);
         this.state = {
@@ -27,30 +32,35 @@ class Login extends Component<loginProps, loginState>{
             possibleGames: []
         }
     }
+
     getAllGames = async () => {
         const res = await fetch(getRoutes().root);
         const data = await res.text();
-        this.setState({ possibleGames: JSON.parse(data)});
+        this.setState({possibleGames: JSON.parse(data)});
     }
+
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
             ...state,
             [evt.target.name]: evt.target.value
         }))
     }
+
     handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>) => {
+        const {name, code, possibleGames} = this.state;
         evt.preventDefault();
         await this.getAllGames();
-        if (this.state.code === '') {
-            const newCode = makeRandomStr()
+        if (code === '') {
+            const newCode = uuidv4();
             alert(`code is: ${newCode}`) //TODO использовать библиотеку TOAST вместо alarm
-            this.props.joinGame(this.state.name, newCode);
-        } else if (this.state.possibleGames.some(game => game.id === this.state.code)) {
-            this.props.joinGame(this.state.name, this.state.code);
+            this.props.joinGame(name, newCode);
+        } else if (possibleGames.some(game => game.id === code)) {
+            this.props.joinGame(name, code);
         } else {
             alert('no such play'); //TODO использовать библиотеку TOAST вместо alarm
         }
     }
+
     render() {
         return (
             <div className="Login">
@@ -82,16 +92,6 @@ class Login extends Component<loginProps, loginState>{
             </div>
         );
     }
-}
-
-function makeRandomStr(): string {
-    let text = "";
-    let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"; //TODO либо переделать красиво, либо использовать библиотеку uuid
-
-    for (let i = 0; i < 10; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
 }
 
 export default Login;

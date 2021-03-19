@@ -1,18 +1,21 @@
 import React, {Component} from 'react';
-import './Chat.css';
+import {v4 as uuidv4} from 'uuid';
+//utils
 import getRoutes from '../../utils/routes';
+//styles
+import './Chat.css';
 
-type chatProps = {
+interface chatProps {
     currentPlayer: string;
     currentGameId: string;
 }
 
-type chatState = {
+interface chatState {
     inputMessage: string;
     chatMessages: messageType[];
 }
 
-type messageType = {
+interface messageType {
     name: string;
     text: string;
 }
@@ -64,7 +67,7 @@ class Chat extends Component<chatProps, chatState> {
             <div className="Chat">
                 <div className="Chat-messages">
                     {this.state.chatMessages.map((message: messageType) => (
-                        <p><span className="Chat-message-name">{message.name}: </span>{message.text}</p>
+                        <p key={uuidv4()}><span className="Chat-message-name">{message.name}: </span>{message.text}</p>
                     ))}
                 </div>
                 <form onSubmit={this.addMessage}>

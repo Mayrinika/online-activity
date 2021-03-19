@@ -59,7 +59,7 @@ app.post('/:gameId/addImg', (req, res) => {
 app.post('/:gameId/addWordAndPainter', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame.wordToGuess === '') {
-        const words = readFileSync("./src/utils/words.txt",'utf8').split('\r\n');
+        const words = readFileSync("./src/utils/words.txt", 'utf8').split('\r\n');
         const randomWord = getRandomWord(words)
         console.log(words, randomWord);
         currentGame.wordToGuess = randomWord;
@@ -80,11 +80,11 @@ app.listen(port, (err) => {
 })
 
 function getRandomWord(words): string {
-    let randomIdx = Math.floor(Math.random()*words.length);
+    const randomIdx = Math.floor(Math.random() * words.length);
     return words[randomIdx];
 }
 
 function getPainter(players): string {
-    let randomIdx = Math.floor(Math.random()*players.length);
+    const randomIdx = Math.floor(Math.random() * players.length);
     return players[randomIdx];
 }

@@ -1,32 +1,37 @@
 import React, {Component} from 'react';
-import './App.css';
+//components
 import Login from '../Login/Login';
 import StartGame from "../StartGame/StartGame";
+//utils
 import getRoutes from '../../utils/routes';
+//styles
+import './App.css';
 
-type gameType = {
+interface gameType {
     id: string;
     players: string[];
 }
 
-type appState = {
-  currentGameId: string;
-  currentPlayer: string;
-  possibleGames: gameType[];
-};
+interface appState {
+    currentGameId: string;
+    currentPlayer: string;
+    possibleGames: gameType[];
+}
 
-class App extends Component<{}, appState>{
+class App extends Component<{}, appState> {
     constructor(props: {}) {
         super(props);
         this.state = {
-          currentGameId: '',
-          currentPlayer: '',
-          possibleGames: []
+            currentGameId: '',
+            currentPlayer: '',
+            possibleGames: []
         }
     }
+
     async componentDidMount() {
         await this.getAllGames();
     }
+
     addPlayer = async (gameId: string, player: string) => {
         await fetch(getRoutes(gameId).addPlayer, {
             method: 'POST',
@@ -37,6 +42,7 @@ class App extends Component<{}, appState>{
         });
         await this.getAllGames();
     }
+
     addGame = async (gameId: string) => {
         await fetch(getRoutes(gameId).gameId, {
             method: 'POST',
@@ -47,11 +53,13 @@ class App extends Component<{}, appState>{
         });
         await this.getAllGames();
     }
+
     getAllGames = async () => {
         const res = await fetch(getRoutes().root);
         const data = await res.text();
-        this.setState({ possibleGames: JSON.parse(data)});
+        this.setState({possibleGames: JSON.parse(data)});
     }
+
     joinGame = async (player: string, gameId: string) => {
         if (this.state.possibleGames.some(game => game.id === gameId)) {
             await this.addPlayer(gameId, player);
@@ -64,11 +72,13 @@ class App extends Component<{}, appState>{
             currentGameId: gameId,
         });
     }
+
     render() {
         return (
             <div className="App">
-                {this.state.currentPlayer !== '' ? <StartGame currentGameId={this.state.currentGameId} currentPlayer={this.state.currentPlayer}/>
-                                                : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame}/>}
+                {this.state.currentPlayer !== '' ?
+                    <StartGame currentGameId={this.state.currentGameId} currentPlayer={this.state.currentPlayer}/>
+                    : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame}/>}
             </div>
         );
     }

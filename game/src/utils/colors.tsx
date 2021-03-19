@@ -4,6 +4,6 @@ const colors: string[] = [
     "#47802b",
     "#045658",
     "#03161d"
-    ];
+];
 
 export default colors;

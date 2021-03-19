@@ -1,12 +1,13 @@
 import React, {Component} from 'react';
+//styles
 import './ListOfPlayers.css'
 
-type listOfPlayersProps = {
+interface listOfPlayersProps {
     players: string[];
     painter: string;
 }
 
-class ListOfPlayers extends Component<listOfPlayersProps, {}>{
+class ListOfPlayers extends Component<listOfPlayersProps, {}> {
     render() {
         return (
             <div className="ListOfPlayers">
@@ -14,7 +15,7 @@ class ListOfPlayers extends Component<listOfPlayersProps, {}>{
                 <p>{this.props.painter}</p>
                 <h5>Игроки:</h5>
                 <div className="ListOfPlayers-list">
-                    {this.props.players.map((player: string)=>(
+                    {this.props.players.map((player: string) => (
                         <p>{player}</p>
                     ))}
                 </div>
