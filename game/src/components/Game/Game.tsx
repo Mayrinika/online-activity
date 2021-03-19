@@ -14,10 +14,10 @@ type gameState = {
     timeIsOver: boolean;
     gameIsOver: boolean;
     imgURL: string;
+    players: string[];
 }
 
 type gameProps = {
-    players: string[];
     currentPlayer: string;
     currentGameId: string;
 }
@@ -26,39 +26,31 @@ class Game extends Component<gameProps, gameState> {
     constructor(props: gameProps) {
         super(props);
         this.state = {
-            wordToGuess: getRandomWord(),
-            painter: getPainter(this),
+            wordToGuess: '',
+            painter: '',
             timeIsOver: false,
             gameIsOver: false,
-            imgURL: ''
+            imgURL: '',
+            players: []
         }
     }
     async componentDidMount() {
-        await this.getImage();
+        await this.getDataFromServer();
     }
 
     timeIsOver = () => {
         this.setState({ timeIsOver: true });
     }
-    getImage = async () => {
+    getDataFromServer = async () => {
         const res = await fetch(getRoutes(this.props.currentGameId).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
-        this.setState({ imgURL: game.img});
-    }
-    addWordToGuess = async (gameId: string, img: string) => {
-        await fetch(getRoutes(gameId).addWord, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({})
-        });
+        this.setState({ imgURL: game.img, wordToGuess: game.wordToGuess, painter: game.painter, players: game.players});
     }
     render() {
-        const wordToDisplay = (this.props.currentPlayer === this.state.painter) ? this.state.wordToGuess : this.state.wordToGuess.replace(/[А-Яа-я]/g,'?'); //либо убрать регулярку, либо не показывать вопросительные знаки вместо слова. В общем, решить, что будут видеть "нехудожники"
-        const guessers = [...this.props.players];
-        guessers.splice(this.props.players.indexOf(this.state.painter), 1);
+        const wordToDisplay = (this.props.currentPlayer === this.state.painter) ? this.state.wordToGuess : this.state.wordToGuess.replace(/[А-Яа-я]/g,'?'); //TODO либо убрать регулярку, либо не показывать вопросительные знаки вместо слова. В общем, решить, что будут видеть "нехудожники"
+        const guessers = [...this.state.players];
+        guessers.splice(this.state.players.indexOf(this.state.painter), 1);
         const isPainter = this.props.currentPlayer === this.state.painter
         return (
             <div className="Game">
@@ -76,16 +68,6 @@ class Game extends Component<gameProps, gameState> {
             </div>
         );
     }
-}
-
-function getRandomWord(): string {
-    let randomIdx = Math.floor(Math.random()*words.length);
-    return words[randomIdx];
-}
-
-function getPainter(game: Game): string {
-    let randomIdx = Math.floor(Math.random()*game.props.players.length);
-    return game.props.players[randomIdx];
 }
 
 export default Game;

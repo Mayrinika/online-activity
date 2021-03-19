@@ -56,11 +56,18 @@ app.post('/:gameId/addImg', (req, res) => {
     res.status(200).send(games);
 })
 
-app.post('/:gameId/addWord', (req, res) => {
+app.post('/:gameId/addWordAndPainter', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame.wordToGuess === '') {
-        const words = readFileSync("./src/words.txt",'utf8').split('\r\n');
-        currentGame.wordToGuess = getRandomWord(words);
+        const words = readFileSync("./src/utils/words.txt",'utf8').split('\r\n');
+        const randomWord = getRandomWord(words)
+        console.log(words, randomWord);
+        currentGame.wordToGuess = randomWord;
+    }
+    if (currentGame.painter === '') {
+        const painter = getPainter(currentGame.players);
+        console.log(painter);
+        currentGame.painter = painter;
     }
     res.status(200).send(games);
 });
@@ -72,8 +79,12 @@ app.listen(port, (err) => {
     console.log(`Example app listening at http://localhost:${port}`);
 })
 
-
 function getRandomWord(words): string {
     let randomIdx = Math.floor(Math.random()*words.length);
     return words[randomIdx];
+}
+
+function getPainter(players): string {
+    let randomIdx = Math.floor(Math.random()*players.length);
+    return players[randomIdx];
 }

@@ -30,12 +30,21 @@ class StartGame extends Component<startGameProps, startGameState> {
         const game = JSON.parse(data);
         this.setState({ players: game.players});
     }
-    startGame = () => {
+    startGame = async () => {
         this.setState({areYouReady: true});
+        await this.addWordAndPainter(this.props.currentGameId)
+    }
+    addWordAndPainter = async (gameId: string) => {
+        await fetch(getRoutes(gameId).addWordAndPainter, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({})
+        });
     }
     render() {
         const gameComponent = <Game
-            players={this.state.players}
             currentPlayer={this.props.currentPlayer}
             currentGameId = {this.props.currentGameId}
         />
