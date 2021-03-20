@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {v4 as uuidv4} from 'uuid';
 //styles
 import './ListOfPlayers.css'
 
@@ -16,7 +17,7 @@ class ListOfPlayers extends Component<listOfPlayersProps, {}> {
                 <h5>Игроки:</h5>
                 <div className="ListOfPlayers-list">
                     {this.props.players.map((player: string) => (
-                        <p>{player}</p>
+                        <p key={uuidv4()}>{player}</p>
                     ))}
                 </div>
             </div>

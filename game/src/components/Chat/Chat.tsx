@@ -8,6 +8,7 @@ import './Chat.css';
 interface chatProps {
     currentPlayer: string;
     currentGameId: string;
+    isPainter: boolean;
 }
 
 interface chatState {
@@ -70,6 +71,7 @@ class Chat extends Component<chatProps, chatState> {
                         <p key={uuidv4()}><span className="Chat-message-name">{message.name}: </span>{message.text}</p>
                     ))}
                 </div>
+                {this.props.isPainter &&
                 <form onSubmit={this.addMessage}>
                     <label htmlFor="message">ваш ответ: </label>
                     <input
@@ -81,7 +83,7 @@ class Chat extends Component<chatProps, chatState> {
                         onChange={this.enterMessage}
                     />
                     <input type="submit"/>
-                </form>
+                </form>}
             </div>
         );
     }

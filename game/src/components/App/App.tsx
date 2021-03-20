@@ -78,7 +78,7 @@ class App extends Component<{}, appState> {
             <div className="App">
                 {this.state.currentPlayer !== '' ?
                     <StartGame currentGameId={this.state.currentGameId} currentPlayer={this.state.currentPlayer}/>
-                    : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame}/>}
+                    : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame} getAllGames={this.getAllGames}/>}
             </div>
         );
     }

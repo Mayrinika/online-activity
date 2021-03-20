@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import crocoImg from '../../img/cocodrilo.png';
 //components
 //utils
@@ -10,17 +10,18 @@ import './Login.css';
 
 interface gameType {
     id: string;
-    players: string []
+    players: string [];
 }
 
 interface loginProps {
     possibleGames: gameType[];
     joinGame: (player: string, gameId: string) => void;
+    getAllGames: () => void;
 }
+
 interface loginState {
-    name: string,
-    code: string,
-    possibleGames: gameType[]
+    name: string;
+    code: string;
 }
 
 class Login extends Component<loginProps, loginState> {
@@ -29,14 +30,7 @@ class Login extends Component<loginProps, loginState> {
         this.state = {
             name: '',
             code: '',
-            possibleGames: []
         }
-    }
-
-    getAllGames = async () => {
-        const res = await fetch(getRoutes().root);
-        const data = await res.text();
-        this.setState({possibleGames: JSON.parse(data)});
     }
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
@@ -47,15 +41,21 @@ class Login extends Component<loginProps, loginState> {
     }
 
     handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>) => {
-        const {name, code, possibleGames} = this.state;
+        const {name, code} = this.state;
+        const {possibleGames, getAllGames} = this.props;
         evt.preventDefault();
-        await this.getAllGames();
+        await getAllGames();
         if (code === '') {
             const newCode = uuidv4();
-            alert(`code is: ${newCode}`) //TODO использовать библиотеку TOAST вместо alarm
+            alert(`code is: ${newCode}`); //TODO использовать библиотеку TOAST вместо alarm
             this.props.joinGame(name, newCode);
         } else if (possibleGames.some(game => game.id === code)) {
-            this.props.joinGame(name, code);
+            const currentGameId = possibleGames.find(game => game.id === code);
+            if (currentGameId?.players.includes(name)) {
+                alert(`name ${name} already exist`); //TODO использовать библиотеку TOAST вместо alarm
+            } else {
+                this.props.joinGame(name, code);
+            }
         } else {
             alert('no such play'); //TODO использовать библиотеку TOAST вместо alarm
         }

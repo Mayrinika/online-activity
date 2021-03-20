@@ -78,7 +78,7 @@ class Game extends Component<gameProps, gameState> {
                             : <div className="Game emptyDiv"/>}
                     <aside>
                         <ListOfPlayers players={guessers} painter={painter}/>
-                        <Chat currentPlayer={currentPlayer} currentGameId={currentGameId}/>
+                        <Chat currentPlayer={currentPlayer} currentGameId={currentGameId} isPainter={isPainter}/>
                     </aside>
                 </main>
             </div>
