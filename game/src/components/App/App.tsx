@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Switch, Route} from 'react-router-dom';
 //components
 import Login from '../Login/Login';
 import StartGame from "../StartGame/StartGame";
@@ -74,11 +75,18 @@ class App extends Component<{}, appState> {
     }
 
     render() {
+        const {currentGameId, currentPlayer, possibleGames} = this.state;
         return (
             <div className="App">
-                {this.state.currentPlayer !== '' ?
-                    <StartGame currentGameId={this.state.currentGameId} currentPlayer={this.state.currentPlayer}/>
-                    : <Login possibleGames={this.state.possibleGames} joinGame={this.joinGame} getAllGames={this.getAllGames}/>}
+                <Switch>
+                    <Route path='/game/:gameId'>
+                        <StartGame currentGameId={currentGameId} currentPlayer={currentPlayer}/>
+                    </Route>
+                    <Route exact path='/' render={(props) => (
+                        <Login {...props} possibleGames={possibleGames} joinGame={this.joinGame}
+                               getAllGames={this.getAllGames}/>
+                    )}/>
+                </Switch>
             </div>
         );
     }

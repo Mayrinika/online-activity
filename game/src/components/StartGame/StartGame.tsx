@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {Route} from 'react-router-dom';
 //components
 import Game from "../Game/Game";
 //utils
@@ -26,6 +27,11 @@ class StartGame extends Component<startGameProps, startGameState> {
     }
 
     async componentDidMount() {
+        const name = localStorage.getItem('name');
+        const id = localStorage.getItem('id');
+        if (typeof name === "string" && typeof id === 'string') {
+            //TODO делать запрос на сервер с данными из local storage, чтобы подключиться к нужной игре
+        }
         await this.getCurrentGame();
     }
 
