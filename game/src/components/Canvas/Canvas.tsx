@@ -8,14 +8,14 @@ import getRoutes from '../../utils/routes';
 import './Canvas.css';
 
 interface canvasProps {
-    currentGameId: string;
+    currentGameId: string | null;
 }
 
 let isDrawing = false; // TODO вообще-то это лучше сделать useRef, а не глобальной переменной. Но у меня не получилось создать два useRef в компоненте
 const Canvas = (props: canvasProps) => {
     const [tool, setTool] = useState('pen');
-    const [lines, setLines] = useState([{tool: 'pen', color: '#03161d', points: [0, 0]}]);
-    const [currentLine, setCurrentLine] = useState({tool: 'pen', color: '#03161d', points: [0, 0]});
+    const [lines, setLines]: [any, any] = useState([]); //TODO поправить тип
+    const [currentLine, setCurrentLine]: [any, any] = useState(null); //TODO поправить тип
     const [color, setColor] = useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = useState([550, 750]);
 
@@ -44,7 +44,7 @@ const Canvas = (props: canvasProps) => {
         });
     };
 
-    const addImage = async (gameId: string, img: string) => {
+    const addImage = async (gameId: string | null, img: string) => {
         await fetch(getRoutes(gameId).addImg, {
             method: 'POST',
             headers: {
@@ -56,18 +56,17 @@ const Canvas = (props: canvasProps) => {
 
     const handleMouseUp = async (e: any) => { //TODO поправить тип
         const pos = e.target.getStage().getPointerPosition();
-        //setCurrentLine(null);
         if (isDrawing) {
             setLines([
                 ...lines,
                 {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
             ]);
         }
+        setCurrentLine(null);
         isDrawing = false;
 
         let uri = stageRef.current.toDataURL();
         //downloadURI(uri, 'stage.png');
-        console.log(uri);
 
         await addImage(props.currentGameId, uri);
     };

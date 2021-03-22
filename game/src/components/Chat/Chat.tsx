@@ -6,8 +6,8 @@ import getRoutes from '../../utils/routes';
 import './Chat.css';
 
 interface chatProps {
-    currentPlayer: string;
-    currentGameId: string;
+    currentPlayer: string | null;
+    currentGameId: string | null;
     isPainter: boolean;
 }
 
@@ -17,7 +17,7 @@ interface chatState {
 }
 
 interface messageType {
-    name: string;
+    name: string | null;
     text: string;
 }
 
@@ -71,7 +71,7 @@ class Chat extends Component<chatProps, chatState> {
                         <p key={uuidv4()}><span className="Chat-message-name">{message.name}: </span>{message.text}</p>
                     ))}
                 </div>
-                {this.props.isPainter &&
+                {!this.props.isPainter &&
                 <form onSubmit={this.addMessage}>
                     <label htmlFor="message">ваш ответ: </label>
                     <input

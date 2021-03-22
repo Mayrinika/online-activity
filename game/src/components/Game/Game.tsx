@@ -22,8 +22,8 @@ interface gameState {
 }
 
 interface gameProps {
-    currentPlayer: string;
-    currentGameId: string;
+    currentPlayer: string | null;
+    currentGameId: string | null;
 }
 
 class Game extends Component<gameProps, gameState> {
@@ -60,7 +60,7 @@ class Game extends Component<gameProps, gameState> {
         const wordToDisplay = (currentPlayer === painter) ?
             wordToGuess
             : wordToGuess
-                .replace(/[А-Яа-я]/g, '?'); //TODO либо убрать регулярку, либо не показывать вопросительные знаки вместо слова. В общем, решить, что будут видеть "нехудожники"
+                .replace(/[А-Яа-я]/g, '?'); //TODO либо убрать регулярку, либо не показывать вопросительные знаки вместо слова. В общем, решить что будут видеть "нехудожники"
         const guessers = [...players];
         guessers.splice(players.indexOf(painter), 1);
         const isPainter = currentPlayer === painter;

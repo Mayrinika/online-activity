@@ -61,12 +61,10 @@ app.post('/:gameId/addWordAndPainter', (req, res) => {
     if (currentGame.wordToGuess === '') {
         const words = readFileSync("./src/utils/words.txt", 'utf8').split('\r\n');
         const randomWord = getRandomWord(words)
-        console.log(words, randomWord);
         currentGame.wordToGuess = randomWord;
     }
     if (currentGame.painter === '') {
         const painter = getPainter(currentGame.players);
-        console.log(painter);
         currentGame.painter = painter;
     }
     res.status(200).send(games);

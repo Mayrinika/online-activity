@@ -50,7 +50,6 @@ class App extends Component<{}, appState> {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            //body: JSON.stringify({})
         });
         await this.getAllGames();
     }
@@ -80,11 +79,11 @@ class App extends Component<{}, appState> {
             <div className="App">
                 <Switch>
                     <Route path='/game/:gameId'>
-                        <StartGame currentGameId={currentGameId} currentPlayer={currentPlayer}/>
+                        <StartGame />
                     </Route>
                     <Route exact path='/' render={(props) => (
-                        <Login {...props} possibleGames={possibleGames} joinGame={this.joinGame}
-                               getAllGames={this.getAllGames}/>
+                        <Login possibleGames={possibleGames} joinGame={this.joinGame}
+                               getAllGames={this.getAllGames} {...props} />
                     )}/>
                 </Switch>
             </div>

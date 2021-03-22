@@ -8,13 +8,14 @@ import getRoutes from '../../utils/routes';
 import './StartGame.css';
 
 interface startGameProps {
-    currentGameId: string;
-    currentPlayer: string;
+
 }
 
 interface startGameState {
     isAllReady: boolean;
     players: string[];
+    currentGameId: string | null;
+    currentPlayer: string | null;
 }
 
 class StartGame extends Component<startGameProps, startGameState> {
@@ -22,21 +23,20 @@ class StartGame extends Component<startGameProps, startGameState> {
         super(props);
         this.state = {
             isAllReady: false,
-            players: []
+            players: [],
+            currentPlayer: null,
+            currentGameId: null
         }
     }
 
     async componentDidMount() {
-        const name = localStorage.getItem('name');
-        const id = localStorage.getItem('id');
-        if (typeof name === "string" && typeof id === 'string') {
-            //TODO делать запрос на сервер с данными из local storage, чтобы подключиться к нужной игре
-        }
+        this.setState({currentGameId: localStorage.getItem('id')});
+        this.setState({currentPlayer: localStorage.getItem('name')});
         await this.getCurrentGame();
     }
 
     getCurrentGame = async () => {
-        const res = await fetch(getRoutes(this.props.currentGameId).gameId);
+        const res = await fetch(getRoutes(localStorage.getItem('id')).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
         this.setState({players: game.players});
@@ -44,10 +44,10 @@ class StartGame extends Component<startGameProps, startGameState> {
 
     startGame = async () => {
         this.setState({isAllReady: true});
-        await this.addWordAndPainter(this.props.currentGameId)
+        await this.addWordAndPainter(this.state.currentGameId)
     }
 
-    addWordAndPainter = async (gameId: string) => {
+    addWordAndPainter = async (gameId: string | null) => {
         await fetch(getRoutes(gameId).addWordAndPainter, {
             method: 'POST',
             headers: {
@@ -59,12 +59,12 @@ class StartGame extends Component<startGameProps, startGameState> {
 
     render() {
         const gameComponent = <Game
-            currentPlayer={this.props.currentPlayer}
-            currentGameId={this.props.currentGameId}
+            currentPlayer={this.state.currentPlayer}
+            currentGameId={this.state.currentGameId}
         />
         const startGame =
             <div className="StartGame">
-                <h3>Игроки: {this.state.players.join(', ')}</h3>
+                <h3>Игроки: {this.state.players && this.state.players.join(', ')}</h3>
                 <h3>Все игроки в сборе?</h3>
                 <button onClick={this.startGame}>Да! Начать игру!</button>
             </div>

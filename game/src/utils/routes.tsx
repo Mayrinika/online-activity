@@ -1,6 +1,6 @@
 const serverURL = 'http://localhost:9000/';
 
-export default function getRoutes(currentGameId?: string) {
+export default function getRoutes(currentGameId?: string | null) {
     return {
         root: `${serverURL}`,
         gameId: `${serverURL}${currentGameId}`,
