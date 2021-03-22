@@ -12,9 +12,14 @@ type gameType = {
     painter: string;
     img: string;
     chatMessages: string[];
+    time: number,
+    timerId: any //TODO поправить тип
 }
 
 const games: gameType[] = [];
+const timerIds = {
+
+}
 
 app.use(cors());
 app.use(express.json());
@@ -29,7 +34,7 @@ app.get('/:gameId', (req, res) => {
 })
 
 app.post('/:gameId', (req, res) => {
-    games.push({id: req.params.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages: []});
+    games.push({id: req.params.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages: [], time: 1*60, timerId: undefined});
     res.status(200).send(games);
 })
 
@@ -66,9 +71,18 @@ app.post('/:gameId/addWordAndPainter', (req, res) => {
     if (currentGame.painter === '') {
         const painter = getPainter(currentGame.players);
         currentGame.painter = painter;
+    } if (currentGame.time === 1*60) {
+        timerIds[currentGame.id] = setInterval(decreaseTime, 1000, currentGame);
     }
     res.status(200).send(games);
 });
+
+app.post('/:gameId/clearCountdown', (req, res) => {
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    console.log(timerIds[currentGame.id]);
+    clearTimeout(timerIds[currentGame.id]);
+    res.status(200).send(games);
+})
 
 app.listen(port, (err) => {
     if (err) {
@@ -85,4 +99,8 @@ function getRandomWord(words): string {
 function getPainter(players): string {
     const randomIdx = Math.floor(Math.random() * players.length);
     return players[randomIdx];
+}
+
+function decreaseTime(currentGame) {
+    currentGame.time -= 1
 }

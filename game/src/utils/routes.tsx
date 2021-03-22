@@ -8,5 +8,6 @@ export default function getRoutes(currentGameId?: string | null) {
         addPlayer: `${serverURL}${currentGameId}/addPlayer`,
         addImg: `${serverURL}${currentGameId}/addImg`,
         addWordAndPainter: `${serverURL}${currentGameId}/addWordAndPainter`,
+        clearCountdown: `${serverURL}${currentGameId}/clearCountdown`
     }
 }
