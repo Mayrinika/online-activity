@@ -28,7 +28,6 @@ function Timer(props: TimerProps) {
         getCurrentTime();
         if (seconds <= 0) {
             props.timeIsOver();
-            clearCountdown();
         }
     }, [seconds]);
 

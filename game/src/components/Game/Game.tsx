@@ -48,8 +48,9 @@ class Game extends Component<gameProps, gameState> {
         await this.getDataFromServer();
     }
 
-    timeIsOver = () => {
+    timeIsOver = async () => {
         this.setState({timeIsOver: true});
+        await this.clearCountdown();
     }
 
     wordIsGuessed = async() => {
@@ -112,7 +113,7 @@ class Game extends Component<gameProps, gameState> {
                         <Chat currentPlayer={currentPlayer} currentGameId={currentGameId} isPainter={isPainter} wordIsGuessed={this.wordIsGuessed} wordToGuess={this.state.wordToGuess}/>
                     </aside>
                 </main>
-                {gameIsOver && <GameOver timeIsOver={this.state.timeIsOver} wordToGuess={this.state.wordToGuess} />}
+                {gameIsOver && <GameOver timeIsOver={this.state.timeIsOver} wordToGuess={this.state.wordToGuess} wordIsGuessed={this.state.wordIsGuessed}/>}
             </div>
         );
     }

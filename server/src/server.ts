@@ -4,6 +4,7 @@ import {readFileSync} from 'file-system';
 
 const app = express();
 const port = 9000;
+const GAMETIME: number = 1*60 //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
 
 type gameType = {
     id: string;
@@ -12,8 +13,8 @@ type gameType = {
     painter: string;
     img: string;
     chatMessages: string[];
-    time: number,
-    winner: string
+    time: number;
+    winner: string;
 }
 
 const games: gameType[] = [];
@@ -34,7 +35,7 @@ app.get('/:gameId', (req, res) => {
 })
 
 app.post('/:gameId', (req, res) => {
-    games.push({id: req.params.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages: [], time: 1*60, winner: ''});
+    games.push({id: req.params.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages: [], time: GAMETIME, winner: ''});
     res.status(200).send(games);
 })
 
@@ -69,8 +70,8 @@ app.post('/:gameId/addWordAndPainter', (req, res) => {
     }
     if (currentGame.painter === '') {
         currentGame.painter = getPainter(currentGame.players);
-    } if (currentGame.time === 1*60) {
-        timerIds[currentGame.id] = setInterval(decreaseTime, 1000, currentGame);
+    } if (currentGame.time === GAMETIME) {
+        timerIds[currentGame.id] = setInterval(() => currentGame.time -= 1, 1000, currentGame);
     }
     res.status(200).send(games);
 });
@@ -102,8 +103,4 @@ function getRandomWord(words): string {
 function getPainter(players): string {
     const randomIdx = Math.floor(Math.random() * players.length);
     return players[randomIdx];
-}
-
-function decreaseTime(currentGame) {
-    currentGame.time -= 1
 }
