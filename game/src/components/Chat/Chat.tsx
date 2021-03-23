@@ -6,8 +6,6 @@ import getRoutes from '../../utils/routes';
 import './Chat.css';
 
 interface chatProps {
-    currentPlayer: string | null;
-    currentGameId: string | null;
     isPainter: boolean;
     wordIsGuessed: () => void;
     wordToGuess: string;
@@ -16,6 +14,8 @@ interface chatProps {
 interface chatState {
     inputMessage: string;
     chatMessages: messageType[];
+    currentGameId: string | null;
+    currentPlayer: string | null;
 }
 
 interface messageType {
@@ -28,12 +28,14 @@ class Chat extends Component<chatProps, chatState> {
         super(props);
         this.state = {
             inputMessage: '',
-            chatMessages: []
+            chatMessages: [],
+            currentGameId: null,
+            currentPlayer: null,
         }
     }
 
     componentDidMount() { //TODO нужно добиться просто /chatMessages
-        fetch(getRoutes(this.props.currentGameId).chatMessages)
+        fetch(getRoutes(this.state.currentGameId).chatMessages)
             .then(res => res.json())
             .then(chatMessages => {
                 this.setState({
@@ -45,11 +47,11 @@ class Chat extends Component<chatProps, chatState> {
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
 
-        const {inputMessage, chatMessages} = this.state;
-        const {currentPlayer, currentGameId} = this.props;
+        const {inputMessage, chatMessages, currentPlayer, currentGameId} = this.state;
+        const {wordToGuess, wordIsGuessed} = this.props;
 
-        if (this.props.wordToGuess === inputMessage) {
-            this.props.wordIsGuessed();
+        if (wordToGuess === inputMessage) {
+            wordIsGuessed();
         }
 
         fetch(getRoutes(currentGameId).chatMessages, {
@@ -71,14 +73,17 @@ class Chat extends Component<chatProps, chatState> {
     }
 
     render() {
+        const {chatMessages, inputMessage} = this.state;
+        const {isPainter} = this.props;
+
         return (
             <div className="Chat">
                 <div className="Chat-messages">
-                    {this.state.chatMessages.map((message: messageType) => (
+                    {chatMessages.map((message: messageType) => (
                         <p key={uuidv4()}><span className="Chat-message-name">{message.name}: </span>{message.text}</p>
                     ))}
                 </div>
-                {!this.props.isPainter &&
+                {!isPainter &&
                 <form onSubmit={this.addMessage}>
                     <label htmlFor="message">ваш ответ: </label>
                     <input
@@ -86,7 +91,7 @@ class Chat extends Component<chatProps, chatState> {
                         type="text"
                         name="message"
                         placeholder="ваш ответ"
-                        value={this.state.inputMessage}
+                        value={inputMessage}
                         onChange={this.enterMessage}
                     />
                     <input type="submit"/>

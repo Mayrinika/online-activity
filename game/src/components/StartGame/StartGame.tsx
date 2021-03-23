@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import { RouteComponentProps } from 'react-router-dom';
+import {RouteComponentProps} from 'react-router-dom';
 import {Route} from 'react-router-dom';
 //components
 import Game from "../Game/Game";
@@ -8,9 +8,7 @@ import getRoutes from '../../utils/routes';
 //styles
 import './StartGame.css';
 
-interface startGameProps extends RouteComponentProps{
-
-}
+interface startGameProps extends RouteComponentProps {}
 
 interface startGameState {
     isAllReady: boolean;
@@ -44,9 +42,9 @@ class StartGame extends Component<startGameProps, startGameState> {
     }
 
     startGame = async () => {
+        this.props.history.push(`/${localStorage.getItem('id')}/game`);
         this.setState({isAllReady: true});
         await this.addWordAndPainter(this.state.currentGameId);
-        this.props.history.push(`/${localStorage.getItem('id')}/game`);
     }
 
     addWordAndPainter = async (gameId: string | null) => {
@@ -60,10 +58,6 @@ class StartGame extends Component<startGameProps, startGameState> {
     }
 
     render() {
-        const gameComponent = <Game
-            currentPlayer={this.state.currentPlayer}
-            currentGameId={this.state.currentGameId}
-        />
         const startGame =
             <div className="StartGame">
                 <h3>Игроки: {this.state.players && this.state.players.join(', ')}</h3>
@@ -71,7 +65,7 @@ class StartGame extends Component<startGameProps, startGameState> {
                 <button onClick={this.startGame}>Да! Начать игру!</button>
             </div>
         return (
-            this.state.isAllReady ? gameComponent : startGame
+            this.state.isAllReady ? <Game/> : startGame
         );
     }
 }

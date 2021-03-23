@@ -22,12 +22,11 @@ interface gameState {
     imgURL: string;
     players: string[];
     winner: string
+    currentGameId: string | null;
+    currentPlayer: string | null;
 }
 
-interface gameProps {
-    currentPlayer: string | null;
-    currentGameId: string | null;
-}
+interface gameProps {}
 
 class Game extends Component<gameProps, gameState> {
     constructor(props: gameProps) {
@@ -40,11 +39,15 @@ class Game extends Component<gameProps, gameState> {
             wordIsGuessed: false,
             imgURL: '',
             players: [],
-            winner: ''
+            winner: '',
+            currentPlayer: null,
+            currentGameId: null
         }
     }
 
     async componentDidMount() {
+        this.setState({currentGameId: localStorage.getItem('id')});
+        this.setState({currentPlayer: localStorage.getItem('name')});
         await this.getDataFromServer();
     }
 
@@ -79,15 +82,14 @@ class Game extends Component<gameProps, gameState> {
     }
 
     getDataFromServer = async () => {
-        const res = await fetch(getRoutes(this.props.currentGameId).gameId);
+        const res = await fetch(getRoutes(this.state.currentGameId).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
         this.setState({imgURL: game.img, wordToGuess: game.wordToGuess, painter: game.painter, players: game.players});
     }
 
     render() {
-        const {painter, wordToGuess, players, imgURL} = this.state;
-        const {currentPlayer, currentGameId} = this.props;
+        const {painter, wordToGuess, players, imgURL, currentPlayer, currentGameId} = this.state;
         const wordToDisplay = (currentPlayer === painter) ?
             `Загаданное слово: ${wordToGuess}`
             : 'Отгадайте слово!';
@@ -109,8 +111,8 @@ class Game extends Component<gameProps, gameState> {
                             : <div className="Game emptyDiv"/>}
                     <aside>
                         <ListOfPlayers players={guessers} painter={painter}/>
-                        <Chat currentPlayer={currentPlayer} currentGameId={currentGameId} isPainter={isPainter}
-                              wordIsGuessed={this.wordIsGuessed} wordToGuess={this.state.wordToGuess}/>
+                        <Chat isPainter={isPainter} wordIsGuessed={this.wordIsGuessed}
+                              wordToGuess={this.state.wordToGuess}/>
                     </aside>
                 </main>
                 {gameIsOver && <GameOver timeIsOver={this.state.timeIsOver} wordToGuess={this.state.wordToGuess}
