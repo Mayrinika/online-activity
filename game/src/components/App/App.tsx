@@ -3,6 +3,7 @@ import {Switch, Route} from 'react-router-dom';
 //components
 import Login from '../Login/Login';
 import StartGame from "../StartGame/StartGame";
+import Game from "../Game/Game";
 //utils
 import getRoutes from '../../utils/routes';
 //styles
@@ -78,12 +79,12 @@ class App extends Component<{}, appState> {
         return (
             <div className="App">
                 <Switch>
-                    <Route path='/game/:gameId'>
-                        <StartGame />
-                    </Route>
+                    <Route path='/:gameId/game' component={Game}/>
+                    <Route path='/:gameId' render={(props)=>(
+                        <StartGame {...props}/>
+                    )}/>
                     <Route exact path='/' render={(props) => (
-                        <Login joinGame={this.joinGame}
-                               {...props} />
+                        <Login {...props} joinGame={this.joinGame}/>
                     )}/>
                 </Switch>
             </div>

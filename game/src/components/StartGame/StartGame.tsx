@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import { RouteComponentProps } from 'react-router-dom';
 import {Route} from 'react-router-dom';
 //components
 import Game from "../Game/Game";
@@ -7,7 +8,7 @@ import getRoutes from '../../utils/routes';
 //styles
 import './StartGame.css';
 
-interface startGameProps {
+interface startGameProps extends RouteComponentProps{
 
 }
 
@@ -44,7 +45,8 @@ class StartGame extends Component<startGameProps, startGameState> {
 
     startGame = async () => {
         this.setState({isAllReady: true});
-        await this.addWordAndPainter(this.state.currentGameId)
+        await this.addWordAndPainter(this.state.currentGameId);
+        this.props.history.push(`/${localStorage.getItem('id')}/game`);
     }
 
     addWordAndPainter = async (gameId: string | null) => {

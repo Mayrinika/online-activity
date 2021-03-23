@@ -71,7 +71,7 @@ class Login extends Component<loginProps, loginState> {
             localStorage.setItem('name', name);
             localStorage.setItem('id', newCode);
             await joinGame(name, newCode);
-            history.push(`/game/${newCode}`);
+            history.push(`/${newCode}`);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
             if (currentGameId?.players.includes(name)) {
@@ -80,7 +80,7 @@ class Login extends Component<loginProps, loginState> {
                 localStorage.setItem('name', name);
                 localStorage.setItem('id', code);
                 await joinGame(name, code);
-                history.push(`/game/${code}`);
+                history.push(`/${code}`);
             }
         } else {
             alert('no such play'); //TODO использовать библиотеку TOAST вместо alarm
