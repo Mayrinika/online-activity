@@ -9,20 +9,26 @@ import getRoutes from "../../utils/routes";
 import './Login.css';
 
 
-interface gameType {
-    id: string;
-    players: string [];
-}
-
 interface loginProps extends RouteComponentProps {
-    possibleGames: gameType[];
+    // possibleGames: gameType[];
     joinGame: (player: string, gameId: string) => void;
-    getAllGames: () => void;
+    // getAllGames: () => void;
+}
+type gameType = {
+    id: string;
+    players: string[];
+    wordToGuess: string;
+    painter: string;
+    img: string;
+    chatMessages: string[];
+    time: number;
+    winner: string;
 }
 
 interface loginState {
     name: string;
     code: string;
+    possibleGames: gameType[]
 }
 
 class Login extends Component<loginProps, loginState> {
@@ -31,7 +37,19 @@ class Login extends Component<loginProps, loginState> {
         this.state = {
             name: '',
             code: '',
+            possibleGames: []
         }
+    }
+
+    // async componentDidMount() {
+    //     await this.getAllGames();
+    // }
+
+    getAllGames = async () => {
+        const res = await fetch(getRoutes().root);
+        const data = await res.text();
+        console.log(data)
+        this.setState({possibleGames: JSON.parse(data)});
     }
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
@@ -42,10 +60,11 @@ class Login extends Component<loginProps, loginState> {
     }
 
     handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>) => {
+
         const {name, code} = this.state;
-        const {possibleGames, getAllGames, joinGame, history} = this.props;
+        const {joinGame, history} = this.props;
         evt.preventDefault();
-        await getAllGames();
+        await this.getAllGames();
         if (code === '') {
             const newCode = uuidv4();
             alert(`code is: ${newCode}`); //TODO использовать библиотеку TOAST вместо alarm
@@ -53,8 +72,8 @@ class Login extends Component<loginProps, loginState> {
             localStorage.setItem('id', newCode);
             await joinGame(name, newCode);
             history.push(`/game/${newCode}`);
-        } else if (possibleGames.some(game => game.id === code)) {
-            const currentGameId = possibleGames.find(game => game.id === code);
+        } else if (this.state.possibleGames.some(game => game.id === code)) {
+            const currentGameId = this.state.possibleGames.find(game => game.id === code);
             if (currentGameId?.players.includes(name)) {
                 alert(`name ${name} already exist`); //TODO использовать библиотеку TOAST вместо alarm
             } else {

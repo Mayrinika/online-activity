@@ -82,8 +82,8 @@ class App extends Component<{}, appState> {
                         <StartGame />
                     </Route>
                     <Route exact path='/' render={(props) => (
-                        <Login possibleGames={possibleGames} joinGame={this.joinGame}
-                               getAllGames={this.getAllGames} {...props} />
+                        <Login joinGame={this.joinGame}
+                               {...props} />
                     )}/>
                 </Switch>
             </div>
