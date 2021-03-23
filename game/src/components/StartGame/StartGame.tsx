@@ -8,10 +8,10 @@ import getRoutes from '../../utils/routes';
 //styles
 import './StartGame.css';
 
-interface startGameProps extends RouteComponentProps {}
+interface startGameProps extends RouteComponentProps {
+}
 
 interface startGameState {
-    isAllReady: boolean;
     players: string[];
     currentGameId: string | null;
     currentPlayer: string | null;
@@ -21,7 +21,6 @@ class StartGame extends Component<startGameProps, startGameState> {
     constructor(props: startGameProps) {
         super(props);
         this.state = {
-            isAllReady: false,
             players: [],
             currentPlayer: null,
             currentGameId: null
@@ -43,7 +42,6 @@ class StartGame extends Component<startGameProps, startGameState> {
 
     startGame = async () => {
         this.props.history.push(`/${localStorage.getItem('id')}/game`);
-        this.setState({isAllReady: true});
         await this.addWordAndPainter(this.state.currentGameId);
     }
 
@@ -58,14 +56,13 @@ class StartGame extends Component<startGameProps, startGameState> {
     }
 
     render() {
-        const startGame =
+        const {players} = this.state;
+        return (
             <div className="StartGame">
-                <h3>Игроки: {this.state.players && this.state.players.join(', ')}</h3>
+                <h3>Игроки: {players && players.join(', ')}</h3>
                 <h3>Все игроки в сборе?</h3>
                 <button onClick={this.startGame}>Да! Начать игру!</button>
             </div>
-        return (
-            this.state.isAllReady ? <Game/> : startGame
         );
     }
 }

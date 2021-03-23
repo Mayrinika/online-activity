@@ -35,7 +35,11 @@ class Chat extends Component<chatProps, chatState> {
     }
 
     componentDidMount() { //TODO нужно добиться просто /chatMessages
-        fetch(getRoutes(this.state.currentGameId).chatMessages)
+        this.setState({
+            currentGameId: localStorage.getItem('id'),
+            currentPlayer: localStorage.getItem('name')
+        });
+        fetch(getRoutes(localStorage.getItem('id')).chatMessages)
             .then(res => res.json())
             .then(chatMessages => {
                 this.setState({
