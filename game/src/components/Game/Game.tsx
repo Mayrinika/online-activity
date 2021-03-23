@@ -53,7 +53,7 @@ class Game extends Component<gameProps, gameState> {
         await this.clearCountdown();
     }
 
-    wordIsGuessed = async() => {
+    wordIsGuessed = async () => {
         this.setState({wordIsGuessed: true});
         await this.clearCountdown();
         await this.setWinner();
@@ -89,9 +89,8 @@ class Game extends Component<gameProps, gameState> {
         const {painter, wordToGuess, players, imgURL} = this.state;
         const {currentPlayer, currentGameId} = this.props;
         const wordToDisplay = (currentPlayer === painter) ?
-            wordToGuess
-            : wordToGuess
-                .replace(/[А-Яа-я]/g, '?'); //TODO либо убрать регулярку, либо не показывать вопросительные знаки вместо слова. В общем, решить что будут видеть "нехудожники"
+            `Загаданное слово: ${wordToGuess}`
+            : 'Отгадайте слово!';
         const guessers = [...players];
         guessers.splice(players.indexOf(painter), 1);
         const isPainter = currentPlayer === painter;
@@ -99,7 +98,7 @@ class Game extends Component<gameProps, gameState> {
         return (
             <div className="Game">
                 <header>
-                    <div className="Game-Word">Загаданное слово: {wordToDisplay}</div>
+                    <div className="Game-Word">{wordToDisplay}</div>
                     <Timer time={TIME} timeIsOver={this.timeIsOver}/>
                 </header>
                 <main>
@@ -110,10 +109,12 @@ class Game extends Component<gameProps, gameState> {
                             : <div className="Game emptyDiv"/>}
                     <aside>
                         <ListOfPlayers players={guessers} painter={painter}/>
-                        <Chat currentPlayer={currentPlayer} currentGameId={currentGameId} isPainter={isPainter} wordIsGuessed={this.wordIsGuessed} wordToGuess={this.state.wordToGuess}/>
+                        <Chat currentPlayer={currentPlayer} currentGameId={currentGameId} isPainter={isPainter}
+                              wordIsGuessed={this.wordIsGuessed} wordToGuess={this.state.wordToGuess}/>
                     </aside>
                 </main>
-                {gameIsOver && <GameOver timeIsOver={this.state.timeIsOver} wordToGuess={this.state.wordToGuess} wordIsGuessed={this.state.wordIsGuessed}/>}
+                {gameIsOver && <GameOver timeIsOver={this.state.timeIsOver} wordToGuess={this.state.wordToGuess}
+                                         wordIsGuessed={this.state.wordIsGuessed}/>}
             </div>
         );
     }
