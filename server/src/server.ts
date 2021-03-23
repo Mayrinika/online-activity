@@ -13,7 +13,7 @@ type gameType = {
     img: string;
     chatMessages: string[];
     time: number,
-    timerId: any //TODO поправить тип
+    winner: string
 }
 
 const games: gameType[] = [];
@@ -34,7 +34,7 @@ app.get('/:gameId', (req, res) => {
 })
 
 app.post('/:gameId', (req, res) => {
-    games.push({id: req.params.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages: [], time: 1*60, timerId: undefined});
+    games.push({id: req.params.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages: [], time: 1*60, winner: ''});
     res.status(200).send(games);
 })
 
@@ -65,12 +65,10 @@ app.post('/:gameId/addWordAndPainter', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame.wordToGuess === '') {
         const words = readFileSync("./src/utils/words.txt", 'utf8').split('\r\n');
-        const randomWord = getRandomWord(words)
-        currentGame.wordToGuess = randomWord;
+        currentGame.wordToGuess = getRandomWord(words);
     }
     if (currentGame.painter === '') {
-        const painter = getPainter(currentGame.players);
-        currentGame.painter = painter;
+        currentGame.painter = getPainter(currentGame.players);
     } if (currentGame.time === 1*60) {
         timerIds[currentGame.id] = setInterval(decreaseTime, 1000, currentGame);
     }
@@ -79,8 +77,13 @@ app.post('/:gameId/addWordAndPainter', (req, res) => {
 
 app.post('/:gameId/clearCountdown', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    console.log(timerIds[currentGame.id]);
     clearTimeout(timerIds[currentGame.id]);
+    res.status(200).send(games);
+})
+
+app.post('/:gameId/setWinner', (req, res) => {
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    currentGame.winner = req.body.winner
     res.status(200).send(games);
 })
 

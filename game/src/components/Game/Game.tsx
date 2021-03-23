@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import words from "../../utils/words";
+
 //components
 import Timer from '../Timer/Timer';
 import Canvas from "../Canvas/Canvas";
 import Chat from "../Chat/Chat";
 import ListOfPlayers from "../ListOfPlayers/ListOfPlayers";
+import GameOver from "../GameOver/GameOver"
 //utils
 import getRoutes from '../../utils/routes';
 //styles
@@ -17,8 +18,10 @@ interface gameState {
     painter: string;
     timeIsOver: boolean;
     gameIsOver: boolean;
+    wordIsGuessed: boolean;
     imgURL: string;
     players: string[];
+    winner: string
 }
 
 interface gameProps {
@@ -34,8 +37,10 @@ class Game extends Component<gameProps, gameState> {
             painter: '',
             timeIsOver: false,
             gameIsOver: false,
+            wordIsGuessed: false,
             imgURL: '',
-            players: []
+            players: [],
+            winner: ''
         }
     }
 
@@ -45,6 +50,31 @@ class Game extends Component<gameProps, gameState> {
 
     timeIsOver = () => {
         this.setState({timeIsOver: true});
+    }
+
+    wordIsGuessed = async() => {
+        this.setState({wordIsGuessed: true});
+        await this.clearCountdown();
+        await this.setWinner();
+    }
+
+    clearCountdown = async () => {
+        await fetch(getRoutes(localStorage.getItem('id')).clearCountdown, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        });
+    }
+
+    setWinner = async () => {
+        await fetch(getRoutes(localStorage.getItem('id')).setWinner, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({winner: localStorage.getItem('name')})
+        });
     }
 
     getDataFromServer = async () => {
@@ -64,6 +94,7 @@ class Game extends Component<gameProps, gameState> {
         const guessers = [...players];
         guessers.splice(players.indexOf(painter), 1);
         const isPainter = currentPlayer === painter;
+        const gameIsOver: boolean = this.state.timeIsOver || this.state.wordIsGuessed;
         return (
             <div className="Game">
                 <header>
@@ -78,9 +109,10 @@ class Game extends Component<gameProps, gameState> {
                             : <div className="Game emptyDiv"/>}
                     <aside>
                         <ListOfPlayers players={guessers} painter={painter}/>
-                        <Chat currentPlayer={currentPlayer} currentGameId={currentGameId} isPainter={isPainter}/>
+                        <Chat currentPlayer={currentPlayer} currentGameId={currentGameId} isPainter={isPainter} wordIsGuessed={this.wordIsGuessed} wordToGuess={this.state.wordToGuess}/>
                     </aside>
                 </main>
+                {gameIsOver && <GameOver timeIsOver={this.state.timeIsOver} wordToGuess={this.state.wordToGuess} />}
             </div>
         );
     }

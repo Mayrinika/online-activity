@@ -9,6 +9,8 @@ interface chatProps {
     currentPlayer: string | null;
     currentGameId: string | null;
     isPainter: boolean;
+    wordIsGuessed: () => void;
+    wordToGuess: string;
 }
 
 interface chatState {
@@ -42,8 +44,13 @@ class Chat extends Component<chatProps, chatState> {
 
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
+
         const {inputMessage, chatMessages} = this.state;
         const {currentPlayer, currentGameId} = this.props;
+
+        if (this.props.wordToGuess === inputMessage) {
+            this.props.wordIsGuessed();
+        }
 
         fetch(getRoutes(currentGameId).chatMessages, {
             method: 'POST',

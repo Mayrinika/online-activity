@@ -10,25 +10,27 @@ interface TimerProps {
 
 function Timer(props: TimerProps) {
     const [seconds, setSeconds] = React.useState(props.time);
-    const getCurrentGame = async () => {
-        const res = await fetch(getRoutes(localStorage.getItem('id')).gameId);
-        const data = await res.text();
-        const game = JSON.parse(data);
-        setSeconds(game.time);
-    }
-    const clearCountdown = async () => {
-        await fetch(getRoutes(localStorage.getItem('id')).clearCountdown, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-        });
-    }
-    getCurrentGame();
-
-    if (seconds < 0) {
-        clearCountdown();
-    }
+    React.useEffect(() => {
+        const getCurrentTime = async () => {
+            const res = await fetch(getRoutes(localStorage.getItem('id')).gameId);
+            const data = await res.text();
+            const game = JSON.parse(data);
+            setSeconds(game.time);
+        }
+        const clearCountdown = async () => {
+            await fetch(getRoutes(localStorage.getItem('id')).clearCountdown, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+            });
+        }
+        getCurrentTime();
+        if (seconds <= 0) {
+            props.timeIsOver();
+            clearCountdown();
+        }
+    }, [seconds]);
 
 
 
