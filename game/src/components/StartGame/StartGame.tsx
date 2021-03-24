@@ -42,8 +42,8 @@ class StartGame extends Component<startGameProps, startGameState> {
     }
 
     startGame = async () => {
-        this.props.history.push(`/${localStorage.getItem('id')}/game`);
         await this.addWordAndPainter(this.state.currentGameId);
+        this.props.history.push(`/${localStorage.getItem('id')}/game`);
     }
 
     addWordAndPainter = async (gameId: string | null) => {

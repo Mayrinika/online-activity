@@ -42,7 +42,6 @@ class App extends Component<{}, appState> {
             },
             body: JSON.stringify({player})
         });
-        await this.getAllGames();
     }
 
     addGame = async (gameId: string) => {
@@ -52,7 +51,6 @@ class App extends Component<{}, appState> {
                 'Content-Type': 'application/json;charset=utf-8'
             },
         });
-        await this.getAllGames();
     }
 
     getAllGames = async () => {
@@ -62,6 +60,7 @@ class App extends Component<{}, appState> {
     }
 
     joinGame = async (player: string, gameId: string) => {
+        await this.getAllGames();
         if (this.state.possibleGames.some(game => game.id === gameId)) {
             await this.addPlayer(gameId, player);
         } else {
