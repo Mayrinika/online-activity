@@ -28,8 +28,7 @@ class StartGame extends Component<startGameProps, startGameState> {
     }
 
     async componentDidMount() {
-        this.setState({currentGameId: localStorage.getItem('id')});
-        this.setState({currentPlayer: localStorage.getItem('name')});
+        this.setState({currentGameId: localStorage.getItem('id'), currentPlayer: localStorage.getItem('name')});
         await this.getCurrentGame();
     }
 

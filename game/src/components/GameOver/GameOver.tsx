@@ -3,9 +3,9 @@ import './GameOver.css'
 import getRoutes from "../../utils/routes";
 
 interface gameOverProps {
-    timeIsOver: boolean;
+    isTimeOver: boolean;
     wordToGuess: string;
-    wordIsGuessed: boolean;
+    isWordGuessed: boolean;
 }
 interface gameOverState {
     winner: string;
@@ -29,9 +29,9 @@ class GameOver extends Component<gameOverProps, gameOverState> {
     render() {
         return <div className="GameOver">
             <h5>Игра окончена!</h5>
-            {this.props.timeIsOver && <p>Время вышло!</p>}
-            {this.props.wordIsGuessed && <p>Игрок {this.state.winner} отгадал слово {this.props.wordToGuess}</p>}
-            <p>Слово было: {this.props.wordToGuess}</p>
+            {this.props.isTimeOver && <p>Время вышло!</p>}
+            {this.props.isWordGuessed && <p>Игрок {this.state.winner} отгадал слово {this.props.wordToGuess}</p>}
+            {!this.props.isWordGuessed && <p>Слово было: {this.props.wordToGuess}</p>}
 
             <button>Начать заново</button>
             <button>Лидерборд</button>
