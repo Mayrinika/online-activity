@@ -4,6 +4,7 @@ import {Switch, Route} from 'react-router-dom';
 import Login from '../Login/Login';
 import StartGame from "../StartGame/StartGame";
 import Game from "../Game/Game";
+import GameOver from "../GameOver/GameOver";
 //utils
 import getRoutes from '../../utils/routes';
 //styles
@@ -77,8 +78,13 @@ class App extends Component<{}, appState> {
         return (
             <div className="App">
                 <Switch>
-                    <Route path='/:gameId/game' component={Game}/>
-                    <Route path='/:gameId' render={(props)=>(
+                    <Route path='/:gameId/game' render={(props) => (
+                        <Game {...props}/>
+                    )}/>
+                    <Route path='/:gameId/game-over' render={(props) => (
+                        <GameOver {...props}/>
+                    )}/>
+                    <Route path='/:gameId' render={(props) => (
                         <StartGame {...props}/>
                     )}/>
                     <Route exact path='/' render={(props) => (
