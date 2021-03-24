@@ -4,7 +4,7 @@ import {readFileSync} from 'file-system';
 
 const app = express();
 const port = 9000;
-const GAME_TIME: number = 1*60 //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
+const GAME_TIME: number = 1 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
 
 type gameType = {
     id: string;
@@ -82,7 +82,8 @@ app.post('/:gameId/addWordAndPainter', (req, res) => {
     }
     if (currentGame.painter === '') {
         currentGame.painter = getPainter(currentGame.players);
-    } if (currentGame.time === GAME_TIME) {
+    }
+    if (currentGame.time === GAME_TIME) {
         timerIds[currentGame.id] = setInterval(() => currentGame.time -= 1, 1000, currentGame);
     }
     res.status(200).send(games);

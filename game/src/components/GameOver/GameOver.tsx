@@ -1,7 +1,11 @@
 import {Component} from "react";
 import {RouteComponentProps} from 'react-router-dom';
-import './GameOver.css'
+//components
+import Leaderboard from "../Leaderboard/Leaderboard";
+//utils
 import getRoutes from "../../utils/routes";
+//styles
+import './GameOver.css'
 
 interface gameOverProps extends RouteComponentProps {
 }
@@ -44,6 +48,10 @@ class GameOver extends Component<gameOverProps, gameOverState> {
         this.props.history.push(`/`);
     }
 
+    goToLeaderboard = () => {
+        this.props.history.push(`/leaderboard`);
+    }
+
     render() {
         const {isTimeOver, isWordGuessed, winner, wordToGuess} = this.state;
         return (
@@ -54,7 +62,7 @@ class GameOver extends Component<gameOverProps, gameOverState> {
                 {!isWordGuessed && <p>Слово было: {wordToGuess}</p>}
 
                 <button onClick={this.gameOver}>Начать заново</button>
-                <button>Лидерборд</button>
+                <button onClick={this.goToLeaderboard}>Лидерборд</button>
             </div>
         );
     }

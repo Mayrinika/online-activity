@@ -5,6 +5,7 @@ import Login from '../Login/Login';
 import StartGame from "../StartGame/StartGame";
 import Game from "../Game/Game";
 import GameOver from "../GameOver/GameOver";
+import Leaderboard from "../Leaderboard/Leaderboard";
 //utils
 import getRoutes from '../../utils/routes';
 //styles
@@ -78,6 +79,7 @@ class App extends Component<{}, appState> {
         return (
             <div className="App">
                 <Switch>
+                    <Route path='/leaderboard' component={Leaderboard}/>
                     <Route path='/:gameId/game' render={(props) => (
                         <Game {...props}/>
                     )}/>
