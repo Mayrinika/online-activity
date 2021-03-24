@@ -28,12 +28,14 @@ class StartGame extends Component<startGameProps, startGameState> {
     }
 
     async componentDidMount() {
-        this.setState({currentGameId: localStorage.getItem('id'), currentPlayer: localStorage.getItem('name')});
-        await this.getCurrentGame();
+        this.setState({
+            currentGameId: localStorage.getItem('id'),
+            currentPlayer: localStorage.getItem('name')
+        }, (async () => await this.getCurrentGame()));
     }
 
     getCurrentGame = async () => {
-        const res = await fetch(getRoutes(localStorage.getItem('id')).gameId);
+        const res = await fetch(getRoutes(this.state.currentGameId).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
         this.setState({players: game.players});

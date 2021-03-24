@@ -34,18 +34,21 @@ class Chat extends Component<chatProps, chatState> {
         }
     }
 
-    componentDidMount() { //TODO нужно добиться просто /chatMessages
+    async componentDidMount() { //TODO нужно добиться просто /chatMessages
         this.setState({
             currentGameId: localStorage.getItem('id'),
             currentPlayer: localStorage.getItem('name')
-        });
-        fetch(getRoutes(localStorage.getItem('id')).chatMessages)
+        }, (async () => await this.getChatMessages()));
+    }
+
+    getChatMessages = async () => {
+        await fetch(getRoutes(this.state.currentGameId).chatMessages)
             .then(res => res.json())
             .then(chatMessages => {
                 this.setState({
                     chatMessages
                 })
-            })
+            });
     }
 
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {

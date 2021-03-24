@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import {RouteComponentProps} from 'react-router-dom';
 import {v4 as uuidv4} from 'uuid';
 import crocoImg from '../../img/cocodrilo.png';
 //components
@@ -14,6 +14,7 @@ interface loginProps extends RouteComponentProps {
     joinGame: (player: string, gameId: string) => void;
     // getAllGames: () => void;
 }
+
 type gameType = {
     id: string;
     players: string[];
@@ -60,31 +61,31 @@ class Login extends Component<loginProps, loginState> {
     }
 
     handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>) => {
-
         const {name, code} = this.state;
-        const {joinGame, history} = this.props;
         evt.preventDefault();
         await this.getAllGames();
         if (code === '') {
             const newCode = uuidv4();
             alert(`code is: ${newCode}`); //TODO использовать библиотеку TOAST вместо alarm
-            localStorage.setItem('name', name);
-            localStorage.setItem('id', newCode);
-            await joinGame(name, newCode);
-            history.push(`/${newCode}`);
+            await this.joinGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
             if (currentGameId?.players.includes(name)) {
                 alert(`name ${name} already exist`); //TODO использовать библиотеку TOAST вместо alarm
             } else {
-                localStorage.setItem('name', name);
-                localStorage.setItem('id', code);
-                await joinGame(name, code);
-                history.push(`/${code}`);
+                await this.joinGame(name, code);
             }
         } else {
             alert('no such play'); //TODO использовать библиотеку TOAST вместо alarm
         }
+    }
+
+    joinGame = async (name: string, newCode: string) => {
+        const {joinGame, history} = this.props;
+        localStorage.setItem('name', name);
+        localStorage.setItem('id', newCode);
+        await joinGame(name, newCode);
+        history.push(`/${newCode}`);
     }
 
     render() {

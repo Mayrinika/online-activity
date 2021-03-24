@@ -25,7 +25,8 @@ interface gameState {
     currentPlayer: string | null;
 }
 
-interface gameProps {}
+interface gameProps {
+}
 
 class Game extends Component<gameProps, gameState> {
     constructor(props: gameProps) {
@@ -48,23 +49,31 @@ class Game extends Component<gameProps, gameState> {
         this.setState({
             currentGameId: localStorage.getItem('id'),
             currentPlayer: localStorage.getItem('name')
-        });
-        await this.getDataFromServer();
+        }, (async () => await this.getDataFromServer()));
+    }
+
+    getDataFromServer = async () => {
+        const res = await fetch(getRoutes(this.state.currentGameId).gameId);
+        const data = await res.text();
+        const game = JSON.parse(data);
+        this.setState({imgURL: game.img, wordToGuess: game.wordToGuess, painter: game.painter, players: game.players});
     }
 
     timeIsOver = async () => {
-        this.setState({isTimeOver: true});
-        await this.clearCountdown();
+        this.setState({isTimeOver: true},
+            (async () => await this.clearCountdown()));
     }
 
     wordIsGuessed = async () => {
-        this.setState({isWordGuessed: true});
-        await this.clearCountdown();
-        await this.setWinner();
+        this.setState({isWordGuessed: true},
+            (async () => {
+                await this.clearCountdown();
+                await this.setWinner();
+            }));
     }
 
     clearCountdown = async () => {
-        await fetch(getRoutes(localStorage.getItem('id')).clearCountdown, {
+        await fetch(getRoutes(this.state.currentGameId).clearCountdown, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -73,7 +82,7 @@ class Game extends Component<gameProps, gameState> {
     }
 
     setWinner = async () => {
-        await fetch(getRoutes(localStorage.getItem('id')).setWinner, {
+        await fetch(getRoutes(this.state.currentGameId).setWinner, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -82,22 +91,25 @@ class Game extends Component<gameProps, gameState> {
         });
     }
 
-    getDataFromServer = async () => {
-        const res = await fetch(getRoutes(localStorage.getItem('id')).gameId);
-        const data = await res.text();
-        const game = JSON.parse(data);
-        this.setState({imgURL: game.img, wordToGuess: game.wordToGuess, painter: game.painter, players: game.players});
-    }
-
     render() {
-        const {painter, wordToGuess, players, imgURL, currentPlayer, currentGameId} = this.state;
+        const {
+            painter,
+            wordToGuess,
+            players,
+            imgURL,
+            currentPlayer,
+            currentGameId,
+            isTimeOver,
+            isWordGuessed
+        } = this.state;
         const wordToDisplay = (currentPlayer === painter) ?
             `Загаданное слово: ${wordToGuess}`
             : 'Отгадайте слово!';
         const guessers = [...players];
         guessers.splice(players.indexOf(painter), 1);
         const isPainter = currentPlayer === painter;
-        const gameIsOver: boolean = this.state.isTimeOver || this.state.isWordGuessed;
+        const gameIsOver: boolean = isTimeOver || isWordGuessed;
+
         return (
             <div className="Game">
                 <header>
@@ -113,11 +125,11 @@ class Game extends Component<gameProps, gameState> {
                     <aside>
                         <ListOfPlayers players={guessers} painter={painter}/>
                         <Chat isPainter={isPainter} wordIsGuessed={this.wordIsGuessed}
-                              wordToGuess={this.state.wordToGuess}/>
+                              wordToGuess={wordToGuess}/>
                     </aside>
                 </main>
-                {gameIsOver && <GameOver isTimeOver={this.state.isTimeOver} wordToGuess={this.state.wordToGuess}
-                                         isWordGuessed={this.state.isWordGuessed}/>}
+                {gameIsOver && <GameOver isTimeOver={isTimeOver} wordToGuess={wordToGuess}
+                                         isWordGuessed={isWordGuessed}/>}
             </div>
         );
     }

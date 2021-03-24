@@ -20,12 +20,14 @@ class GameOver extends Component<gameOverProps, gameOverState> {
     async componentDidMount() {
         await this.getDataFromServer();
     }
+
     getDataFromServer = async () => {
         const res = await fetch(getRoutes(localStorage.getItem('id')).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
         this.setState({winner: game.winner});
     }
+
     render() {
         return <div className="GameOver">
             <h5>Игра окончена!</h5>
