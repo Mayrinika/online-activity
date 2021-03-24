@@ -48,8 +48,7 @@ class Game extends Component<gameProps, gameState> {
         this.setState({
             currentGameId: localStorage.getItem('id'),
             currentPlayer: localStorage.getItem('name')
-        });
-        await this.getDataFromServer();
+        }, (async () => await this.getDataFromServer()));
     }
 
     timeIsOver = async () => {
@@ -63,7 +62,7 @@ class Game extends Component<gameProps, gameState> {
     }
 
     clearCountdown = async () => {
-        await fetch(getRoutes(localStorage.getItem('id')).clearCountdown, {
+        await fetch(getRoutes(this.state.currentGameId).clearCountdown, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -72,7 +71,7 @@ class Game extends Component<gameProps, gameState> {
     }
 
     setWinner = async () => {
-        await fetch(getRoutes(localStorage.getItem('id')).setWinner, {
+        await fetch(getRoutes(this.state.currentGameId).setWinner, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'

@@ -75,7 +75,6 @@ class App extends Component<{}, appState> {
     }
 
     render() {
-        const {currentGameId, currentPlayer, possibleGames} = this.state;
         return (
             <div className="App">
                 <Switch>
