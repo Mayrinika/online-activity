@@ -10,5 +10,6 @@ export default function getRoutes(currentGameId?: string | null) {
         addWordAndPainter: `${serverURL}${currentGameId}/addWordAndPainter`,
         clearCountdown: `${serverURL}${currentGameId}/clearCountdown`,
         setWinner: `${serverURL}${currentGameId}/setWinner`,
+        setTimeIsOver: `${serverURL}${currentGameId}/setTimeIsOver`,
     }
 }

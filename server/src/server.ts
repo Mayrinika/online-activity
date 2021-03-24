@@ -15,12 +15,13 @@ type gameType = {
     chatMessages: string[];
     time: number;
     winner: string;
+    isWordGuessed: boolean;
+    isTimeOver: boolean;
+    isGameOver: boolean;
 }
 
 const games: gameType[] = [];
-const timerIds = {
-
-}
+const timerIds = {};
 
 app.use(cors());
 app.use(express.json());
@@ -35,7 +36,18 @@ app.get('/:gameId', (req, res) => {
 })
 
 app.post('/:gameId', (req, res) => {
-    games.push({id: req.params.gameId, players: [], wordToGuess: '', painter: '', img: '', chatMessages: [], time: GAME_TIME, winner: ''});
+    games.push({
+        id: req.params.gameId,
+        players: [],
+        wordToGuess: '',
+        painter: '',
+        img: '',
+        chatMessages: [],
+        time: GAME_TIME, winner: '',
+        isWordGuessed: false,
+        isTimeOver: false,
+        isGameOver: false
+    });
     res.status(200).send(games);
 })
 
@@ -84,7 +96,16 @@ app.post('/:gameId/clearCountdown', (req, res) => {
 
 app.post('/:gameId/setWinner', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.winner = req.body.winner
+    currentGame.winner = req.body.winner;
+    currentGame.isWordGuessed = true;
+    currentGame.isGameOver = true;
+    res.status(200).send(games);
+})
+
+app.post('/:gameId/setTimeIsOver', (req, res) => {
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    currentGame.isTimeOver = true;
+    currentGame.isGameOver = true;
     res.status(200).send(games);
 })
 
