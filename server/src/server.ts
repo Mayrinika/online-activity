@@ -27,16 +27,16 @@ const timerIds = {};
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
     res.status(200).send(games);
 })
 
-app.get('/:gameId', (req, res) => {
+app.get('/api/:gameId', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     res.status(200).send(currentGame);
 })
 
-app.post('/:gameId', (req, res) => {
+app.post('/api/:gameId', (req, res) => {
     games.push({
         id: req.params.gameId,
         players: [],
@@ -47,30 +47,29 @@ app.post('/:gameId', (req, res) => {
         time: GAME_TIME, winner: '',
         isWordGuessed: false,
         isTimeOver: false,
-        isGameOver: false,
-        lines: [],
+        isGameOver: false
     });
     res.status(200).send(games);
 })
 
-app.post('/:gameId/addPlayer', (req, res) => {
+app.post('/api/:gameId/addPlayer', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     currentGame.players.push(req.body.player);
     res.status(200).send(games);
 })
 
-app.get('/:gameId/chatMessages', (req, res) => {
+app.get('/api/:gameId/chatMessages', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     res.status(200).send(currentGame.chatMessages);
 })
 
-app.post('/:gameId/chatMessages', (req, res) => {
+app.post('/api/:gameId/chatMessages', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     currentGame.chatMessages.push(req.body);
     res.status(200).send(games);
 })
 
-app.post('/:gameId/addImg', (req, res) => {
+app.post('/api/:gameId/addImg', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     currentGame.img = req.body.img;
     res.status(200).send(games);
@@ -82,7 +81,7 @@ app.post('/:gameId/addLine', (req, res) => {
     res.status(200).send(games);
 })
 
-app.post('/:gameId/addWordAndPainter', (req, res) => {
+app.post('/api/:gameId/addWordAndPainter', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame.wordToGuess === '') {
         const words = readFileSync("./src/utils/words.txt", 'utf8').split('\r\n');
@@ -97,13 +96,13 @@ app.post('/:gameId/addWordAndPainter', (req, res) => {
     res.status(200).send(games);
 });
 
-app.post('/:gameId/clearCountdown', (req, res) => {
+app.post('/api/:gameId/clearCountdown', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     clearTimeout(timerIds[currentGame.id]);
     res.status(200).send(games);
 })
 
-app.post('/:gameId/setWinner', (req, res) => {
+app.post('/api/:gameId/setWinner', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     currentGame.winner = req.body.winner;
     currentGame.isWordGuessed = true;
@@ -111,7 +110,7 @@ app.post('/:gameId/setWinner', (req, res) => {
     res.status(200).send(games);
 })
 
-app.post('/:gameId/setTimeIsOver', (req, res) => {
+app.post('/api/:gameId/setTimeIsOver', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     currentGame.isTimeOver = true;
     currentGame.isGameOver = true;
