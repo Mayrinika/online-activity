@@ -41,7 +41,7 @@ class Login extends Component<loginProps, loginState> {
     }
 
     getAllGames = async () => {
-        const res = await fetch(getRoutes().root);
+        const res = await fetch(getRoutes().app);
         const data = await res.text();
         this.setState({possibleGames: JSON.parse(data)});
     }

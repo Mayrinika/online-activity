@@ -1,16 +1,13 @@
-const serverURL = 'http://localhost:9000/';
-
 export default function getRoutes(currentGameId?: string | null) {
     return {
-        root: `${serverURL}`,
-        gameId: `${serverURL}${currentGameId}`,
-        chatMessages: `${serverURL}${currentGameId}/chatMessages`,
-        addPlayer: `${serverURL}${currentGameId}/addPlayer`,
-        addImg: `${serverURL}${currentGameId}/addImg`,
-        addWordAndPainter: `${serverURL}${currentGameId}/addWordAndPainter`,
-        clearCountdown: `${serverURL}${currentGameId}/clearCountdown`,
-        setWinner: `${serverURL}${currentGameId}/setWinner`,
-        setTimeIsOver: `${serverURL}${currentGameId}/setTimeIsOver`,
-        addLine: `${serverURL}${currentGameId}/addLine`,
+        app: `/app`,
+        gameId: `/${currentGameId}`,
+        chatMessages: `/${currentGameId}/chatMessages`,
+        addPlayer: `/${currentGameId}/addPlayer`,
+        addImg: `/${currentGameId}/addImg`,
+        addWordAndPainter: `/${currentGameId}/addWordAndPainter`,
+        clearCountdown: `/${currentGameId}/clearCountdown`,
+        setWinner: `/${currentGameId}/setWinner`,
+        setTimeIsOver: `/${currentGameId}/setTimeIsOver`,
     }
 }
