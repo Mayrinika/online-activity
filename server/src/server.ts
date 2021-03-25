@@ -92,7 +92,15 @@ app.post('/:gameId/addWordAndPainter', (req, res) => {
         currentGame.painter = getPainter(currentGame.players);
     }
     if (currentGame.time === GAME_TIME) {
-        timerIds[currentGame.id] = setInterval(() => timer, 1000, currentGame);
+        timerIds[currentGame.id] = setInterval((currentGame) => {
+            if (currentGame.time > 0) {
+                currentGame.time -= 1;
+            } else {
+                currentGame.isTimeOver = true;
+                currentGame.isGameOver = true;
+                clearInterval(timerIds[currentGame]);
+            }
+            }, 1000, currentGame);
     }
     res.status(200).send(games);
 });
@@ -136,9 +144,13 @@ function getPainter(players): string {
 }
 
 function timer(currentGame) {
+    console.log(currentGame.time);
     if (currentGame.time > 0) {
+        console.log('here');
         currentGame.time -= 1;
     } else {
+        currentGame.isTimeOver = true;
+        currentGame.isGameOver = true;
         clearInterval(timerIds[currentGame]);
     }
 }
