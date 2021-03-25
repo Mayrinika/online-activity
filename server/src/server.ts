@@ -18,6 +18,7 @@ type gameType = {
     isWordGuessed: boolean;
     isTimeOver: boolean;
     isGameOver: boolean;
+    lines: any[];
 }
 
 const games: gameType[] = [];
@@ -46,7 +47,8 @@ app.post('/:gameId', (req, res) => {
         time: GAME_TIME, winner: '',
         isWordGuessed: false,
         isTimeOver: false,
-        isGameOver: false
+        isGameOver: false,
+        lines: []
     });
     res.status(200).send(games);
 })
@@ -74,7 +76,13 @@ app.post('/:gameId/addImg', (req, res) => {
     res.status(200).send(games);
 })
 
-app.post('/:gameId/addWordAndPainter', (req, res) => {
+app.post('/:gameId/addLine', (req, res) => {
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    currentGame.lines.push(req.body.line);
+    res.status(200).send(games);
+})
+
+app.post('/api/:gameId/addWordAndPainter', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame.wordToGuess === '') {
         const words = readFileSync("./src/utils/words.txt", 'utf8').split('\r\n');
