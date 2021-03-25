@@ -14,8 +14,6 @@ interface chatProps {
 interface chatState {
     inputMessage: string;
     chatMessages: messageType[];
-    currentGameId: string | null;
-    currentPlayer: string | null;
 }
 
 interface messageType {
@@ -29,20 +27,15 @@ class Chat extends Component<chatProps, chatState> {
         this.state = {
             inputMessage: '',
             chatMessages: [],
-            currentGameId: null,
-            currentPlayer: null,
         }
     }
 
     async componentDidMount() { //TODO нужно добиться просто /chatMessages
-        this.setState({
-            currentGameId: localStorage.getItem('id'),
-            currentPlayer: localStorage.getItem('name')
-        }, (async () => await this.getChatMessages()));
+        await this.getChatMessages();
     }
 
     getChatMessages = async () => {
-        await fetch(getRoutes(this.state.currentGameId).chatMessages)
+        await fetch(getRoutes(localStorage.getItem('gameId')).chatMessages)
             .then(res => res.json())
             .then(chatMessages => {
                 this.setState({
@@ -54,23 +47,25 @@ class Chat extends Component<chatProps, chatState> {
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
 
-        const {inputMessage, chatMessages, currentPlayer, currentGameId} = this.state;
+        const {inputMessage, chatMessages} = this.state;
         const {wordToGuess, wordIsGuessed} = this.props;
+        const playerName = localStorage.getItem('playerName');
+        const gameId = localStorage.getItem('gameId');
 
         if (wordToGuess === inputMessage) {
             wordIsGuessed();
         }
 
-        fetch(getRoutes(currentGameId).chatMessages, {
+        fetch(getRoutes(gameId).chatMessages, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({name: currentPlayer, text: inputMessage})
+            body: JSON.stringify({name: playerName, text: inputMessage})
         })
             .then(res => {
                 if (res.ok)
                     this.setState({
                         inputMessage: '',
-                        chatMessages: [...chatMessages, {name: currentPlayer, text: inputMessage}]
+                        chatMessages: [...chatMessages, {name: playerName, text: inputMessage}]
                     })
             })
     }

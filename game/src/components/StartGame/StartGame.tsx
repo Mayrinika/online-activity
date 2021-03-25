@@ -1,8 +1,6 @@
 import React, {Component} from "react";
 import {RouteComponentProps} from 'react-router-dom';
-import {Route} from 'react-router-dom';
 //components
-import Game from "../Game/Game";
 //utils
 import getRoutes from '../../utils/routes';
 //styles
@@ -13,8 +11,6 @@ interface startGameProps extends RouteComponentProps {
 
 interface startGameState {
     players: string[];
-    currentGameId: string | null;
-    currentPlayer: string | null;
 }
 
 class StartGame extends Component<startGameProps, startGameState> {
@@ -22,28 +18,23 @@ class StartGame extends Component<startGameProps, startGameState> {
         super(props);
         this.state = {
             players: [],
-            currentPlayer: null,
-            currentGameId: null
         }
     }
 
     async componentDidMount() {
-        this.setState({
-            currentGameId: localStorage.getItem('id'),
-            currentPlayer: localStorage.getItem('name')
-        }, (async () => await this.getCurrentGame()));
+        await this.getCurrentGame();
     }
 
     getCurrentGame = async () => {
-        const res = await fetch(getRoutes(this.state.currentGameId).gameId);
+        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
         this.setState({players: game.players});
     }
 
     startGame = async () => {
-        await this.addWordAndPainter(this.state.currentGameId);
-        this.props.history.push(`/${localStorage.getItem('id')}/game`);
+        await this.addWordAndPainter(localStorage.getItem('gameId'));
+        this.props.history.push(`/${localStorage.getItem('gameId')}/game`);
     }
 
     addWordAndPainter = async (gameId: string | null) => {

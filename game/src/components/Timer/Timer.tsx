@@ -1,7 +1,9 @@
 import React, {useEffect} from 'react';
+//components
+//utils
+import getRoutes from "../../utils/routes";
 //styles
 import './Timer.css';
-import getRoutes from "../../utils/routes";
 
 interface TimerProps {
     time: number;
@@ -12,13 +14,13 @@ function Timer(props: TimerProps) {
     const [seconds, setSeconds] = React.useState(props.time);
     React.useEffect(() => {
         const getCurrentTime = async () => {
-            const res = await fetch(getRoutes(localStorage.getItem('id')).gameId);
+            const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
             const data = await res.text();
             const game = JSON.parse(data);
             setSeconds(game.time);
         }
         const clearCountdown = async () => {
-            await fetch(getRoutes(localStorage.getItem('id')).clearCountdown, {
+            await fetch(getRoutes(localStorage.getItem('gameId')).clearCountdown, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'

@@ -10,9 +10,7 @@ import './Login.css';
 
 
 interface loginProps extends RouteComponentProps {
-    // possibleGames: gameType[];
     joinGame: (player: string, gameId: string) => void;
-    // getAllGames: () => void;
 }
 
 type gameType = {
@@ -41,10 +39,6 @@ class Login extends Component<loginProps, loginState> {
             possibleGames: []
         }
     }
-
-    // async componentDidMount() {
-    //     await this.getAllGames();
-    // }
 
     getAllGames = async () => {
         const res = await fetch(getRoutes().root);
@@ -81,8 +75,8 @@ class Login extends Component<loginProps, loginState> {
 
     joinGame = async (name: string, newCode: string) => {
         const {joinGame, history} = this.props;
-        localStorage.setItem('name', name);
-        localStorage.setItem('id', newCode);
+        localStorage.setItem('playerName', name);
+        localStorage.setItem('gameId', newCode);
         await joinGame(name, newCode);
         history.push(`/${newCode}`);
     }

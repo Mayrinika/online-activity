@@ -8,7 +8,6 @@ import getRoutes from '../../utils/routes';
 import './Canvas.css';
 
 interface canvasProps {
-    currentGameId: string | null;
 }
 
 let isDrawing = false; // TODO вообще-то это лучше сделать useRef, а не глобальной переменной. Но у меня не получилось создать два useRef в компоненте
@@ -68,7 +67,7 @@ const Canvas = (props: canvasProps) => {
         let uri = stageRef.current.toDataURL();
         //downloadURI(uri, 'stage.png');
 
-        await addImage(props.currentGameId, uri);
+        await addImage(localStorage.getItem('gameId'), uri);
     };
 
     //TODO удалить потом. Нужно только для визуализации

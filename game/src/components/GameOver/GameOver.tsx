@@ -1,7 +1,6 @@
 import {Component} from "react";
 import {RouteComponentProps} from 'react-router-dom';
 //components
-import Leaderboard from "../Leaderboard/Leaderboard";
 //utils
 import getRoutes from "../../utils/routes";
 //styles
@@ -33,7 +32,7 @@ class GameOver extends Component<gameOverProps, gameOverState> {
     }
 
     getDataFromServer = async () => {
-        const res = await fetch(getRoutes(localStorage.getItem('id')).gameId);
+        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
         this.setState({

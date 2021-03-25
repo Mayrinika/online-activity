@@ -5,7 +5,6 @@ import Timer from '../Timer/Timer';
 import Canvas from "../Canvas/Canvas";
 import Chat from "../Chat/Chat";
 import ListOfPlayers from "../ListOfPlayers/ListOfPlayers";
-import GameOver from "../GameOver/GameOver"
 //utils
 import getRoutes from '../../utils/routes';
 //styles
@@ -19,8 +18,6 @@ interface gameState {
     isGameOver: boolean;
     imgURL: string;
     players: string[];
-    currentGameId: string | null;
-    currentPlayer: string | null;
 }
 
 interface gameProps extends RouteComponentProps {
@@ -35,16 +32,11 @@ class Game extends Component<gameProps, gameState> {
             isGameOver: false,
             imgURL: '',
             players: [],
-            currentPlayer: null,
-            currentGameId: null
         }
     }
 
     async componentDidMount() {
-        this.setState({
-            currentGameId: localStorage.getItem('id'),
-            currentPlayer: localStorage.getItem('name')
-        }, (async () => await this.getDataFromServer()));
+        await this.getDataFromServer();
     }
 
     componentDidUpdate() {
@@ -62,7 +54,7 @@ class Game extends Component<gameProps, gameState> {
     }
 
     clearCountdown = async () => {
-        await fetch(getRoutes(this.state.currentGameId).clearCountdown, {
+        await fetch(getRoutes(localStorage.getItem('gameId')).clearCountdown, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -71,17 +63,17 @@ class Game extends Component<gameProps, gameState> {
     }
 
     setWinner = async () => {
-        await fetch(getRoutes(this.state.currentGameId).setWinner, {
+        await fetch(getRoutes(localStorage.getItem('gameId')).setWinner, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify({winner: localStorage.getItem('name')})
+            body: JSON.stringify({winner: localStorage.getItem('playerName')})
         });
     }
 
     setTimeIsOver = async () => {
-        await fetch(getRoutes(localStorage.getItem('id')).setTimeIsOver, {
+        await fetch(getRoutes(localStorage.getItem('gameId')).setTimeIsOver, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -90,7 +82,7 @@ class Game extends Component<gameProps, gameState> {
     }
 
     getDataFromServer = async () => {
-        const res = await fetch(getRoutes(localStorage.getItem('id')).gameId);
+        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
         this.setState({
@@ -103,17 +95,18 @@ class Game extends Component<gameProps, gameState> {
     }
 
     gameOver = () => {
-        this.props.history.push(`/${localStorage.getItem('id')}/game-over`);
+        this.props.history.push(`/${localStorage.getItem('gameId')}/game-over`);
     }
 
     render() {
-        const {painter, wordToGuess, players, imgURL, currentPlayer, currentGameId} = this.state;
-        const wordToDisplay = (currentPlayer === painter) ?
+        const {painter, wordToGuess, players, imgURL} = this.state;
+        const playerName = localStorage.getItem('playerName');
+        const wordToDisplay = (playerName === painter) ?
             `Загаданное слово: ${wordToGuess}`
             : 'Отгадайте слово!';
         const guessers = [...players];
         guessers.splice(players.indexOf(painter), 1);
-        const isPainter = currentPlayer === painter;
+        const isPainter = playerName === painter;
 
         return (
             <div className="Game">
@@ -123,7 +116,7 @@ class Game extends Component<gameProps, gameState> {
                 </header>
                 <main>
                     {isPainter ?
-                        <Canvas currentGameId={currentGameId}/>
+                        <Canvas/>
                         : imgURL !== '' ?
                             <img src={imgURL} alt='img from server'/>
                             : <div className="Game emptyDiv"/>}
