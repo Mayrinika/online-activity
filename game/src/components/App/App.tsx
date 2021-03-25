@@ -56,7 +56,7 @@ class App extends Component<{}, appState> {
     }
 
     getAllGames = async () => {
-        const res = await fetch(getRoutes().root);
+        const res = await fetch(getRoutes().app);
         const data = await res.text();
         this.setState({possibleGames: JSON.parse(data)});
     }
