@@ -23,7 +23,15 @@ const Canvas = (props: canvasProps) => {
     useEffect(() => {
         const canvas = document.getElementsByClassName('Canvas')[0];
         setStageSize([canvas.clientWidth, canvas.clientHeight]);
+        getLinesFromServer();
     }, []);
+
+    const getLinesFromServer = async () => {
+        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
+        const data = await res.text();
+        const game = JSON.parse(data);
+        setLines(game.lines)
+    }
 
     const handleMouseDown = (e: any) => { //TODO поправить тип
         isDrawing = true;
@@ -43,8 +51,9 @@ const Canvas = (props: canvasProps) => {
         });
     };
 
-    const addImage = async (gameId: string | null, img: string) => {
-        await fetch(getRoutes(gameId).addImg, {
+    const addImage = async (img: string) => {
+        console.log('here');
+        await fetch(getRoutes(localStorage.getItem('gameId')).addImg, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -53,21 +62,32 @@ const Canvas = (props: canvasProps) => {
         });
     }
 
+    const sendLineToServer = async (line: any) => {
+        await fetch(getRoutes(localStorage.getItem('gameId')).addLine, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({line})
+        });
+    }
+
     const handleMouseUp = async (e: any) => { //TODO поправить тип
         const pos = e.target.getStage().getPointerPosition();
         if (isDrawing) {
-            setLines([
-                ...lines,
-                {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
-            ]);
+            // setLines([
+            //     ...lines,
+            //     {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
+            // ]);
+            setCurrentLine({...currentLine, points: [...currentLine.points, pos.x, pos.y]});
+            await sendLineToServer(currentLine);
+            let uri = stageRef.current.toDataURL();
+            await getLinesFromServer();
+            await addImage(uri);
         }
         setCurrentLine(null);
         isDrawing = false;
-
-        let uri = stageRef.current.toDataURL();
         //downloadURI(uri, 'stage.png');
-
-        await addImage(localStorage.getItem('gameId'), uri);
     };
 
     //TODO удалить потом. Нужно только для визуализации

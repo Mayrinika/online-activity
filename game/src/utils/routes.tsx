@@ -11,5 +11,6 @@ export default function getRoutes(currentGameId?: string | null) {
         clearCountdown: `${serverURL}${currentGameId}/clearCountdown`,
         setWinner: `${serverURL}${currentGameId}/setWinner`,
         setTimeIsOver: `${serverURL}${currentGameId}/setTimeIsOver`,
+        addLine: `${serverURL}${currentGameId}/addLine`,
     }
 }

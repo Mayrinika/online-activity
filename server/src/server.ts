@@ -18,6 +18,7 @@ type gameType = {
     isWordGuessed: boolean;
     isTimeOver: boolean;
     isGameOver: boolean;
+    lines: any[];
 }
 
 const games: gameType[] = [];
@@ -46,7 +47,8 @@ app.post('/:gameId', (req, res) => {
         time: GAME_TIME, winner: '',
         isWordGuessed: false,
         isTimeOver: false,
-        isGameOver: false
+        isGameOver: false,
+        lines: [],
     });
     res.status(200).send(games);
 })
@@ -71,6 +73,12 @@ app.post('/:gameId/chatMessages', (req, res) => {
 app.post('/:gameId/addImg', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     currentGame.img = req.body.img;
+    res.status(200).send(games);
+})
+
+app.post('/:gameId/addLine', (req, res) => {
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    currentGame.lines.push(req.body.line);
     res.status(200).send(games);
 })
 
