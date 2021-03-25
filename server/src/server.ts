@@ -82,7 +82,7 @@ app.post('/:gameId/addLine', (req, res) => {
     res.status(200).send(games);
 })
 
-app.post('/api/:gameId/addWordAndPainter', (req, res) => {
+app.post('/:gameId/addWordAndPainter', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame.wordToGuess === '') {
         const words = readFileSync("./src/utils/words.txt", 'utf8').split('\r\n');
