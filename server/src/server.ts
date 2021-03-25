@@ -47,7 +47,8 @@ app.post('/api/:gameId', (req, res) => {
         time: GAME_TIME, winner: '',
         isWordGuessed: false,
         isTimeOver: false,
-        isGameOver: false
+        isGameOver: false,
+        lines: []
     });
     res.status(200).send(games);
 })
