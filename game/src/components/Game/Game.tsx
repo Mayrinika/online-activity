@@ -10,8 +10,6 @@ import getRoutes from '../../utils/routes';
 //styles
 import './Game.css';
 
-const TIME: number = 3 * 60;
-
 interface gameState {
     wordToGuess: string;
     painter: string;
@@ -41,11 +39,6 @@ class Game extends Component<gameProps, gameState> {
 
     componentDidUpdate() {
         if (this.state.isGameOver) this.gameOver();
-    }
-
-    timeIsOver = async () => {
-        await this.clearCountdown();
-        await this.setTimeIsOver();
     }
 
     wordIsGuessed = async () => {
@@ -112,7 +105,7 @@ class Game extends Component<gameProps, gameState> {
             <div className="Game">
                 <header>
                     <div className="Game-Word">{wordToDisplay}</div>
-                    <Timer time={TIME} timeIsOver={this.timeIsOver}/>
+                    <Timer />
                 </header>
                 <main>
                     {isPainter ?

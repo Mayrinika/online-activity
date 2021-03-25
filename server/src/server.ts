@@ -92,7 +92,7 @@ app.post('/api/:gameId/addWordAndPainter', (req, res) => {
         currentGame.painter = getPainter(currentGame.players);
     }
     if (currentGame.time === GAME_TIME) {
-        timerIds[currentGame.id] = setInterval(() => currentGame.time -= 1, 1000, currentGame);
+        timerIds[currentGame.id] = setInterval(() => timer, 1000, currentGame);
     }
     res.status(200).send(games);
 });
@@ -133,4 +133,12 @@ function getRandomWord(words): string {
 function getPainter(players): string {
     const randomIdx = Math.floor(Math.random() * players.length);
     return players[randomIdx];
+}
+
+function timer(currentGame) {
+    if (currentGame.time > 0) {
+        currentGame.time -= 1;
+    } else {
+        clearInterval(timerIds[currentGame]);
+    }
 }
