@@ -6,13 +6,23 @@ const app = express();
 const port = 9000;
 const GAME_TIME: number = 1 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
 
-type gameType = {
+interface message {
+    id: string;
+    name: string;
+    text: string;
+    marks: {
+        hot: boolean;
+        cold: boolean;
+    };
+}
+
+interface gameType {
     id: string;
     players: string[];
     wordToGuess: string;
     painter: string;
     img: string;
-    chatMessages: string[];
+    chatMessages: message[];
     time: number;
     winner: string;
     isWordGuessed: boolean;
@@ -70,6 +80,14 @@ app.post('/:gameId/chatMessages', (req, res) => {
     res.status(200).send(games);
 })
 
+app.post('/:gameId/addMark', (req, res) => {
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    currentGame.chatMessages
+        .find(item => item.id === req.body.id)
+        .marks = req.body.marks;
+    res.status(200).send(games);
+})
+
 app.post('/:gameId/addImg', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     currentGame.img = req.body.img;
@@ -100,7 +118,7 @@ app.post('/:gameId/addWordAndPainter', (req, res) => {
                 currentGame.isGameOver = true;
                 clearInterval(timerIds[currentGame]);
             }
-            }, 1000, currentGame);
+        }, 1000, currentGame);
     }
     res.status(200).send(games);
 });

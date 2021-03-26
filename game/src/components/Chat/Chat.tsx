@@ -17,8 +17,13 @@ interface chatState {
 }
 
 interface messageType {
+    id: string;
     name: string | null;
     text: string;
+    marks: {
+        hot: boolean;
+        cold: boolean;
+    };
 }
 
 class Chat extends Component<chatProps, chatState> {
@@ -30,7 +35,7 @@ class Chat extends Component<chatProps, chatState> {
         }
     }
 
-    async componentDidMount() { //TODO нужно добиться просто /chatMessages
+    async componentDidMount() {
         await this.getChatMessages();
     }
 
@@ -56,22 +61,79 @@ class Chat extends Component<chatProps, chatState> {
             wordIsGuessed();
         }
 
+        const generatedId = uuidv4();
         fetch(getRoutes(gameId).chatMessages, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({name: playerName, text: inputMessage})
+            body: JSON.stringify({
+                name: playerName,
+                text: inputMessage,
+                id: generatedId,
+                marks: {hot: false, cold: false}
+            })
         })
             .then(res => {
                 if (res.ok)
                     this.setState({
                         inputMessage: '',
-                        chatMessages: [...chatMessages, {name: playerName, text: inputMessage}]
+                        chatMessages: [...chatMessages, {
+                            id: generatedId,
+                            name: playerName,
+                            text: inputMessage,
+                            marks: {hot: false, cold: false}
+                        }]
                     })
             })
     }
 
     enterMessage = (evt: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({...this.state, inputMessage: evt.target.value});
+    }
+
+    handlePlusClick = (messageId: string) => {
+        this.postMarks(messageId, true);
+    }
+
+    handleMinusClick = (messageId: string) => {
+        this.postMarks(messageId, false);
+    }
+
+    postMarks(messageId: string, isHot: boolean) {
+        fetch(getRoutes(localStorage.getItem('gameId')).addMark, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({id: messageId, marks: {hot: isHot, cold: !isHot}})
+        })
+            .then(res => {
+                if (res.ok) {
+                    const currentIndex = this.state.chatMessages.findIndex(item => item.id === messageId);
+                    const newChatMessages = JSON.parse(JSON.stringify(this.state.chatMessages));
+                    newChatMessages[currentIndex].marks = {hot: isHot, cold: !isHot};
+                    this.setState({
+                        chatMessages: newChatMessages
+                    })
+                }
+            })
+    }
+
+    showButtons = (message: messageType) => {
+        if (this.props.isPainter) {
+            return (
+                <span>
+                    <button onClick={() => this.handlePlusClick(message.id)}>hot</button>
+                    <button onClick={() => this.handleMinusClick(message.id)}>cold</button>
+                </span>
+            );
+        }
+        if (message.marks.hot)
+            return (
+                <span>=hot</span>
+            );
+        if (message.marks.cold)
+            return (
+                <span>=cold</span>
+            );
+        return;
     }
 
     render() {
@@ -82,7 +144,10 @@ class Chat extends Component<chatProps, chatState> {
             <div className="Chat">
                 <div className="Chat-messages">
                     {chatMessages.map((message: messageType) => (
-                        <p key={uuidv4()}><span className="Chat-message-name">{message.name}: </span>{message.text}</p>
+                        <div key={message.id}>
+                            <span className="Chat-message-name">{message.name}: </span>{message.text}
+                            {this.showButtons(message)}
+                        </div>
                     ))}
                 </div>
                 {!isPainter &&
