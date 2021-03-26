@@ -52,7 +52,6 @@ const Canvas = (props: canvasProps) => {
     };
 
     const addImage = async (img: string) => {
-        console.log('here');
         await fetch(getRoutes(localStorage.getItem('gameId')).addImg, {
             method: 'POST',
             headers: {
@@ -80,13 +79,14 @@ const Canvas = (props: canvasProps) => {
             //     {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
             // ]);
             setCurrentLine({...currentLine, points: [...currentLine.points, pos.x, pos.y]});
+            isDrawing = false;
             await sendLineToServer(currentLine);
             let uri = stageRef.current.toDataURL();
             await getLinesFromServer();
             await addImage(uri);
         }
-        setCurrentLine(null);
         isDrawing = false;
+        setCurrentLine(null);
         //downloadURI(uri, 'stage.png');
     };
 
@@ -104,16 +104,17 @@ const Canvas = (props: canvasProps) => {
         setColor(color)
     };
 
-    const undoLastDrawing = (e: any) => { //TODO поправить тип
-        if (e.keyCode === 90 && e.ctrlKey) {
-            let newLines = [...lines];
-            newLines.pop();
-            setLines(newLines);
-        }
-    }
+    // const undoLastDrawing = (e: any) => { //TODO поправить тип //TODO решить будем ли отменять последнюю линию с сервера с помощью пост запроса. Минусы: если при нажатии ctrZ будет задержка, художник может еще пару раз нажать и отменит больше линий чем нужно
+    //     if (e.keyCode === 90 && e.ctrlKey) {
+    //         let newLines = [...lines];
+    //         newLines.pop();
+    //         setLines(newLines);
+    //     }
+    // }
 
     return (
-        <div className={"Canvas " + tool} tabIndex={0} onKeyDown={undoLastDrawing}>
+        //onKeyDown={undoLastDrawing} TODO добавить в следующую строчку если будем отменять последнее действие с сервера
+        <div className={"Canvas " + tool} tabIndex={0} >
             <div className="Canvas-ControlPanel">
                 <ColorPalette currentColor={color} onChangeColor={changeColor}/>
                 <select

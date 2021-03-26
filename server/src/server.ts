@@ -143,14 +143,3 @@ function getPainter(players): string {
     return players[randomIdx];
 }
 
-function timer(currentGame) {
-    console.log(currentGame.time);
-    if (currentGame.time > 0) {
-        console.log('here');
-        currentGame.time -= 1;
-    } else {
-        currentGame.isTimeOver = true;
-        currentGame.isGameOver = true;
-        clearInterval(timerIds[currentGame]);
-    }
-}
