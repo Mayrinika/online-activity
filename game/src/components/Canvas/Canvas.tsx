@@ -71,13 +71,9 @@ const Canvas = (props: canvasProps) => {
         });
     }
 
-    const handleMouseUp = async (e: any) => { //TODO поправить тип
+    const stopDrawing = async (e: any) => { //TODO поправить тип
         const pos = e.target.getStage().getPointerPosition();
         if (isDrawing) {
-            // setLines([
-            //     ...lines,
-            //     {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
-            // ]);
             setCurrentLine({...currentLine, points: [...currentLine.points, pos.x, pos.y]});
             isDrawing = false;
             await sendLineToServer(currentLine);
@@ -88,6 +84,14 @@ const Canvas = (props: canvasProps) => {
         isDrawing = false;
         setCurrentLine(null);
         //downloadURI(uri, 'stage.png');
+    }
+
+    const handleMouseUp = async (e: any) => { //TODO поправить тип
+        await stopDrawing(e);
+    };
+
+    const handleMouseLeave = async (e: any) => { //TODO поправить тип
+        await stopDrawing(e)
     };
 
     //TODO удалить потом. Нужно только для визуализации
@@ -136,6 +140,7 @@ const Canvas = (props: canvasProps) => {
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseLeave}
             >
                 <Layer className="Canvas-Layer">
                     {tool === 'pen' &&
