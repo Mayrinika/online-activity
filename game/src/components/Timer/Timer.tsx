@@ -7,7 +7,7 @@ import './Timer.css';
 
 function Timer(props: {}) {
     const [seconds, setSeconds] = React.useState(0);
-    React.useEffect(() => {
+    React.useEffect(() => { //TODO проверять существует ли компонент
         const getCurrentTime = async () => {
             const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
             const data = await res.text();

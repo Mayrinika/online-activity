@@ -32,12 +32,10 @@ interface gameOverState {
     painter: string;
     chatMessages: message[];
     players: [];
-    //localLeaderboard: localLeaderboardType[];
+    localLeaderboard: localLeaderboardType[];
 }
 
 class GameOver extends Component<gameOverProps, gameOverState> {
-    private localLeaderboard: localLeaderboardType[] = [];
-
     constructor(props: gameOverProps) {
         super(props);
         this.state = {
@@ -47,13 +45,13 @@ class GameOver extends Component<gameOverProps, gameOverState> {
             winner: '',
             painter: '',
             chatMessages: [],
-            players: []
-            //localLeaderboard: []
+            players: [],
+            localLeaderboard: []
         };
     }
 
-    async componentDidMount() {
-        await this.getDataFromServer();
+    componentDidMount() {
+        this.getDataFromServer();
     }
 
     getDataFromServer = async () => {
@@ -68,14 +66,16 @@ class GameOver extends Component<gameOverProps, gameOverState> {
             painter: game.painter,
             chatMessages: game.chatMessages,
             players: game.players
-        }, () => this.calculateScores());
+        }, this.calculateScores);
     };
 
     calculateScores = () => {
-        const results = [];
+        const results: localLeaderboardType[] = [];
         const { isTimeOver, players, painter, winner } = this.state;
+
         if (isTimeOver)
             return;
+
         results.push({
             playerName: painter,
             score: 50
@@ -92,12 +92,11 @@ class GameOver extends Component<gameOverProps, gameOverState> {
                 score: currentScore
             });
         }
+        this.setState({
+            localLeaderboard: results
+        });
 
-        // this.setState({
-        //     localLeaderboard: results
-        // });
-
-        this.localLeaderboard = results;
+        this.pushScoreToLeaderboard(results);
     };
 
     calculateScoresForHotMessages = (player: string) => {
@@ -109,6 +108,15 @@ class GameOver extends Component<gameOverProps, gameOverState> {
             return currentScore;
         });
         return Math.min(currentScore, 50);
+    };
+
+    pushScoreToLeaderboard = (localLeaderboard: localLeaderboardType[]) => {
+        fetch(getRoutes().addScore, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(localLeaderboard)
+        })
+            .then(res => console.log(res));
     };
 
     gameOver = () => {
@@ -135,8 +143,8 @@ class GameOver extends Component<gameOverProps, gameOverState> {
                     <p>Игрок {winner} отгадал слово {wordToGuess}</p>
                     <div>
                         {
-                            this.localLeaderboard.length > 0 ?
-                                this.localLeaderboard.map(item => {
+                            this.state.localLeaderboard.length > 0 ?
+                                this.state.localLeaderboard.map(item => {
                                         return (
                                             <p key={item.playerName}>{item.playerName}: {item.score}</p>
                                         );
