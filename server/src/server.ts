@@ -157,7 +157,15 @@ const webSockets = {};
 
 wss.on('connection', ws => {
     ws.on('message', message => {
-        wss.clients.forEach(client => {
+        const gameId = JSON.parse(message).gameId;
+        console.log(gameId);
+        if (webSockets[gameId]) {
+            webSockets[gameId].push(ws);
+        } else {
+            webSockets[gameId] = [ws];
+        }
+        console.log(webSockets[gameId].length);
+        webSockets[gameId].forEach(client => {
             client.send(message);
         })
         // webSockets[JSON.parse(message).gameId] ? webSockets[JSON.parse(message).gameId].push(ws) : webSockets[JSON.parse(message).gameId] = [ws];

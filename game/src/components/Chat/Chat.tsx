@@ -39,6 +39,7 @@ class Chat extends Component<chatProps, chatState> {
 
     async componentDidMount() {
         await this.getChatMessages();
+        ws.send(JSON.stringify({'gameId':localStorage.getItem('gameId')}));
         ws.onmessage = (response) => {
             console.log(response.data)
         };
