@@ -41,12 +41,12 @@ app.get('/app', (req, res) => {
     res.status(200).send(games);
 });
 
-app.get('/leaderbord', (req, res) => {
+app.get('/leaderboard', (req, res) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
     res.status(200).send(leaderboard.players);
 });
 
-app.post('/leaderbord', (req, res) => {
+app.post('/leaderboard', (req, res) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
     for (const { playerName, score } of req.body) {
         if (playerName in leaderboard.players)

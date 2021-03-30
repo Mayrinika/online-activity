@@ -111,7 +111,7 @@ class GameOver extends Component<gameOverProps, gameOverState> {
     };
 
     pushScoreToLeaderboard = (localLeaderboard: localLeaderboardType[]) => {
-        fetch(getRoutes().addScore, {
+        fetch(getRoutes().leaderboard, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(localLeaderboard)
@@ -149,7 +149,7 @@ class GameOver extends Component<gameOverProps, gameOverState> {
                                             <p key={item.playerName}>{item.playerName}: {item.score}</p>
                                         );
                                     }
-                                ) : 'длина < 0'
+                                ) : ''
                         }
                     </div>
                 </div>

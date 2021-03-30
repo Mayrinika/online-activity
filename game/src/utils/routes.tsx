@@ -11,6 +11,6 @@ export default function getRoutes(currentGameId?: string | null) {
         setWinner: `/${currentGameId}/setWinner`,
         setTimeIsOver: `/${currentGameId}/setTimeIsOver`,
         addLine: `/${currentGameId}/addLine`,
-        addScore: `/leaderbord`
+        leaderboard: `/leaderboard`
     }
 }
