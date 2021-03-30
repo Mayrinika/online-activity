@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from "cors";
 import {readFileSync} from 'file-system';
+import WebSocket from 'ws';
 
 const app = express();
 const port = 9000;
@@ -149,6 +150,22 @@ app.listen(port, (err) => {
         return console.log('something bad happened', err);
     }
     console.log(`Example app listening at http://localhost:${port}`);
+})
+
+const wss = new WebSocket.Server({port: 8080});
+const webSockets = {};
+
+wss.on('connection', ws => {
+    ws.on('message', message => {
+        wss.clients.forEach(client => {
+            client.send(message);
+        })
+        // webSockets[JSON.parse(message).gameId] ? webSockets[JSON.parse(message).gameId].push(ws) : webSockets[JSON.parse(message).gameId] = [ws];
+        // console.log()
+        // webSockets[JSON.parse(message).gameId].forEach(client => {
+        //      client.send(message);
+        // })
+    })
 })
 
 function getRandomWord(words): string {
