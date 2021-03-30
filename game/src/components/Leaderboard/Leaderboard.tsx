@@ -8,23 +8,15 @@ import './Leaderboard.css';
 interface leaderboardProps {
 }
 
-interface leaderboardType {
-    playerName: string;
-    score: number;
-}
-
 interface leaderboardState {
-    leaderboard: leaderboardType;
+    sortedLeaderboard: [string, number][];
 }
 
 class Leaderboard extends Component<leaderboardProps, leaderboardState> {
     constructor(props: leaderboardProps) {
         super(props);
         this.state = {
-            leaderboard: {
-                playerName: '',
-                score: 0
-            }
+            sortedLeaderboard: []
         };
     }
 
@@ -36,18 +28,20 @@ class Leaderboard extends Component<leaderboardProps, leaderboardState> {
         await fetch(getRoutes().leaderboard)
             .then(res => res.json())
             .then(leaderboard => {
+                const sortedLeaderboard = Object.entries(leaderboard as { [playerName: string]: number })
+                    .sort((a, b) => b[1] - a[1]); //TODO поправить сортировку
                 this.setState({
-                    leaderboard
+                    sortedLeaderboard
                 });
             });
     };
 
     render() {
-        const { leaderboard } = this.state;
+        const { sortedLeaderboard } = this.state;
         return (
             <div className='Leaderboard'>
                 <p>Лидерборд:</p>
-                {Object.entries(leaderboard).map(item => {
+                {Object.entries(sortedLeaderboard).map(item => {
                     return (
                         <p key={item[0]}>{item[0]}: {item[1]}</p>
                     );
