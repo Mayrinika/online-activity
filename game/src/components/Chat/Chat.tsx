@@ -5,18 +5,18 @@ import getRoutes from '../../utils/routes';
 //styles
 import './Chat.css';
 
-interface chatProps {
+interface ChatProps {
     isPainter: boolean;
     wordIsGuessed: () => void;
     wordToGuess: string;
 }
 
-interface chatState {
+interface ChatState {
     inputMessage: string;
-    chatMessages: messageType[];
+    chatMessages: Message[];
 }
 
-interface messageType {
+interface Message {
     id: string;
     name: string | null;
     text: string;
@@ -26,8 +26,8 @@ interface messageType {
     };
 }
 
-class Chat extends Component<chatProps, chatState> {
-    constructor(props: chatProps) {
+class Chat extends Component<ChatProps, ChatState> {
+    constructor(props: ChatProps) {
         super(props);
         this.state = {
             inputMessage: '',
@@ -116,7 +116,7 @@ class Chat extends Component<chatProps, chatState> {
             })
     }
 
-    showButtons = (message: messageType) => {
+    showButtons = (message: Message) => {
         if (this.props.isPainter) {
             return (
                 <span>
@@ -143,7 +143,7 @@ class Chat extends Component<chatProps, chatState> {
         return (
             <div className="Chat">
                 <div className="Chat-messages">
-                    {chatMessages.map((message: messageType) => (
+                    {chatMessages.map((message: Message) => (
                         <div key={message.id}>
                             <span className="Chat-message-name">{message.name}: </span>{message.text}
                             {this.showButtons(message)}

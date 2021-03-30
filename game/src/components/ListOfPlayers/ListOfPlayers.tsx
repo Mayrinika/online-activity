@@ -3,12 +3,12 @@ import {v4 as uuidv4} from 'uuid';
 //styles
 import './ListOfPlayers.css'
 
-interface listOfPlayersProps {
+interface ListOfPlayersProps {
     players: string[];
     painter: string;
 }
 
-class ListOfPlayers extends Component<listOfPlayersProps, {}> {
+class ListOfPlayers extends Component<ListOfPlayersProps, {}> {
     render() {
         return (
             <div className="ListOfPlayers">

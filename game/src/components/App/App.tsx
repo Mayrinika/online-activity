@@ -11,18 +11,18 @@ import getRoutes from '../../utils/routes';
 //styles
 import './App.css';
 
-interface gameType {
+interface GameType {
     id: string;
     players: string[];
 }
 
-interface appState {
+interface AppState {
     currentGameId: string;
     currentPlayer: string;
-    possibleGames: gameType[];
+    possibleGames: GameType[];
 }
 
-class App extends Component<{}, appState> {
+class App extends Component<{}, AppState> {
     constructor(props: {}) {
         super(props);
         this.state = {

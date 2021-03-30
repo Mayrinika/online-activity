@@ -9,11 +9,11 @@ import getRoutes from "../../utils/routes";
 import './Login.css';
 
 
-interface loginProps extends RouteComponentProps {
+interface LoginProps extends RouteComponentProps {
     joinGame: (player: string, gameId: string) => void;
 }
 
-type gameType = {
+interface GameType {
     id: string;
     players: string[];
     wordToGuess: string;
@@ -24,14 +24,14 @@ type gameType = {
     winner: string;
 }
 
-interface loginState {
+interface LoginState {
     name: string;
     code: string;
-    possibleGames: gameType[]
+    possibleGames: GameType[]
 }
 
-class Login extends Component<loginProps, loginState> {
-    constructor(props: loginProps) {
+class Login extends Component<LoginProps, LoginState> {
+    constructor(props: LoginProps) {
         super(props);
         this.state = {
             name: '',

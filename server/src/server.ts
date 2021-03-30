@@ -6,7 +6,7 @@ const app = express();
 const port = 9000;
 const GAME_TIME: number = 1 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
 
-interface message {
+interface Message {
     id: string;
     name: string;
     text: string;
@@ -16,13 +16,13 @@ interface message {
     };
 }
 
-interface gameType {
+interface GameType {
     id: string;
     players: string[];
     wordToGuess: string;
     painter: string;
     img: string;
-    chatMessages: message[];
+    chatMessages: Message[];
     time: number;
     winner: string;
     isWordGuessed: boolean;
@@ -31,7 +31,7 @@ interface gameType {
     lines: any[];
 }
 
-const games: gameType[] = [];
+const games: GameType[] = [];
 const timerIds = {};
 
 app.use(cors());

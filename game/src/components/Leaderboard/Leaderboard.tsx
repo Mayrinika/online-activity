@@ -5,15 +5,15 @@ import getRoutes from '../../utils/routes';
 //styles
 import './Leaderboard.css';
 
-interface leaderboardProps {
+interface LeaderboardProps {
 }
 
-interface leaderboardState {
+interface LeaderboardState {
     sortedLeaderboard: [string, number][];
 }
 
-class Leaderboard extends Component<leaderboardProps, leaderboardState> {
-    constructor(props: leaderboardProps) {
+class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
+    constructor(props: LeaderboardProps) {
         super(props);
         this.state = {
             sortedLeaderboard: []

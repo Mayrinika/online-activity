@@ -6,15 +6,15 @@ import getRoutes from '../../utils/routes';
 //styles
 import './StartGame.css';
 
-interface startGameProps extends RouteComponentProps {
+interface StartGameProps extends RouteComponentProps {
 }
 
-interface startGameState {
+interface StartGameState {
     players: string[];
 }
 
-class StartGame extends Component<startGameProps, startGameState> {
-    constructor(props: startGameProps) {
+class StartGame extends Component<StartGameProps, StartGameState> {
+    constructor(props: StartGameProps) {
         super(props);
         this.state = {
             players: [],

@@ -10,7 +10,7 @@ import getRoutes from '../../utils/routes';
 //styles
 import './Game.css';
 
-interface gameState {
+interface GameState {
     wordToGuess: string;
     painter: string;
     isGameOver: boolean;
@@ -18,11 +18,11 @@ interface gameState {
     players: string[];
 }
 
-interface gameProps extends RouteComponentProps {
+interface GameProps extends RouteComponentProps {
 }
 
-class Game extends Component<gameProps, gameState> {
-    constructor(props: gameProps) {
+class Game extends Component<GameProps, GameState> {
+    constructor(props: GameProps) {
         super(props);
         this.state = {
             wordToGuess: '',

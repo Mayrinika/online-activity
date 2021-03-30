@@ -6,15 +6,15 @@ import getRoutes from '../../utils/routes';
 //styles
 import './GameOver.css';
 
-interface gameOverProps extends RouteComponentProps {
+interface GameOverProps extends RouteComponentProps {
 }
 
-interface localLeaderboardType {
+interface LocalLeaderboardType {
     playerName: string;
     score: number;
 }
 
-interface message {
+interface Message {
     id: string;
     name: string;
     text: string;
@@ -24,19 +24,19 @@ interface message {
     };
 }
 
-interface gameOverState {
+interface GameOverState {
     isTimeOver: boolean;
     isWordGuessed: boolean;
     wordToGuess: string;
     winner: string;
     painter: string;
-    chatMessages: message[];
+    chatMessages: Message[];
     players: [];
-    localLeaderboard: localLeaderboardType[];
+    localLeaderboard: LocalLeaderboardType[];
 }
 
-class GameOver extends Component<gameOverProps, gameOverState> {
-    constructor(props: gameOverProps) {
+class GameOver extends Component<GameOverProps, GameOverState> {
+    constructor(props: GameOverProps) {
         super(props);
         this.state = {
             wordToGuess: '',
@@ -70,7 +70,7 @@ class GameOver extends Component<gameOverProps, gameOverState> {
     };
 
     calculateScores = () => {
-        const results: localLeaderboardType[] = [];
+        const results: LocalLeaderboardType[] = [];
         const { isTimeOver, players, painter, winner } = this.state;
 
         if (isTimeOver)
@@ -110,7 +110,7 @@ class GameOver extends Component<gameOverProps, gameOverState> {
         return Math.min(currentScore, 50);
     };
 
-    pushScoreToLeaderboard = (localLeaderboard: localLeaderboardType[]) => {
+    pushScoreToLeaderboard = (localLeaderboard: LocalLeaderboardType[]) => {
         fetch(getRoutes().leaderboard, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
