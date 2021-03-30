@@ -63,7 +63,7 @@ class Login extends Component<loginProps, loginState> {
             await this.joinGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
-            if (currentGameId?.players.includes(name)) {
+            if (currentGameId?.players.includes(name)) { //TODO добавить проверку
                 alert(`name ${name} already exist`); //TODO использовать библиотеку TOAST вместо alarm
             } else {
                 await this.joinGame(name, code);
