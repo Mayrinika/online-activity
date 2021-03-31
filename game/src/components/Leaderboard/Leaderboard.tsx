@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 //components
 //utils
 import getRoutes from '../../utils/routes';
 //styles
 import './Leaderboard.css';
 
-interface LeaderboardProps {
+interface LeaderboardProps extends RouteComponentProps {
 }
 
 interface LeaderboardState {
@@ -36,6 +37,10 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
             });
     };
 
+    startOver = () => {
+        this.props.history.push(`/`);
+    };
+
     render() {
         const { sortedLeaderboard } = this.state;
         return (
@@ -46,6 +51,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
                         <p key={item[0]}>{item[1][0]}: {item[1][1]}</p>
                     );
                 })}
+                <button onClick={this.startOver}>Начать заново</button>
             </div>
         );
     }

@@ -120,7 +120,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
             .then(res => console.log(res));
     };
 
-    gameOver = () => {
+    startOver = () => {
         this.props.history.push(`/`);
     };
 
@@ -156,7 +156,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                 </div>
                 }
 
-                <button onClick={this.gameOver}>Начать заново</button>
+                <button onClick={this.startOver}>Начать заново</button>
                 <button onClick={this.goToLeaderboard}>Лидерборд</button>
             </div>
         );
