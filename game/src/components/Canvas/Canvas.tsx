@@ -80,9 +80,9 @@ const Canvas = (props: canvasProps) => {
                 {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
             ]);
             isDrawing = false;
-            await sendLineToServer(currentLine);
+            sendLineToServer(currentLine);
             let uri = stageRef.current.toDataURL();
-            await addImage(uri);
+            addImage(uri);
         }
         isDrawing = false;
         setCurrentLine(null);
