@@ -29,7 +29,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
             .then(res => res.json())
             .then(leaderboard => {
                 const sortedLeaderboard = Object.entries(leaderboard as { [playerName: string]: number })
-                    .sort((a, b) => b[1] - a[1]); //TODO поправить сортировку
+                    .sort((a, b) => b[1] - a[1]);
                 this.setState({
                     sortedLeaderboard
                 });
@@ -43,7 +43,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
                 <p>Лидерборд:</p>
                 {Object.entries(sortedLeaderboard).map(item => {
                     return (
-                        <p key={item[0]}>{item[0]}: {item[1]}</p>
+                        <p key={item[0]}>{item[1][0]}: {item[1][1]}</p>
                     );
                 })}
             </div>
