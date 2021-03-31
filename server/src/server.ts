@@ -37,6 +37,11 @@ const timerIds = {};
 app.use(cors());
 app.use(express.json());
 
+app.use((err, req, res, next) => {
+    const {status = 500, message = 'Something went wrong'} = err;
+    res.status(status).send(message);
+});
+
 app.get('/app', (req, res) => {
     res.status(200).send(games);
 });
