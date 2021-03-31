@@ -92,6 +92,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                 score: currentScore
             });
         }
+        results.sort((a, b) => b.score - a.score);
         this.setState({
             localLeaderboard: results
         });
