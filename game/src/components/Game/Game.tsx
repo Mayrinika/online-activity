@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
-import {RouteComponentProps} from 'react-router-dom';
+import React, { Component } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 //components
 import Timer from '../Timer/Timer';
-import Canvas from "../Canvas/Canvas";
-import Chat from "../Chat/Chat";
-import ListOfPlayers from "../ListOfPlayers/ListOfPlayers";
+import Canvas from '../Canvas/Canvas';
+import Chat from '../Chat/Chat';
+import ListOfPlayers from '../ListOfPlayers/ListOfPlayers';
 //utils
 import getRoutes from '../../utils/routes';
 //styles
@@ -29,8 +29,8 @@ class Game extends Component<GameProps, GameState> {
             painter: '',
             isGameOver: false,
             imgURL: '',
-            players: [],
-        }
+            players: []
+        };
     }
 
     async componentDidMount() {
@@ -39,39 +39,6 @@ class Game extends Component<GameProps, GameState> {
 
     componentDidUpdate() {
         if (this.state.isGameOver) this.gameOver();
-    }
-
-    wordIsGuessed = async () => {
-        await this.clearCountdown();
-        await this.setWinner();
-    }
-
-    clearCountdown = async () => {
-        await fetch(getRoutes(localStorage.getItem('gameId')).clearCountdown, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-        });
-    }
-
-    setWinner = async () => {
-        await fetch(getRoutes(localStorage.getItem('gameId')).setWinner, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({winner: localStorage.getItem('playerName')})
-        });
-    }
-
-    setTimeIsOver = async () => {
-        await fetch(getRoutes(localStorage.getItem('gameId')).setTimeIsOver, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-        });
     }
 
     getDataFromServer = async () => {
@@ -83,16 +50,16 @@ class Game extends Component<GameProps, GameState> {
             wordToGuess: game.wordToGuess,
             painter: game.painter,
             players: game.players,
-            isGameOver: game.isGameOver,
+            isGameOver: game.isGameOver
         });
-    }
+    };
 
     gameOver = () => {
         this.props.history.push(`/${localStorage.getItem('gameId')}/game-over`);
-    }
+    };
 
     render() {
-        const {painter, wordToGuess, players, imgURL} = this.state;
+        const { painter, wordToGuess, players, imgURL } = this.state;
         const playerName = localStorage.getItem('playerName');
         const wordToDisplay = (playerName === painter) ?
             `Загаданное слово: ${wordToGuess}`
@@ -102,21 +69,20 @@ class Game extends Component<GameProps, GameState> {
         const isPainter = playerName === painter;
 
         return (
-            <div className="Game">
+            <div className='Game'>
                 <header>
-                    <div className="Game-Word">{wordToDisplay}</div>
+                    <div className='Game-Word'>{wordToDisplay}</div>
                     <Timer />
                 </header>
                 <main>
                     {isPainter ?
-                        <Canvas/>
+                        <Canvas />
                         : imgURL !== '' ?
-                            <img src={imgURL} alt='img from server'/>
-                            : <div className="Game emptyDiv"/>}
+                            <img src={imgURL} alt='img from server' />
+                            : <div className='Game emptyDiv' />}
                     <aside>
-                        <ListOfPlayers players={guessers} painter={painter}/>
-                        <Chat isPainter={isPainter} wordIsGuessed={this.wordIsGuessed}
-                              wordToGuess={wordToGuess}/>
+                        <ListOfPlayers players={guessers} painter={painter} />
+                        <Chat isPainter={isPainter} wordToGuess={wordToGuess} painter={painter} />
                     </aside>
                 </main>
             </div>
