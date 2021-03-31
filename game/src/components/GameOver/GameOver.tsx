@@ -139,7 +139,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                     <p>Слово было: {wordToGuess}</p>
                 </div>
                 }
-                {isWordGuessed &&
+                {(isWordGuessed && !isTimeOver) &&
                 <div>
                     <p>Игрок {winner} отгадал слово {wordToGuess}</p>
                     <div>
