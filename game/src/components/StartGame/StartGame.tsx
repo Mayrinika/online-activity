@@ -26,6 +26,14 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         this.props.ws.onmessage = (response: any) => {
             this.setState({players: JSON.parse(response.data).players});
         }
+        await this.getCurrentGame();
+    }
+
+    getCurrentGame = async () => {
+        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
+        const data = await res.text();
+        const game = JSON.parse(data);
+        this.setState({players: game.players});
     }
 
     startGame = async () => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import {Route, RouteComponentProps} from 'react-router-dom';
 //components
 import Timer from '../Timer/Timer';
 import Canvas from '../Canvas/Canvas';
@@ -9,6 +9,8 @@ import ListOfPlayers from '../ListOfPlayers/ListOfPlayers';
 import getRoutes from '../../utils/routes';
 //styles
 import './Game.css';
+import {log} from "util";
+
 
 interface GameState {
     wordToGuess: string;
@@ -19,6 +21,7 @@ interface GameState {
 }
 
 interface GameProps extends RouteComponentProps {
+    ws: any //TODO поправить тип
 }
 
 class Game extends Component<GameProps, GameState> {
@@ -34,6 +37,17 @@ class Game extends Component<GameProps, GameState> {
     }
 
     async componentDidMount() {
+        console.log('mount')
+        this.props.ws.onmessage = (response: any) => { //todo поправить тип
+            const game = JSON.parse(response.data)
+            this.setState({
+                imgURL: game.img,
+                wordToGuess: game.wordToGuess,
+                painter: game.painter,
+                players: game.players,
+                isGameOver: game.isGameOver
+            });
+        }
         await this.getDataFromServer();
     }
 
@@ -82,7 +96,9 @@ class Game extends Component<GameProps, GameState> {
                             : <div className='Game emptyDiv' />}
                     <aside>
                         <ListOfPlayers players={guessers} painter={painter} />
-                        <Chat isPainter={isPainter} wordToGuess={wordToGuess} painter={painter} />
+                        <Route path='/:gameId/game' render={(props) => (
+                            <Chat {...props} isPainter={isPainter} wordToGuess={wordToGuess} painter={painter} ws={this.props.ws}/>
+                        )}/>
                     </aside>
                 </main>
             </div>
