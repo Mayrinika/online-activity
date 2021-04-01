@@ -75,11 +75,14 @@ const Canvas = (props: canvasProps) => {
         const pos = e.target.getStage().getPointerPosition();
         if (isDrawing) {
             setCurrentLine({...currentLine, points: [...currentLine.points, pos.x, pos.y]});
+            setLines([
+                ...lines,
+                {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
+            ]);
             isDrawing = false;
-            await sendLineToServer(currentLine);
+            sendLineToServer(currentLine);
             let uri = stageRef.current.toDataURL();
-            await getLinesFromServer();
-            await addImage(uri);
+            addImage(uri);
         }
         isDrawing = false;
         setCurrentLine(null);
