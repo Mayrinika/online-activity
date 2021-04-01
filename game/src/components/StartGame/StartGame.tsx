@@ -7,6 +7,7 @@ import getRoutes from '../../utils/routes';
 import './StartGame.css';
 
 interface StartGameProps extends RouteComponentProps {
+    ws: any
 }
 
 interface StartGameState {
@@ -22,14 +23,9 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     }
 
     async componentDidMount() {
-        await this.getCurrentGame();
-    }
-
-    getCurrentGame = async () => {
-        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
-        const data = await res.text();
-        const game = JSON.parse(data);
-        this.setState({players: game.players});
+        this.props.ws.onmessage = (response: any) => {
+            this.setState({players: JSON.parse(response.data).players});
+        }
     }
 
     startGame = async () => {

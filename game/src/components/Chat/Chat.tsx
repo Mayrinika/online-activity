@@ -5,8 +5,6 @@ import getRoutes from '../../utils/routes';
 //styles
 import './Chat.css';
 
-const ws = new WebSocket('ws://localhost:8080');
-
 interface ChatProps {
     isPainter: boolean;
     // wordIsGuessed: () => void;
@@ -40,10 +38,10 @@ class Chat extends Component<ChatProps, ChatState> {
 
     async componentDidMount() {
         await this.getChatMessages();
-        ws.send(JSON.stringify({'gameId':localStorage.getItem('gameId'),'messageType':'register'}));
-        ws.onmessage = (response) => {
-            console.log(response.data)
-        };
+        // ws.send(JSON.stringify({'gameId':localStorage.getItem('gameId'),'messageType':'register'}));
+        // ws.onmessage = (response) => {
+        //     console.log(response.data)
+        // };
     }
 
     getChatMessages = async () => {
@@ -71,7 +69,7 @@ class Chat extends Component<ChatProps, ChatState> {
         }
 
         const generatedId = uuidv4();
-        ws.send(JSON.stringify({'gameId':gameId, 'message': {'name': playerName, 'text': inputMessage, 'id':generatedId, 'marks': {'hot': false, 'cold': false}}}));
+        //ws.send(JSON.stringify({'gameId':gameId, 'message': {'name': playerName, 'text': inputMessage, 'id':generatedId, 'marks': {'hot': false, 'cold': false}}}));
         fetch(getRoutes(gameId).chatMessages, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

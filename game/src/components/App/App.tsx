@@ -11,14 +11,14 @@ import getRoutes from '../../utils/routes';
 //styles
 import './App.css';
 
+const ws = new WebSocket('ws://localhost:8080');
+
 interface GameType {
     id: string;
     players: string[];
 }
 
 interface AppState {
-    currentGameId: string;
-    currentPlayer: string;
     possibleGames: GameType[];
 }
 
@@ -26,8 +26,6 @@ class App extends Component<{}, AppState> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            currentGameId: '',
-            currentPlayer: '',
             possibleGames: []
         }
     }
@@ -37,13 +35,7 @@ class App extends Component<{}, AppState> {
     }
 
     addPlayer = async (gameId: string, player: string) => {
-        await fetch(getRoutes(gameId).addPlayer, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({player})
-        });
+        ws.send(JSON.stringify({'gameId':gameId,'messageType':'register', 'player':player}));
     }
 
     addGame = async (gameId: string) => {
@@ -69,10 +61,6 @@ class App extends Component<{}, AppState> {
             await this.addGame(gameId);
             await this.addPlayer(gameId, player);
         }
-        this.setState({
-            currentPlayer: player,
-            currentGameId: gameId,
-        });
     }
 
     render() {
@@ -87,7 +75,7 @@ class App extends Component<{}, AppState> {
                         <GameOver {...props}/>
                     )}/>
                     <Route path='/:gameId' render={(props) => (
-                        <StartGame {...props}/>
+                        <StartGame {...props} ws={ws}/>
                     )}/>
                     <Route exact path='/' render={(props) => (
                         <Login {...props} joinGame={this.joinGame}/>

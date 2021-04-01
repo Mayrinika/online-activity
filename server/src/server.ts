@@ -86,11 +86,11 @@ app.post('/:gameId', (req, res) => {
     res.status(200).send(games);
 });
 
-app.post('/:gameId/addPlayer', (req, res) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.players.push(req.body.player);
-    res.status(200).send(games);
-});
+// app.post('/:gameId/addPlayer', (req, res) => {
+//     const currentGame = games.find(game => game.id === req.params.gameId);
+//     currentGame.players.push(req.body.player);
+//     res.status(200).send(games);
+// });
 
 app.get('/:gameId/chatMessages', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
@@ -179,23 +179,39 @@ const webSockets = {};
 
 wss.on('connection', ws => {
     ws.on('message', message => {
+        const messageType = JSON.parse(message).messageType;
         const gameId = JSON.parse(message).gameId;
-        console.log(gameId);
-        if (webSockets[gameId]) {
-            webSockets[gameId].push(ws);
-        } else {
-            webSockets[gameId] = [ws];
+        switch (messageType) {
+            case 'register':
+                const currentGame = games.find(game => game.id === gameId);
+                addPlayer(currentGame, JSON.parse(message).player);
+                if (webSockets[gameId]) {
+                    webSockets[gameId].push(ws);
+                } else {
+                    webSockets[gameId] = [ws];
+                }
+                webSockets[gameId].forEach(client => {
+                    client.send(JSON.stringify(currentGame));
+                })
+                console.log(webSockets[gameId].length);
+                break;
+            case 'addPlayer':
+                break;
+
         }
-        console.log(webSockets[gameId].length);
-        webSockets[gameId].forEach(client => {
-            client.send(message);
-        })
-        // webSockets[JSON.parse(message).gameId] ? webSockets[JSON.parse(message).gameId].push(ws) : webSockets[JSON.parse(message).gameId] = [ws];
-        // console.log()
-        // webSockets[JSON.parse(message).gameId].forEach(client => {
-        //      client.send(message);
+
+        // const gameId = JSON.parse(message).gameId;
+        // console.log(gameId);
+        // if (webSockets[gameId]) {
+        //     webSockets[gameId].push(ws);
+        // } else {
+        //     webSockets[gameId] = [ws];
+        // }
+        // console.log(webSockets[gameId].length);
+        // webSockets[gameId].forEach(client => {
+        //     client.send(message);
         // })
-    })
+    });
 })
 
 function getRandomWord(words): string {
@@ -206,5 +222,9 @@ function getRandomWord(words): string {
 function getPainter(players): string {
     const randomIdx = Math.floor(Math.random() * players.length);
     return players[randomIdx];
+}
+
+function addPlayer(currentGame, player) {
+    currentGame.players.push(player);
 }
 
