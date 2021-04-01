@@ -28,16 +28,21 @@ interface GameType {
     isWordGuessed: boolean;
     isTimeOver: boolean;
     isGameOver: boolean;
-    lines: any[];
+    lines: any[]; //TODO разобраться с типом
+}
+
+interface TimerIds {
+    [index: number]: number;
+    [index: string]: number;
 }
 
 const games: GameType[] = [];
-const timerIds = {};
+const timerIds: TimerIds = {};
 
 app.use(cors());
 app.use(express.json());
 
-app.use((err, req, res, next) => {
+app.use((err: any, req: any, res: any, next: any) => { //TODO разобраться с типом
     const {status = 500, message = 'Something went wrong'} = err;
     res.status(status).send(message);
 });
@@ -87,98 +92,143 @@ app.post('/:gameId', (req, res) => {
 
 app.post('/:gameId/addPlayer', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.players.push(req.body.player);
-    res.status(200).send(games);
+    if (currentGame) {
+        currentGame.players.push(req.body.player);
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.get('/:gameId/chatMessages', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    res.status(200).send(currentGame.chatMessages);
+    if (currentGame) {
+        res.status(200).send(currentGame.chatMessages);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.post('/:gameId/chatMessages', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.chatMessages.push(req.body);
-    res.status(200).send(games);
+    if (currentGame) {
+        currentGame.chatMessages.push(req.body);
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.post('/:gameId/addMark', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.chatMessages
-        .find(item => item.id === req.body.id)
-        .marks = req.body.marks;
-    res.status(200).send(games);
+    if (currentGame) {
+        const currentMessage = currentGame.chatMessages.find(item => item.id === req.body.id);
+        if (currentMessage) {
+            currentMessage.marks = req.body.marks;
+            res.status(200).send(games);
+        } else {
+            res.status(500).send('Message not found');
+        }
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.post('/:gameId/addImg', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.img = req.body.img;
-    res.status(200).send(games);
+    if (currentGame) {
+        currentGame.img = req.body.img;
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.post('/:gameId/addLine', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.lines.push(req.body.line);
-    res.status(200).send(games);
+    if (currentGame) {
+        currentGame.lines.push(req.body.line);
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.post('/:gameId/addWordAndPainter', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    if (currentGame.wordToGuess === '') {
-        const words = fs.readJsonSync('./src/utils/words.json').words;
-        currentGame.wordToGuess = getRandomWord(words);
+    if (currentGame) {
+        if (currentGame.wordToGuess === '') {
+            const words = fs.readJsonSync('./src/utils/words.json').words;
+            currentGame.wordToGuess = getRandomWord(words);
+        }
+        if (currentGame.painter === '') {
+            currentGame.painter = getPainter(currentGame.players);
+        }
+        if (currentGame.time === GAME_TIME) { //TODO разобраться с типом
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            timerIds[currentGame.id] = setInterval((currentGame) => {
+                if (currentGame.time > 0) {
+                    currentGame.time -= 1;
+                } else {
+                    currentGame.isTimeOver = true;
+                    currentGame.isGameOver = true;
+                    clearInterval(timerIds[currentGame]);
+                }
+            }, 1000, currentGame);
+        }
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
     }
-    if (currentGame.painter === '') {
-        currentGame.painter = getPainter(currentGame.players);
-    }
-    if (currentGame.time === GAME_TIME) {
-        timerIds[currentGame.id] = setInterval((currentGame) => {
-            if (currentGame.time > 0) {
-                currentGame.time -= 1;
-            } else {
-                currentGame.isTimeOver = true;
-                currentGame.isGameOver = true;
-                clearInterval(timerIds[currentGame]);
-            }
-        }, 1000, currentGame);
-    }
-    res.status(200).send(games);
 });
 
 app.post('/:gameId/clearCountdown', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    clearTimeout(timerIds[currentGame.id]);
-    res.status(200).send(games);
+    if (currentGame) {
+        clearTimeout(timerIds[currentGame.id]);
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.post('/:gameId/setWinner', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.winner = req.body.winner;
-    currentGame.isWordGuessed = true;
-    currentGame.isGameOver = true;
-    res.status(200).send(games);
+    if (currentGame) {
+        currentGame.winner = req.body.winner;
+        currentGame.isWordGuessed = true;
+        currentGame.isGameOver = true;
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.post('/:gameId/setTimeIsOver', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.isTimeOver = true;
-    currentGame.isGameOver = true;
-    res.status(200).send(games);
-});
-
-app.listen(port, (err) => {
-    if (err) {
-        return console.log('something bad happened', err);
+    if (currentGame) {
+        currentGame.isTimeOver = true;
+        currentGame.isGameOver = true;
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
     }
-    console.log(`Example app listening at http://localhost:${port}`);
 });
 
-function getRandomWord(words): string {
+app.listen(port, () => { //TODO (err) ?
+    // if (err) {
+    //     return console.log('something bad happened', err);
+    // }
+    console.log(`Example app listening at http://localhost:${port}/app`);
+});
+
+function getRandomWord(words: []): string {
     const randomIdx = Math.floor(Math.random() * words.length);
     return words[randomIdx];
 }
 
-function getPainter(players): string {
+function getPainter(players: string[]): string {
     const randomIdx = Math.floor(Math.random() * players.length);
     return players[randomIdx];
 }
