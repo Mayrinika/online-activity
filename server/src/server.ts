@@ -53,7 +53,7 @@ app.get('/leaderboard', (req, res) => {
 
 app.post('/leaderboard', (req, res) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    for (const { playerName, score } of req.body) {
+    for (const {playerName, score} of req.body) {
         if (playerName in leaderboard.players)
             leaderboard.players[playerName] += score;
         else
