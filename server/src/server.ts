@@ -29,16 +29,21 @@ interface GameType {
     isWordGuessed: boolean;
     isTimeOver: boolean;
     isGameOver: boolean;
-    lines: any[];
+    lines: any[]; //TODO разобраться с типом
+}
+
+interface TimerIds {
+    [index: number]: number;
+    [index: string]: number;
 }
 
 const games: GameType[] = [];
-const timerIds = {};
+const timerIds: TimerIds = {};
 
 app.use(cors());
 app.use(express.json());
 
-app.use((err, req, res, next) => {
+app.use((err: any, req: any, res: any, next: any) => { //TODO разобраться с типом
     const {status = 500, message = 'Something went wrong'} = err;
     res.status(status).send(message);
 });
@@ -54,7 +59,7 @@ app.get('/leaderboard', (req, res) => {
 
 app.post('/leaderboard', (req, res) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    for (const { playerName, score } of req.body) {
+    for (const {playerName, score} of req.body) {
         if (playerName in leaderboard.players)
             leaderboard.players[playerName] += score;
         else
@@ -192,12 +197,12 @@ wss.on('connection', ws => {
     });
 })
 
-function getRandomWord(words): string {
+function getRandomWord(words: []): string {
     const randomIdx = Math.floor(Math.random() * words.length);
     return words[randomIdx];
 }
 
-function getPainter(players): string {
+function getPainter(players: string[]): string {
     const randomIdx = Math.floor(Math.random() * players.length);
     return players[randomIdx];
 }
