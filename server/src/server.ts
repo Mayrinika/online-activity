@@ -34,6 +34,7 @@ interface GameType {
 
 interface TimerIds {
     [index: number]: number;
+
     [index: string]: number;
 }
 
@@ -94,108 +95,127 @@ app.post('/:gameId', (req, res) => {
 
 app.post('/:gameId/addLine', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.lines.push(req.body.line);
-    res.status(200).send(games);
+    if (currentGame) {
+        currentGame.lines.push(req.body.line);
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.post('/:gameId/clearCountdown', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    clearTimeout(timerIds[currentGame.id]);
-    res.status(200).send(games);
+    if (currentGame) {
+        clearTimeout(timerIds[currentGame.id]);
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
 app.post('/:gameId/setTimeIsOver', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.isTimeOver = true;
-    currentGame.isGameOver = true;
-    res.status(200).send(games);
+    if (currentGame) {
+        currentGame.isTimeOver = true;
+        currentGame.isGameOver = true;
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
 });
 
-app.listen(port, (err) => {
-    if (err) {
-        return console.log('something bad happened', err);
-    }
-    console.log(`Example app listening at http://localhost:${port}`);
+app.listen(port, () => { //TODO (err) ?
+    // if (err) {
+    //     return console.log('something bad happened', err);
+    // }
+    console.log(`Example app listening at http://localhost:${port}/app`);
 });
 
 const wss = new WebSocket.Server({port: 8080});
-const webSockets = {};
+const webSockets: any = {}; //TODO
 
 wss.on('connection', ws => {
-    ws.on('message', message => {
+    ws.on('message', (message: any) => { //TODO
         const messageType = JSON.parse(message).messageType;
         const gameId = JSON.parse(message).gameId;
         const currentGame = games.find(game => game.id === gameId);
+        if (currentGame === undefined) {
+            return;
+        }
         switch (messageType) {
-            case 'register':
-                addPlayer(currentGame, JSON.parse(message).player);
-                if (webSockets[gameId]) {
-                    webSockets[gameId].push(ws);
-                } else {
-                    webSockets[gameId] = [ws];
-                }
-                webSockets[gameId].forEach(client => {
-                    client.send(JSON.stringify(currentGame));
-                })
-                console.log(webSockets[gameId].length);
-                break;
-            case 'addWordAndPainter':
-                if (currentGame.wordToGuess === '') {
-                    const words = fs.readJsonSync('./src/utils/words.json').words;
-                    currentGame.wordToGuess = getRandomWord(words);
-                }
-                if (currentGame.painter === '') {
-                    currentGame.painter = getPainter(currentGame.players);
-                }
-                if (currentGame.time === GAME_TIME) {
-                    timerIds[currentGame.id] = setInterval((currentGame) => {
-                        if (currentGame.time > 0) {
-                            currentGame.time -= 1;
-                            webSockets[gameId].forEach(client => {
-                                client.send(JSON.stringify(currentGame));
-                            })
-                        } else {
-                            currentGame.isTimeOver = true;
-                            currentGame.isGameOver = true;
-                            clearInterval(timerIds[currentGame]);
-                            webSockets[gameId].forEach(client => {
-                                client.send(JSON.stringify(currentGame));
-                            })
-                        }
-                    }, 1000, currentGame);
-                }
-                break;
-            case 'sendMessage':
-                currentGame.chatMessages.push(JSON.parse(message).message);
-                webSockets[gameId].forEach(client => {
-                    client.send(JSON.stringify(currentGame));
-                })
-                break;
-            case 'postMarks':
-                currentGame.chatMessages
-                    .find(item => item.id === JSON.parse(message).value.id)
-                    .marks = JSON.parse(message).value.marks;
-                webSockets[gameId].forEach(client => {
-                    client.send(JSON.stringify(currentGame));
-                })
-                break;
-            case 'setWinner':
-                currentGame.winner = JSON.parse(message).winner;
-                currentGame.isWordGuessed = true;
-                currentGame.isGameOver = true;
-                webSockets[gameId].forEach(client => {
-                    client.send(JSON.stringify(currentGame));
-                })
-                break;
-            case 'sendImg':
-                currentGame.img = JSON.parse(message).img;
-                webSockets[gameId].forEach(client => {
-                    client.send(JSON.stringify(currentGame));
-                })
-                break;
+        case 'register':
+            addPlayer(currentGame, JSON.parse(message).player);
+            if (webSockets[gameId]) {
+                webSockets[gameId].push(ws);
+            } else {
+                webSockets[gameId] = [ws];
+            }
+            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+                client.send(JSON.stringify(currentGame));
+            });
+            console.log(webSockets[gameId].length);
+            break;
+        case 'addWordAndPainter':
+            if (currentGame.wordToGuess === '') {
+                const words = fs.readJsonSync('./src/utils/words.json').words;
+                currentGame.wordToGuess = getRandomWord(words);
+            }
+            if (currentGame.painter === '') {
+                currentGame.painter = getPainter(currentGame.players);
+            }
+            if (currentGame.time === GAME_TIME) {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                timerIds[currentGame.id] = setInterval((currentGame) => {
+                    if (currentGame.time > 0) {
+                        currentGame.time -= 1;
+                        webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+                            client.send(JSON.stringify(currentGame));
+                        });
+                    } else {
+                        currentGame.isTimeOver = true;
+                        currentGame.isGameOver = true;
+                        clearInterval(timerIds[currentGame]);
+                        webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+                            client.send(JSON.stringify(currentGame));
+                        });
+                    }
+                }, 1000, currentGame);
+            }
+            break;
+        case 'sendMessage':
+            currentGame.chatMessages.push(JSON.parse(message).message);
+            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+                client.send(JSON.stringify(currentGame));
+            });
+            break;
+        case 'postMarks':
+            const currentMessage = currentGame.chatMessages //TODO
+                .find(item => item.id === JSON.parse(message).value.id);
+            if (currentMessage === undefined)
+                return;
+            currentMessage.marks = JSON.parse(message).value.marks;
+            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+                client.send(JSON.stringify(currentGame));
+            });
+            break;
+        case 'setWinner':
+            currentGame.winner = JSON.parse(message).winner;
+            currentGame.isWordGuessed = true;
+            currentGame.isGameOver = true;
+            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+                client.send(JSON.stringify(currentGame));
+            });
+            break;
+        case 'sendImg':
+            currentGame.img = JSON.parse(message).img;
+            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+                client.send(JSON.stringify(currentGame));
+            });
+            break;
         }
     });
-})
+});
 
 function getRandomWord(words: []): string {
     const randomIdx = Math.floor(Math.random() * words.length);
@@ -207,7 +227,7 @@ function getPainter(players: string[]): string {
     return players[randomIdx];
 }
 
-function addPlayer(currentGame, player) {
+function addPlayer(currentGame: GameType, player: string) {
     currentGame.players.push(player);
 }
 
