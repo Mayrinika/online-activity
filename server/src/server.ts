@@ -124,28 +124,28 @@ app.post('/:gameId/addLine', (req, res) => {
     res.status(200).send(games);
 });
 
-app.post('/:gameId/addWordAndPainter', (req, res) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    if (currentGame.wordToGuess === '') {
-        const words = fs.readJsonSync('./src/utils/words.json').words;
-        currentGame.wordToGuess = getRandomWord(words);
-    }
-    if (currentGame.painter === '') {
-        currentGame.painter = getPainter(currentGame.players);
-    }
-    if (currentGame.time === GAME_TIME) {
-        timerIds[currentGame.id] = setInterval((currentGame) => {
-            if (currentGame.time > 0) {
-                currentGame.time -= 1;
-            } else {
-                currentGame.isTimeOver = true;
-                currentGame.isGameOver = true;
-                clearInterval(timerIds[currentGame]);
-            }
-        }, 1000, currentGame);
-    }
-    res.status(200).send(games);
-});
+// app.post('/:gameId/addWordAndPainter', (req, res) => {
+//     const currentGame = games.find(game => game.id === req.params.gameId);
+//     if (currentGame.wordToGuess === '') {
+//         const words = fs.readJsonSync('./src/utils/words.json').words;
+//         currentGame.wordToGuess = getRandomWord(words);
+//     }
+//     if (currentGame.painter === '') {
+//         currentGame.painter = getPainter(currentGame.players);
+//     }
+//     if (currentGame.time === GAME_TIME) {
+//         timerIds[currentGame.id] = setInterval((currentGame) => {
+//             if (currentGame.time > 0) {
+//                 currentGame.time -= 1;
+//             } else {
+//                 currentGame.isTimeOver = true;
+//                 currentGame.isGameOver = true;
+//                 clearInterval(timerIds[currentGame]);
+//             }
+//         }, 1000, currentGame);
+//     }
+//     res.status(200).send(games);
+// });
 
 app.post('/:gameId/clearCountdown', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
@@ -195,6 +195,32 @@ wss.on('connection', ws => {
                     client.send(JSON.stringify(currentGame));
                 })
                 console.log(webSockets[gameId].length);
+                break;
+            case 'addWordAndPainter':
+                if (currentGame.wordToGuess === '') {
+                    const words = fs.readJsonSync('./src/utils/words.json').words;
+                    currentGame.wordToGuess = getRandomWord(words);
+                }
+                if (currentGame.painter === '') {
+                    currentGame.painter = getPainter(currentGame.players);
+                }
+                if (currentGame.time === GAME_TIME) {
+                    timerIds[currentGame.id] = setInterval((currentGame) => {
+                        if (currentGame.time > 0) {
+                            currentGame.time -= 1;
+                            webSockets[gameId].forEach(client => {
+                                client.send(JSON.stringify(currentGame));
+                            })
+                        } else {
+                            currentGame.isTimeOver = true;
+                            currentGame.isGameOver = true;
+                            clearInterval(timerIds[currentGame]);
+                            webSockets[gameId].forEach(client => {
+                                client.send(JSON.stringify(currentGame));
+                            })
+                        }
+                    }, 1000, currentGame);
+                }
                 break;
             case 'sendMessage':
                 currentGame.chatMessages.push(JSON.parse(message).message);

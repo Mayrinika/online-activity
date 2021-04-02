@@ -34,13 +34,14 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     }
 
     addWordAndPainter = async (gameId: string | null) => {
-        await fetch(getRoutes(gameId).addWordAndPainter, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({})
-        });
+        this.props.ws.send(JSON.stringify({'messageType':'addWordAndPainter','gameId':localStorage.getItem('gameId')}));
+        // await fetch(getRoutes(gameId).addWordAndPainter, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json;charset=utf-8'
+        //     },
+        //     body: JSON.stringify({})
+        // });
     }
 
     render() {
