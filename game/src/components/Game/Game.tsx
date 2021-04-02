@@ -54,7 +54,8 @@ class Game extends Component<GameProps, GameState> {
             this.setState({
                 chatMessages: JSON.parse(response.data).chatMessages,
                 isGameOver: JSON.parse(response.data).isGameOver,
-                time: JSON.parse(response.data).time
+                time: JSON.parse(response.data).time,
+                imgURL: JSON.parse(response.data).img
             });
         }
     }
@@ -89,9 +90,12 @@ class Game extends Component<GameProps, GameState> {
     setWinner = (winner: string | null) => {
         this.props.ws.send(JSON.stringify({'messageType':'setWinner','gameId':localStorage.getItem('gameId'), 'winner':winner}));
     }
+    sendImg = (img: string) => {
+        this.props.ws.send(JSON.stringify({'messageType':'sendImg','gameId':localStorage.getItem('gameId'), 'img':img}));
+    }
 
     render() {
-        const { painter, wordToGuess, players, imgURL } = this.state;
+        const { painter, wordToGuess, players, imgURL, chatMessages } = this.state;
         const playerName = localStorage.getItem('playerName');
         const wordToDisplay = (playerName === painter) ?
             `Загаданное слово: ${wordToGuess}`
@@ -108,7 +112,7 @@ class Game extends Component<GameProps, GameState> {
                 </header>
                 <main>
                     {isPainter ?
-                        <Canvas />
+                        <Canvas sendImg={this.sendImg}/>
                         : imgURL !== '' ?
                             <img src={imgURL} alt='img from server' />
                             : <div className='Game emptyDiv' />}
@@ -119,7 +123,7 @@ class Game extends Component<GameProps, GameState> {
                             wordToGuess={wordToGuess}
                             painter={painter}
                             sendMessage={this.sendMessage}
-                            chatMessages={this.state.chatMessages}
+                            chatMessages={chatMessages}
                             postMarks={this.postMarks}
                             setWinner={this.setWinner}
                         />

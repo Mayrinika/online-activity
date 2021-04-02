@@ -8,6 +8,7 @@ import getRoutes from '../../utils/routes';
 import './Canvas.css';
 
 interface canvasProps {
+    sendImg: (img:string) => void;
 }
 
 let isDrawing = false; // TODO вообще-то это лучше сделать useRef, а не глобальной переменной. Но у меня не получилось создать два useRef в компоненте
@@ -52,13 +53,7 @@ const Canvas = (props: canvasProps) => {
     };
 
     const addImage = async (img: string) => {
-        await fetch(getRoutes(localStorage.getItem('gameId')).addImg, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({img})
-        });
+        props.sendImg(img);
     }
 
     const sendLineToServer = async (line: any) => {

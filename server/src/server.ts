@@ -82,39 +82,8 @@ app.post('/:gameId', (req, res) => {
         isWordGuessed: false,
         isTimeOver: false,
         isGameOver: false,
-        lines: []
+        lines: [],
     });
-    res.status(200).send(games);
-});
-
-// app.post('/:gameId/addPlayer', (req, res) => {
-//     const currentGame = games.find(game => game.id === req.params.gameId);
-//     currentGame.players.push(req.body.player);
-//     res.status(200).send(games);
-// });
-
-// app.get('/:gameId/chatMessages', (req, res) => {
-//     const currentGame = games.find(game => game.id === req.params.gameId);
-//     res.status(200).send(currentGame.chatMessages);
-// });
-//
-// app.post('/:gameId/chatMessages', (req, res) => {
-//     const currentGame = games.find(game => game.id === req.params.gameId);
-//     currentGame.chatMessages.push(req.body);
-//     res.status(200).send(games);
-// });
-
-// app.post('/:gameId/addMark', (req, res) => {
-//     const currentGame = games.find(game => game.id === req.params.gameId);
-//     currentGame.chatMessages
-//         .find(item => item.id === req.body.id)
-//         .marks = req.body.marks;
-//     res.status(200).send(games);
-// });
-
-app.post('/:gameId/addImg', (req, res) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.img = req.body.img;
     res.status(200).send(games);
 });
 
@@ -124,42 +93,11 @@ app.post('/:gameId/addLine', (req, res) => {
     res.status(200).send(games);
 });
 
-// app.post('/:gameId/addWordAndPainter', (req, res) => {
-//     const currentGame = games.find(game => game.id === req.params.gameId);
-//     if (currentGame.wordToGuess === '') {
-//         const words = fs.readJsonSync('./src/utils/words.json').words;
-//         currentGame.wordToGuess = getRandomWord(words);
-//     }
-//     if (currentGame.painter === '') {
-//         currentGame.painter = getPainter(currentGame.players);
-//     }
-//     if (currentGame.time === GAME_TIME) {
-//         timerIds[currentGame.id] = setInterval((currentGame) => {
-//             if (currentGame.time > 0) {
-//                 currentGame.time -= 1;
-//             } else {
-//                 currentGame.isTimeOver = true;
-//                 currentGame.isGameOver = true;
-//                 clearInterval(timerIds[currentGame]);
-//             }
-//         }, 1000, currentGame);
-//     }
-//     res.status(200).send(games);
-// });
-
 app.post('/:gameId/clearCountdown', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     clearTimeout(timerIds[currentGame.id]);
     res.status(200).send(games);
 });
-
-// app.post('/:gameId/setWinner', (req, res) => {
-//     const currentGame = games.find(game => game.id === req.params.gameId);
-//     currentGame.winner = req.body.winner;
-//     currentGame.isWordGuessed = true;
-//     currentGame.isGameOver = true;
-//     res.status(200).send(games);
-// });
 
 app.post('/:gameId/setTimeIsOver', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
@@ -244,19 +182,13 @@ wss.on('connection', ws => {
                     client.send(JSON.stringify(currentGame));
                 })
                 break;
+            case 'sendImg':
+                currentGame.img = JSON.parse(message).img;
+                webSockets[gameId].forEach(client => {
+                    client.send(JSON.stringify(currentGame));
+                })
+                break;
         }
-
-        // const gameId = JSON.parse(message).gameId;
-        // console.log(gameId);
-        // if (webSockets[gameId]) {
-        //     webSockets[gameId].push(ws);
-        // } else {
-        //     webSockets[gameId] = [ws];
-        // }
-        // console.log(webSockets[gameId].length);
-        // webSockets[gameId].forEach(client => {
-        //     client.send(message);
-        // })
     });
 })
 
