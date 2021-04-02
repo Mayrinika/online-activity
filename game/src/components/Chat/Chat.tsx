@@ -7,14 +7,16 @@ import './Chat.css';
 
 interface ChatProps {
     isPainter: boolean;
-    // wordIsGuessed: () => void;
     wordToGuess: string;
     painter: string;
+    sendMessage: (message: Message) => void;
+    chatMessages: Message[];
+    postMarks: (value: {id: string, marks: {hot: boolean, cold: boolean}}) => void;
+    setWinner: (winner: string | null) => void;
 }
 
 interface ChatState {
     inputMessage: string;
-    chatMessages: Message[];
 }
 
 interface Message {
@@ -32,66 +34,23 @@ class Chat extends Component<ChatProps, ChatState> {
         super(props);
         this.state = {
             inputMessage: '',
-            chatMessages: []
         };
     }
 
-    async componentDidMount() {
-        await this.getChatMessages();
-        // ws.send(JSON.stringify({'gameId':localStorage.getItem('gameId'),'messageType':'register'}));
-        // ws.onmessage = (response) => {
-        //     console.log(response.data)
-        // };
-    }
-
-    getChatMessages = async () => {
-        await fetch(getRoutes(localStorage.getItem('gameId')).chatMessages)
-            .then(res => res.json())
-            .then(chatMessages => {
-                this.setState({
-                    chatMessages
-                });
-            });
-    };
-
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
-
-        const { inputMessage, chatMessages } = this.state;
+        const { inputMessage } = this.state;
         const { wordToGuess } = this.props;
+        this.setState({inputMessage: ''});
         const playerName = localStorage.getItem('playerName');
         const gameId = localStorage.getItem('gameId');
         if (playerName === null || gameId === null)
             return;
-
         if (wordToGuess === inputMessage) {
             this.wordIsGuessed();
         }
-
         const generatedId = uuidv4();
-        //ws.send(JSON.stringify({'gameId':gameId, 'message': {'name': playerName, 'text': inputMessage, 'id':generatedId, 'marks': {'hot': false, 'cold': false}}}));
-        fetch(getRoutes(gameId).chatMessages, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                name: playerName,
-                text: inputMessage,
-                id: generatedId,
-                marks: { hot: false, cold: false }
-            })
-        })
-            .then(res => {
-                if (res.ok)
-                    this.setState({
-                        inputMessage: '',
-                        chatMessages: [...chatMessages, {
-                            id: generatedId,
-                            name: playerName,
-                            text: inputMessage,
-                            marks: { hot: false, cold: false }
-                        }]
-                    });
-            });
+        this.props.sendMessage({'name': playerName, 'text': inputMessage, 'id':generatedId, 'marks': {'hot': false, 'cold': false}})
     };
 
     enterMessage = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,17 +75,11 @@ class Chat extends Component<ChatProps, ChatState> {
         let playerName = localStorage.getItem('playerName');
         if (messageId)
             playerName = this.getWinner(messageId) as string;
-        await fetch(getRoutes(localStorage.getItem('gameId')).setWinner, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({ winner: playerName })
-        });
+        this.props.setWinner(playerName);
     };
 
     getWinner = (messageId: string) => {
-        const message = this.state.chatMessages.find(message => message.id === messageId);
+        const message = this.props.chatMessages.find(message => message.id === messageId);
         if (message)
             return message.name;
     };
@@ -140,21 +93,7 @@ class Chat extends Component<ChatProps, ChatState> {
     };
 
     postMarks(messageId: string, isHot: boolean) {
-        fetch(getRoutes(localStorage.getItem('gameId')).addMark, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: messageId, marks: { hot: isHot, cold: !isHot } })
-        })
-            .then(res => {
-                if (res.ok) {
-                    const currentIndex = this.state.chatMessages.findIndex(item => item.id === messageId);
-                    const newChatMessages = JSON.parse(JSON.stringify(this.state.chatMessages));
-                    newChatMessages[currentIndex].marks = { hot: isHot, cold: !isHot };
-                    this.setState({
-                        chatMessages: newChatMessages
-                    });
-                }
-            });
+        this.props.postMarks({ id: messageId, marks: { hot: isHot, cold: !isHot } });
     }
 
     showButtons = (message: Message) => {
@@ -180,8 +119,8 @@ class Chat extends Component<ChatProps, ChatState> {
     };
 
     render() {
-        const { chatMessages, inputMessage } = this.state;
-        const { isPainter } = this.props;
+        const { inputMessage } = this.state;
+        const { chatMessages, isPainter } = this.props;
 
         return (
             <div className='Chat'>

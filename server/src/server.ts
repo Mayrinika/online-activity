@@ -77,7 +77,8 @@ app.post('/:gameId', (req, res) => {
         painter: '',
         img: '',
         chatMessages: [],
-        time: GAME_TIME, winner: '',
+        time: GAME_TIME,
+        winner: '',
         isWordGuessed: false,
         isTimeOver: false,
         isGameOver: false,
@@ -92,24 +93,24 @@ app.post('/:gameId', (req, res) => {
 //     res.status(200).send(games);
 // });
 
-app.get('/:gameId/chatMessages', (req, res) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    res.status(200).send(currentGame.chatMessages);
-});
+// app.get('/:gameId/chatMessages', (req, res) => {
+//     const currentGame = games.find(game => game.id === req.params.gameId);
+//     res.status(200).send(currentGame.chatMessages);
+// });
+//
+// app.post('/:gameId/chatMessages', (req, res) => {
+//     const currentGame = games.find(game => game.id === req.params.gameId);
+//     currentGame.chatMessages.push(req.body);
+//     res.status(200).send(games);
+// });
 
-app.post('/:gameId/chatMessages', (req, res) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.chatMessages.push(req.body);
-    res.status(200).send(games);
-});
-
-app.post('/:gameId/addMark', (req, res) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.chatMessages
-        .find(item => item.id === req.body.id)
-        .marks = req.body.marks;
-    res.status(200).send(games);
-});
+// app.post('/:gameId/addMark', (req, res) => {
+//     const currentGame = games.find(game => game.id === req.params.gameId);
+//     currentGame.chatMessages
+//         .find(item => item.id === req.body.id)
+//         .marks = req.body.marks;
+//     res.status(200).send(games);
+// });
 
 app.post('/:gameId/addImg', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
@@ -152,13 +153,13 @@ app.post('/:gameId/clearCountdown', (req, res) => {
     res.status(200).send(games);
 });
 
-app.post('/:gameId/setWinner', (req, res) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    currentGame.winner = req.body.winner;
-    currentGame.isWordGuessed = true;
-    currentGame.isGameOver = true;
-    res.status(200).send(games);
-});
+// app.post('/:gameId/setWinner', (req, res) => {
+//     const currentGame = games.find(game => game.id === req.params.gameId);
+//     currentGame.winner = req.body.winner;
+//     currentGame.isWordGuessed = true;
+//     currentGame.isGameOver = true;
+//     res.status(200).send(games);
+// });
 
 app.post('/:gameId/setTimeIsOver', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
@@ -181,9 +182,9 @@ wss.on('connection', ws => {
     ws.on('message', message => {
         const messageType = JSON.parse(message).messageType;
         const gameId = JSON.parse(message).gameId;
+        const currentGame = games.find(game => game.id === gameId);
         switch (messageType) {
             case 'register':
-                const currentGame = games.find(game => game.id === gameId);
                 addPlayer(currentGame, JSON.parse(message).player);
                 if (webSockets[gameId]) {
                     webSockets[gameId].push(ws);
@@ -195,9 +196,28 @@ wss.on('connection', ws => {
                 })
                 console.log(webSockets[gameId].length);
                 break;
-            case 'addPlayer':
+            case 'sendMessage':
+                currentGame.chatMessages.push(JSON.parse(message).message);
+                webSockets[gameId].forEach(client => {
+                    client.send(JSON.stringify(currentGame));
+                })
                 break;
-
+            case 'postMarks':
+                currentGame.chatMessages
+                    .find(item => item.id === JSON.parse(message).value.id)
+                    .marks = JSON.parse(message).value.marks;
+                webSockets[gameId].forEach(client => {
+                    client.send(JSON.stringify(currentGame));
+                })
+                break;
+            case 'setWinner':
+                currentGame.winner = JSON.parse(message).winner;
+                currentGame.isWordGuessed = true;
+                currentGame.isGameOver = true;
+                webSockets[gameId].forEach(client => {
+                    client.send(JSON.stringify(currentGame));
+                })
+                break;
         }
 
         // const gameId = JSON.parse(message).gameId;

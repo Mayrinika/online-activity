@@ -16,9 +16,22 @@ interface GameState {
     isGameOver: boolean;
     imgURL: string;
     players: string[];
+    chatMessages: Message[];
+    time: number;
+}
+
+interface Message {
+    id: string;
+    name: string;
+    text: string;
+    marks: {
+        hot: boolean;
+        cold: boolean;
+    };
 }
 
 interface GameProps extends RouteComponentProps {
+    ws: any //todo поправить тип
 }
 
 class Game extends Component<GameProps, GameState> {
@@ -29,12 +42,21 @@ class Game extends Component<GameProps, GameState> {
             painter: '',
             isGameOver: false,
             imgURL: '',
-            players: []
+            players: [],
+            chatMessages: [],
+            time: 0
         };
     }
 
     async componentDidMount() {
         await this.getDataFromServer();
+        this.props.ws.onmessage = (response: any) => {
+            this.setState({
+                chatMessages: JSON.parse(response.data).chatMessages,
+                isGameOver: JSON.parse(response.data).isGameOver,
+                time: JSON.parse(response.data).time
+            });
+        }
     }
 
     componentDidUpdate() {
@@ -58,6 +80,16 @@ class Game extends Component<GameProps, GameState> {
         this.props.history.push(`/${localStorage.getItem('gameId')}/game-over`);
     };
 
+    sendMessage = (message: Message) => {
+        this.props.ws.send(JSON.stringify({'messageType':'sendMessage','gameId':localStorage.getItem('gameId'), 'message':message}));
+    }
+    postMarks = (value: {id: string, marks: {hot: boolean, cold: boolean}}) => {
+        this.props.ws.send(JSON.stringify({'messageType':'postMarks','gameId':localStorage.getItem('gameId'), 'value':value}));
+    }
+    setWinner = (winner: string | null) => {
+        this.props.ws.send(JSON.stringify({'messageType':'setWinner','gameId':localStorage.getItem('gameId'), 'winner':winner}));
+    }
+
     render() {
         const { painter, wordToGuess, players, imgURL } = this.state;
         const playerName = localStorage.getItem('playerName');
@@ -72,7 +104,7 @@ class Game extends Component<GameProps, GameState> {
             <div className='Game'>
                 <header>
                     <div className='Game-Word'>{wordToDisplay}</div>
-                    <Timer />
+                    <Timer time={this.state.time}/>
                 </header>
                 <main>
                     {isPainter ?
@@ -82,7 +114,15 @@ class Game extends Component<GameProps, GameState> {
                             : <div className='Game emptyDiv' />}
                     <aside>
                         <ListOfPlayers players={guessers} painter={painter} />
-                        <Chat isPainter={isPainter} wordToGuess={wordToGuess} painter={painter} />
+                        <Chat
+                            isPainter={isPainter}
+                            wordToGuess={wordToGuess}
+                            painter={painter}
+                            sendMessage={this.sendMessage}
+                            chatMessages={this.state.chatMessages}
+                            postMarks={this.postMarks}
+                            setWinner={this.setWinner}
+                        />
                     </aside>
                 </main>
             </div>
