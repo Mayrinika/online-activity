@@ -69,7 +69,7 @@ class App extends Component<{}, AppState> {
                 <Switch>
                     <Route path='/leaderboard' component={Leaderboard}/>
                     <Route path='/:gameId/game' render={(props) => (
-                        <Game {...props} ws={ws}/>
+                        <Game {...props}/>
                     )}/>
                     <Route path='/:gameId/game-over' render={(props) => (
                         <GameOver {...props}/>
