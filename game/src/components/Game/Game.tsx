@@ -74,7 +74,9 @@ class Game extends Component<GameProps, GameState> {
             wordToGuess: game.wordToGuess,
             painter: game.painter,
             players: game.players,
-            isGameOver: game.isGameOver
+            isGameOver: game.isGameOver,
+            chatMessages: game.chatMessages,
+            time: game.time,
         });
     };
 
