@@ -76,18 +76,16 @@ class Game extends Component<GameProps, GameState> {
     }
 
     getDataFromServer = async () => {
-        const send = function (message: any) {
+        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {
-                newWS.send(message);
+                return newWS.send(message);
             }, 1000);
         };
 
-        const waitForConnection = function (callback: any, interval: any) {
+        const waitForConnection = function (callback: () => void, interval: number) {
             if (newWS.readyState === 1) {
-                console.log('connect');
                 callback();
             } else {
-                console.log('not connect');
                 setTimeout(function () {
                     waitForConnection(callback, interval);
                 }, interval);

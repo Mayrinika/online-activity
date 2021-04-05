@@ -153,10 +153,8 @@ wss.on('connection', ws => {
             webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
                 client.send(JSON.stringify(currentGame));
             });
-            console.log(webSockets[gameId].length);
             break;
         case 'refresh':
-            console.log('refresh')
             if (webSockets[gameId]) {
                 webSockets[gameId].push(ws);
             } else {
@@ -164,7 +162,7 @@ wss.on('connection', ws => {
             }
             webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
                 client.send(JSON.stringify(currentGame));
-            })
+            });
             break;
         case 'addWordAndPainter':
             if (currentGame.wordToGuess === '') {

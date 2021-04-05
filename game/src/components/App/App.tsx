@@ -31,6 +31,7 @@ class App extends Component<{}, AppState> {
     }
 
     async componentDidMount() {
+        console.log('')
         await this.getAllGames();
     }
 
