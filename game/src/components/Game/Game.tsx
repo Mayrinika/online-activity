@@ -108,6 +108,8 @@ class Game extends Component<GameProps, GameState> {
 
     gameOver = () => {
         this.props.history.push(`/${localStorage.getItem('gameId')}/game-over`);
+        this.props.ws.close();
+        newWS.close();
     };
 
     sendMessage = (message: Message) => {

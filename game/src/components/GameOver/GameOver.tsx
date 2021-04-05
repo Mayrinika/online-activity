@@ -117,7 +117,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(localLeaderboard)
         })
-            .then(res => console.log(res));
+            //.then(res => console.log(res));
     };
 
     startOver = () => {

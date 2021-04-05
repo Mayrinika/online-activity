@@ -11,7 +11,7 @@ import getRoutes from '../../utils/routes';
 //styles
 import './App.css';
 
-const ws = new WebSocket('ws://localhost:8080');
+let ws: any;
 
 interface GameType {
     id: string;
@@ -31,12 +31,27 @@ class App extends Component<{}, AppState> {
     }
 
     async componentDidMount() {
-        console.log('')
         await this.getAllGames();
     }
 
     addPlayer = async (gameId: string, player: string) => {
-        ws.send(JSON.stringify({'gameId':gameId,'messageType':'register', 'player':player}));
+        ws = new WebSocket('ws://localhost:8080');
+        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
+            waitForConnection(function () {
+                return ws.send(message);
+            }, 1000);
+        };
+
+        const waitForConnection = function (callback: () => void, interval: number) {
+            if (ws.readyState === 1) {
+                callback();
+            } else {
+                setTimeout(function () {
+                    waitForConnection(callback, interval);
+                }, interval);
+            }
+        };
+        send(JSON.stringify({'gameId':gameId,'messageType':'register', 'player':player}));
     }
 
     addGame = async (gameId: string) => {
