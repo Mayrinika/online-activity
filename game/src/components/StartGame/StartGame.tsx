@@ -15,17 +15,25 @@ interface StartGameState {
 }
 
 class StartGame extends Component<StartGameProps, StartGameState> {
+    private _isMounted: boolean;
     constructor(props: StartGameProps) {
         super(props);
         this.state = {
             players: [],
         }
+        this._isMounted = false;
     }
 
     async componentDidMount() {
+        this._isMounted = true;
         this.props.ws.onmessage = (response: any) => {
-            this.setState({players: JSON.parse(response.data).players});
+            if (this._isMounted) {
+                this.setState({players: JSON.parse(response.data).players});
+            }
         }
+    }
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     startGame = async () => {
