@@ -5,6 +5,7 @@ import crocoImg from '../../img/cocodrilo.png';
 //components
 //utils
 import getRoutes from "../../utils/routes";
+import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './Login.css';
 
@@ -78,7 +79,7 @@ class Login extends Component<LoginProps, LoginState> {
         localStorage.setItem('playerName', name);
         localStorage.setItem('gameId', newCode);
         await joinGame(name, newCode);
-        history.push(`/${newCode}`);
+        history.push(getDomRoutes(newCode).startGame);
     }
 
     render() {

@@ -3,6 +3,7 @@ import {RouteComponentProps} from 'react-router-dom';
 //components
 //utils
 import getRoutes from '../../utils/routes';
+import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './StartGame.css';
 
@@ -38,7 +39,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
 
     startGame = async () => {
         await this.addWordAndPainter(localStorage.getItem('gameId'));
-        this.props.history.push(`/${localStorage.getItem('gameId')}/game`);
+        this.props.history.push(getDomRoutes(localStorage.getItem('gameId')).game);
     }
 
     addWordAndPainter = async (gameId: string | null) => {

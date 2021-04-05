@@ -8,6 +8,7 @@ import GameOver from "../GameOver/GameOver";
 import Leaderboard from "../Leaderboard/Leaderboard";
 //utils
 import getRoutes from '../../utils/routes';
+import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './App.css';
 
@@ -83,17 +84,17 @@ class App extends Component<{}, AppState> {
         return (
             <div className="App">
                 <Switch>
-                    <Route path='/leaderboard' component={Leaderboard}/>
-                    <Route path='/:gameId/game' render={(props) => (
+                    <Route path={getDomRoutes().leaderboard} component={Leaderboard}/>
+                    <Route path={getDomRoutes(':gameId').game} render={(props) => (
                         <Game {...props} ws={ws}/>
                     )}/>
-                    <Route path='/:gameId/game-over' render={(props) => (
+                    <Route path={getDomRoutes(':gameId').gameOver} render={(props) => (
                         <GameOver {...props}/>
                     )}/>
-                    <Route path='/:gameId' render={(props) => (
+                    <Route path={getDomRoutes(':gameId').startGame} render={(props) => (
                         <StartGame {...props} ws={ws}/>
                     )}/>
-                    <Route exact path='/' render={(props) => (
+                    <Route exact path={getDomRoutes().login} render={(props) => (
                         <Login {...props} joinGame={this.joinGame}/>
                     )}/>
                 </Switch>

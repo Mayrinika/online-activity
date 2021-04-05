@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 //components
 //utils
 import getRoutes from '../../utils/routes';
+import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './GameOver.css';
 
@@ -121,11 +122,11 @@ class GameOver extends Component<GameOverProps, GameOverState> {
     };
 
     startOver = () => {
-        this.props.history.push(`/`);
+        this.props.history.push(getDomRoutes().login);
     };
 
     goToLeaderboard = () => {
-        this.props.history.push(`/leaderboard`);
+        this.props.history.push(getDomRoutes().leaderboard);
     };
 
     render() {

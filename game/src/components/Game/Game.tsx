@@ -7,6 +7,7 @@ import Chat from '../Chat/Chat';
 import ListOfPlayers from '../ListOfPlayers/ListOfPlayers';
 //utils
 import getRoutes from '../../utils/routes';
+import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './Game.css';
 
@@ -107,8 +108,9 @@ class Game extends Component<GameProps, GameState> {
     };
 
     gameOver = () => {
-        this.props.history.push(`/${localStorage.getItem('gameId')}/game-over`);
-        this.props.ws.close();
+        const {history, ws} = this.props;
+        history.push(getDomRoutes(localStorage.getItem('gameId')).gameOver);
+        ws.close();
         newWS.close();
     };
 

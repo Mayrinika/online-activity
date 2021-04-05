@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 //components
 //utils
 import getRoutes from '../../utils/routes';
+import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './Leaderboard.css';
 
@@ -38,7 +39,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
     };
 
     startOver = () => {
-        this.props.history.push(`/`);
+        this.props.history.push(getDomRoutes().login);
     };
 
     render() {
