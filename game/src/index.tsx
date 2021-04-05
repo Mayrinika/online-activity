@@ -1,16 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom';
-import './index.css';
-import App from './components/App/App';
 import reportWebVitals from './reportWebVitals';
+//components
+import App from './components/App/App';
+//utils
+import themeFile from './utils/theme';
+//styles
+import './index.css';
+import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
+
+const theme = createMuiTheme(themeFile);
+
+const styles = (theme: any) => ({ //TODO
+    ...theme.content
+});
 
 ReactDOM.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <App/>
-        </BrowserRouter>
-    </React.StrictMode>,
+    <MuiThemeProvider theme={theme}>
+        <React.StrictMode>
+            <BrowserRouter>
+                <App/>
+            </BrowserRouter>
+        </React.StrictMode>,
+    </MuiThemeProvider>,
     document.getElementById('root')
 );
 

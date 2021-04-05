@@ -7,10 +7,15 @@ import crocoImg from '../../img/cocodrilo.png';
 import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
 //styles
-import './Login.css';
+import {createStyles, withStyles, WithStyles} from "@material-ui/core/styles";
+import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
+// import './Login.css';
 
+const styles = (theme: any) => createStyles({ //TODO
+    ...theme.content,
+});
 
-interface LoginProps extends RouteComponentProps {
+interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
     joinGame: (player: string, gameId: string) => void;
 }
 
@@ -38,21 +43,21 @@ class Login extends Component<LoginProps, LoginState> {
             name: '',
             code: '',
             possibleGames: []
-        }
+        };
     }
 
     getAllGames = async () => {
         const res = await fetch(getRoutes().app);
         const data = await res.text();
         this.setState({possibleGames: JSON.parse(data)});
-    }
+    };
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
             ...state,
             [evt.target.name]: evt.target.value
-        }))
-    }
+        }));
+    };
 
     handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>) => {
         const {name, code} = this.state;
@@ -72,7 +77,7 @@ class Login extends Component<LoginProps, LoginState> {
         } else {
             alert('no such play'); //TODO использовать библиотеку TOAST вместо alarm
         }
-    }
+    };
 
     joinGame = async (name: string, newCode: string) => {
         const {joinGame, history} = this.props;
@@ -80,39 +85,62 @@ class Login extends Component<LoginProps, LoginState> {
         localStorage.setItem('gameId', newCode);
         await joinGame(name, newCode);
         history.push(getDomRoutes(newCode).startGame);
-    }
+    };
 
     render() {
+        const {classes} = this.props;
         return (
-            <div className="Login">
-                <h1 className="Login-Header">Добро пожаловать в онлайн-игру "Крокодил"!</h1>
-                <div className="Login-Container">
-                    <img className="Login-Img" src={crocoImg} alt="Крокодил"/>
-                    <form className="Login-Form" onSubmit={this.handleSubmit}>
-                        <label htmlFor="name">Введите ваше имя: <span className="red">*</span></label>
-                        <input
-                            id="name"
-                            type="text"
-                            name="name"
-                            placeholder="Имя"
-                            value={this.state.name}
-                            onChange={this.handleChange}
-                        />
-                        <label htmlFor="code">Введите код приглашения (необязательно):</label>
-                        <input
-                            id="code"
-                            type="text"
-                            name="code"
-                            placeholder="Код"
-                            value={this.state.code}
-                            onChange={this.handleChange}
-                        />
-                        <input type="submit" value={'Войти'}/>
-                    </form>
-                </div>
-            </div>
+            <Container className={classes.gameField} maxWidth='lg'>
+                <Grid container spacing={2} justify="center">
+                    <Grid item xs={5}>
+                        <div className={classes.imgContainer}>
+                            <img className="Login-Img" src={crocoImg} alt="Крокодил"/>
+                        </div>
+                    </Grid>
+                    <Grid item xs={5} className={classes.loginFormContainer}>
+                        <Typography component='h1' variant='h3'>
+                            Онлайн - активити
+                        </Typography>
+                        <form onSubmit={this.handleSubmit} className={classes.loginForm}>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="name"
+                                label="Введите имя"
+                                name="name"
+                                autoComplete="name"
+                                autoFocus
+                                onChange={this.handleChange}
+                                value={this.state.name}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                fullWidth
+                                id="code"
+                                label="Введите код приглашения"
+                                name="code"
+                                autoComplete="code"
+                                onChange={this.handleChange}
+                                value={this.state.code}
+                            />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                                size="large"
+                                style={{marginTop: 32}}
+                            >
+                                Играть!
+                            </Button>
+                        </form>
+                    </Grid>
+                </Grid>
+            </Container>
         );
     }
 }
 
-export default Login;
+export default (withStyles(styles)(Login));
