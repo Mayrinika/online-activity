@@ -10,6 +10,8 @@ import getRoutes from '../../utils/routes';
 //styles
 import './Game.css';
 
+const newWS= new WebSocket('ws://localhost:8080');
+
 interface GameState {
     wordToGuess: string;
     painter: string;
@@ -59,6 +61,14 @@ class Game extends Component<GameProps, GameState> {
                 players: JSON.parse(response.data).players
             });
         }
+        newWS.onmessage = (response: any) => {
+            this.setState({
+                chatMessages: JSON.parse(response.data).chatMessages,
+                isGameOver: JSON.parse(response.data).isGameOver,
+                time: JSON.parse(response.data).time,
+                imgURL: JSON.parse(response.data).img
+            });
+        }
     }
 
     componentDidUpdate() {
@@ -66,6 +76,24 @@ class Game extends Component<GameProps, GameState> {
     }
 
     getDataFromServer = async () => {
+        const send = function (message: any) {
+            waitForConnection(function () {
+                newWS.send(message);
+            }, 1000);
+        };
+
+        const waitForConnection = function (callback: any, interval: any) {
+            if (newWS.readyState === 1) {
+                console.log('connect');
+                callback();
+            } else {
+                console.log('not connect');
+                setTimeout(function () {
+                    waitForConnection(callback, interval);
+                }, interval);
+            }
+        };
+        send(JSON.stringify({'messageType':'refresh','gameId':localStorage.getItem('gameId')}));
         const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
