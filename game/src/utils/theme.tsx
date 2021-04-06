@@ -17,14 +17,14 @@ export default {
     content: {
         gameField: {
             // width: 1000,
-            height: 500,
+            // height: 500,
             margin: '0 auto',
+            padding: 48,
             backgroundColor: 'rgba(244,244,244,0.85)',
             border: '1px solid black',
             borderRadius: 10,
         },
         imgContainer: {
-            marginTop: 48,
             borderRight:'1px solid gray',
 
             '& .Login-Img': {
@@ -36,14 +36,9 @@ export default {
         loginFormContainer: {
             marginLeft: 'auto',
             marginRight: 'auto',
-            marginTop: 48,
             // border: '1px solid gray',
             // borderRadius: 10,
             padding: 48
-        },
-        loginForm: {
-            marginTop: 48,
-
         }
     }
 };

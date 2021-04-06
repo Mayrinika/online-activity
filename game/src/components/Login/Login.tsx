@@ -9,7 +9,6 @@ import getDomRoutes from "../../utils/domRoutes";
 //styles
 import {createStyles, withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
-// import './Login.css';
 
 const styles = (theme: any) => createStyles({ //TODO
     ...theme.content,
@@ -90,7 +89,7 @@ class Login extends Component<LoginProps, LoginState> {
     render() {
         const {classes} = this.props;
         return (
-            <Container className={classes.gameField} maxWidth='lg'>
+            <Container className={classes.gameField} maxWidth='lg' style={{height: 500}}>
                 <Grid container spacing={2} justify="center">
                     <Grid item xs={5}>
                         <div className={classes.imgContainer}>
@@ -101,7 +100,7 @@ class Login extends Component<LoginProps, LoginState> {
                         <Typography component='h1' variant='h3'>
                             Онлайн - активити
                         </Typography>
-                        <form onSubmit={this.handleSubmit} className={classes.loginForm}>
+                        <form onSubmit={this.handleSubmit} style={{marginTop: 48}}>
                             <TextField
                                 variant="outlined"
                                 margin="normal"

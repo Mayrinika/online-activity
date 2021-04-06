@@ -2,12 +2,16 @@ import React, {Component} from "react";
 import {RouteComponentProps} from 'react-router-dom';
 //components
 //utils
-import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
 //styles
-import './StartGame.css';
+import {createStyles, withStyles, WithStyles} from "@material-ui/core/styles";
+import {Button, Container, Typography, Box} from '@material-ui/core';
 
-interface StartGameProps extends RouteComponentProps {
+const styles = (theme: any) => createStyles({ //TODO
+    ...theme.content,
+});
+
+interface StartGameProps extends RouteComponentProps, WithStyles<typeof styles> {
     ws: any
 }
 
@@ -55,14 +59,30 @@ class StartGame extends Component<StartGameProps, StartGameState> {
 
     render() {
         const {players} = this.state;
+        const {classes} = this.props;
         return (
-            <div className="StartGame">
-                <h3>Игроки: {players && players.join(', ')}</h3>
-                <h3>Все игроки в сборе?</h3>
-                <button onClick={this.startGame}>Да! Начать игру!</button>
-            </div>
+            <Container className={classes.gameField} maxWidth='sm'>
+                <Box>
+                    <Typography component='h3' variant='h5' paragraph>
+                        Игроки: {players && players.join(', ')}
+                    </Typography>
+                    <Typography component='h4' variant='h6' paragraph>
+                        Все игроки в сборе?
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        size="large"
+                        style={{marginTop: 32}}
+                        onClick={this.startGame}
+                    >
+                        Да! Начать игру!
+                    </Button>
+                </Box>
+            </Container>
         );
     }
 }
 
-export default StartGame;
+export default (withStyles(styles)(StartGame));
