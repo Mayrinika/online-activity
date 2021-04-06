@@ -50,6 +50,9 @@ export default {
             backgroundColor: '#A1C1EC',
             margin: 8,
             padding: 8,
+        },
+        button: {
+            margin: '32px 16px 16px 16px',
         }
     }
 };

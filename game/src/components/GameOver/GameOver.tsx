@@ -1,13 +1,19 @@
-import { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, {Component} from 'react';
+import {RouteComponentProps} from 'react-router-dom';
 //components
 //utils
 import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
 //styles
-import './GameOver.css';
+import {createStyles, withStyles, WithStyles} from "@material-ui/core/styles";
+import {Button, Container, Grid, Typography, TextField, Box} from '@material-ui/core';
+//import './GameOver.css';
 
-interface GameOverProps extends RouteComponentProps {
+const styles = (theme: any) => createStyles({ //TODO
+    ...theme.content,
+});
+
+interface GameOverProps extends RouteComponentProps, WithStyles<typeof styles> {
 }
 
 interface LocalLeaderboardType {
@@ -72,7 +78,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
 
     calculateScores = () => {
         const results: LocalLeaderboardType[] = [];
-        const { isTimeOver, players, painter, winner } = this.state;
+        const {isTimeOver, players, painter, winner} = this.state;
 
         if (isTimeOver)
             return;
@@ -115,10 +121,10 @@ class GameOver extends Component<GameOverProps, GameOverState> {
     pushScoreToLeaderboard = (localLeaderboard: LocalLeaderboardType[]) => {
         fetch(getRoutes().leaderboard, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(localLeaderboard)
-        })
-            //.then(res => console.log(res));
+        });
+        //.then(res => console.log(res));
     };
 
     startOver = () => {
@@ -130,25 +136,29 @@ class GameOver extends Component<GameOverProps, GameOverState> {
     };
 
     render() {
-        const { isTimeOver, isWordGuessed, winner, wordToGuess } = this.state;
+        const {isTimeOver, isWordGuessed, winner, wordToGuess} = this.state;
+        const {classes} = this.props;
         return (
-            <div className='GameOver'>
-                <h5>Игра окончена!</h5>
+            <Container className={classes.outerContainer} maxWidth='sm'>
+                <Typography variant='h5' paragraph>Игра окончена!</Typography>
                 {isTimeOver &&
                 <div>
-                    <p>Время вышло!</p>
-                    <p>Слово было: {wordToGuess}</p>
+                    <Typography variant='h6' paragraph>Время вышло!</Typography>
+                    <Typography variant='h6' paragraph>Слово было: {wordToGuess}</Typography>
                 </div>
                 }
                 {(isWordGuessed && !isTimeOver) &&
                 <div>
-                    <p>Игрок {winner} отгадал слово {wordToGuess}</p>
-                    <div>
+                    <Typography variant='h6' paragraph>Игрок {winner} отгадал слово {wordToGuess}</Typography>
+                    <div className={classes.innerContainer} style={{paddingBottom: 48}}>
                         {
                             this.state.localLeaderboard.length > 0 ?
                                 this.state.localLeaderboard.map(item => {
                                         return (
-                                            <p key={item.playerName}>{item.playerName}: {item.score}</p>
+                                            <Typography variant='subtitle1' paragraph className={classes.playerContainer}
+                                                        key={item.playerName}>
+                                                {item.playerName}: {item.score}
+                                            </Typography>
                                         );
                                     }
                                 ) : ''
@@ -156,13 +166,24 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                     </div>
                 </div>
                 }
-
-                <button onClick={this.startOver}>Начать заново</button>
-                <button onClick={this.goToLeaderboard}>Лидерборд</button>
-            </div>
+                <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    onClick={this.startOver}
+                >Начать заново</Button>
+                <Button
+                    className={classes.button}
+                    variant="outlined"
+                    color="secondary"
+                    size="large"
+                    onClick={this.goToLeaderboard}
+                >Лидерборд</Button>
+            </Container>
         );
     }
 
 }
 
-export default GameOver;
+export default (withStyles(styles)(GameOver));
