@@ -89,7 +89,7 @@ class Login extends Component<LoginProps, LoginState> {
     render() {
         const {classes} = this.props;
         return (
-            <Container className={classes.gameField} maxWidth='lg' style={{height: 500}}>
+            <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
                 <Grid container spacing={2} justify="center">
                     <Grid item xs={5}>
                         <div className={classes.imgContainer}>
@@ -97,10 +97,10 @@ class Login extends Component<LoginProps, LoginState> {
                         </div>
                     </Grid>
                     <Grid item xs={5} className={classes.loginFormContainer}>
-                        <Typography component='h1' variant='h3'>
+                        <Typography component='h1' variant='h4' paragraph>
                             Онлайн - активити
                         </Typography>
-                        <form onSubmit={this.handleSubmit} style={{marginTop: 48}}>
+                        <form onSubmit={this.handleSubmit} className={classes.innerContainer}>
                             <TextField
                                 variant="outlined"
                                 margin="normal"

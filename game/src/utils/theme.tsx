@@ -15,7 +15,7 @@ export default {
     },
 
     content: {
-        gameField: {
+        outerContainer: {
             // width: 1000,
             // height: 500,
             margin: '0 auto',
@@ -36,9 +36,20 @@ export default {
         loginFormContainer: {
             marginLeft: 'auto',
             marginRight: 'auto',
-            // border: '1px solid gray',
-            // borderRadius: 10,
             padding: 48
+        },
+        innerContainer: {
+            //marginTop: 48,
+            padding: '48px 48px 16px 48px',
+            border: '1px solid gray',
+            borderRadius: 10,
+            backgroundColor: '#F3F3F3'
+        },
+        playerContainer: {
+            borderRadius: 10,
+            backgroundColor: '#A1C1EC',
+            margin: 8,
+            padding: 8,
         }
     }
 };

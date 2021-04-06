@@ -21,11 +21,12 @@ interface StartGameState {
 
 class StartGame extends Component<StartGameProps, StartGameState> {
     private _isMounted: boolean;
+
     constructor(props: StartGameProps) {
         super(props);
         this.state = {
             players: [],
-        }
+        };
         this._isMounted = false;
     }
 
@@ -35,8 +36,9 @@ class StartGame extends Component<StartGameProps, StartGameState> {
             if (this._isMounted) {
                 this.setState({players: JSON.parse(response.data).players});
             }
-        }
+        };
     }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
@@ -44,10 +46,13 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     startGame = async () => {
         await this.addWordAndPainter(localStorage.getItem('gameId'));
         this.props.history.push(getDomRoutes(localStorage.getItem('gameId')).game);
-    }
+    };
 
     addWordAndPainter = async (gameId: string | null) => {
-        this.props.ws.send(JSON.stringify({'messageType':'addWordAndPainter','gameId':localStorage.getItem('gameId')}));
+        this.props.ws.send(JSON.stringify({
+            'messageType': 'addWordAndPainter',
+            'gameId': localStorage.getItem('gameId')
+        }));
         // await fetch(getRoutes(gameId).addWordAndPainter, {
         //     method: 'POST',
         //     headers: {
@@ -55,20 +60,24 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         //     },
         //     body: JSON.stringify({})
         // });
-    }
+    };
 
     render() {
         const {players} = this.state;
         const {classes} = this.props;
         return (
-            <Container className={classes.gameField} maxWidth='sm'>
+            <Container className={classes.outerContainer} maxWidth='sm'>
                 <Box>
-                    <Typography component='h3' variant='h5' paragraph>
-                        Игроки: {players && players.join(', ')}
-                    </Typography>
                     <Typography component='h4' variant='h6' paragraph>
                         Все игроки в сборе?
                     </Typography>
+                    <Box className={classes.innerContainer} style={{paddingBottom: 48}}>
+                        <Typography component='h3' variant='h5' paragraph>
+                            {players && players.map(player=>{
+                                return <div key={player} className={classes.playerContainer}>{player}</div>;
+                        })}
+                        </Typography>
+                    </Box>
                     <Button
                         variant="contained"
                         color="primary"
