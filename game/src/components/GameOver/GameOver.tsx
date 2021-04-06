@@ -150,7 +150,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                 {(isWordGuessed && !isTimeOver) &&
                 <div>
                     <Typography variant='h6' paragraph>Игрок {winner} отгадал слово {wordToGuess}</Typography>
-                    <div className={classes.innerContainer} style={{paddingBottom: 48}}>
+                    <div className={classes.innerContainer}>
                         {
                             this.state.localLeaderboard.length > 0 ?
                                 this.state.localLeaderboard.map(item => {

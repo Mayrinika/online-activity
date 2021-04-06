@@ -68,22 +68,21 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
                 <Box>
-                    <Typography component='h4' variant='h6' paragraph>
+                    <Typography variant='h5' paragraph>
                         Все игроки в сборе?
                     </Typography>
-                    <Box className={classes.innerContainer} style={{paddingBottom: 48}}>
-                        <Typography component='h3' variant='h5' paragraph>
+                    <Box className={classes.innerContainer}>
+                        <Typography variant='subtitle1'>
                             {players && players.map(player=>{
                                 return <div key={player} className={classes.playerContainer}>{player}</div>;
                         })}
                         </Typography>
                     </Box>
                     <Button
+                        className={classes.button}
                         variant="contained"
                         color="primary"
-                        type="submit"
                         size="large"
-                        style={{marginTop: 32}}
                         onClick={this.startGame}
                     >
                         Да! Начать игру!

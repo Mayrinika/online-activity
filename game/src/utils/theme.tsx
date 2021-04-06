@@ -40,7 +40,7 @@ export default {
         },
         innerContainer: {
             //marginTop: 48,
-            padding: '48px 48px 16px 48px',
+            padding: '48px 48px 48px 48px',
             border: '1px solid gray',
             borderRadius: 10,
             backgroundColor: '#F3F3F3'

@@ -97,10 +97,10 @@ class Login extends Component<LoginProps, LoginState> {
                         </div>
                     </Grid>
                     <Grid item xs={5} className={classes.loginFormContainer}>
-                        <Typography component='h1' variant='h4' paragraph>
+                        <Typography variant='h4' paragraph>
                             Онлайн - активити
                         </Typography>
-                        <form onSubmit={this.handleSubmit} className={classes.innerContainer}>
+                        <form onSubmit={this.handleSubmit} className={classes.innerContainer} style={{paddingBottom: 16}}>
                             <TextField
                                 variant="outlined"
                                 margin="normal"
@@ -126,11 +126,11 @@ class Login extends Component<LoginProps, LoginState> {
                                 value={this.state.code}
                             />
                             <Button
+                                className={classes.button}
                                 variant="contained"
                                 color="primary"
                                 type="submit"
                                 size="large"
-                                style={{marginTop: 32}}
                             >
                                 Играть!
                             </Button>
