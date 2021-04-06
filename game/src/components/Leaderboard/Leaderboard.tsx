@@ -5,9 +5,14 @@ import { RouteComponentProps } from 'react-router-dom';
 import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
 //styles
-import './Leaderboard.css';
+import {createStyles, withStyles, WithStyles} from "@material-ui/core/styles";
+import {Button, Container, Grid, Typography, TextField, Box} from '@material-ui/core';
 
-interface LeaderboardProps extends RouteComponentProps {
+const styles = (theme: any) => createStyles({ //TODO
+    ...theme.content,
+});
+
+interface LeaderboardProps extends RouteComponentProps, WithStyles<typeof styles> {
 }
 
 interface LeaderboardState {
@@ -44,18 +49,28 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
 
     render() {
         const { sortedLeaderboard } = this.state;
+        const {classes} = this.props;
         return (
-            <div className='Leaderboard'>
-                <p>Лидерборд:</p>
+            <Container className={classes.outerContainer} maxWidth='sm'>
+                <Typography variant='h5' paragraph>Лидерборд:</Typography>
                 {Object.entries(sortedLeaderboard).map(item => {
                     return (
-                        <p key={item[0]}>{item[1][0]}: {item[1][1]}</p>
+                        <Typography variant='subtitle1' paragraph className={classes.playerContainer}
+                                    key={item[0]}>
+                            {item[1][0]}: {item[1][1]}
+                        </Typography>
                     );
                 })}
-                <button onClick={this.startOver}>Начать заново</button>
-            </div>
+                <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    onClick={this.startOver}
+                >Начать заново</Button>
+            </Container>
         );
     }
 }
 
-export default Leaderboard;
+export default (withStyles(styles)(Leaderboard));
