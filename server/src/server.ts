@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import WebSocket from 'ws';
 
 const app = express();
-const port = 9000;
+const port = process.env.PORT ||9000;
 const GAME_TIME: number = 1 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
 
 interface Message {
@@ -38,8 +38,18 @@ interface TimerIds {
     [index: string]: number;
 }
 
+interface SuggestedWord {
+    id: string;
+    word: string;
+    likes: string[];
+    dislikes: string[];
+    isApproved: boolean;
+    isDeclined: boolean;
+}
+
 const games: GameType[] = [];
 const timerIds: TimerIds = {};
+const suggestedWords: SuggestedWord[] = [{id:'sf', word:'sf', likes:[], dislikes:[], isApproved: false, isDeclined: false}];
 
 app.use(cors());
 app.use(express.json());
@@ -49,16 +59,20 @@ app.use((err: any, req: any, res: any, next: any) => { //TODO разобрать
     res.status(status).send(message);
 });
 
-app.get('/app', (req, res) => {
+app.get('/app', (req: any, res: any) => {
     res.status(200).send(games);
 });
 
-app.get('/leaderboard', (req, res) => {
+app.get('/suggestedWords', (req: any, res: any) => {
+    res.status(200).send(suggestedWords);
+});
+
+app.get('/leaderboard', (req: any, res: any) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
     res.status(200).send(leaderboard.players);
 });
 
-app.post('/leaderboard', (req, res) => {
+app.post('/leaderboard', (req: any, res: any) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
     for (const {playerName, score} of req.body) {
         if (playerName in leaderboard.players)
@@ -70,12 +84,12 @@ app.post('/leaderboard', (req, res) => {
     res.status(200).send(leaderboard);
 });
 
-app.get('/:gameId', (req, res) => {
+app.get('/:gameId', (req: any, res: any) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     res.status(200).send(currentGame);
 });
 
-app.post('/:gameId', (req, res) => {
+app.post('/:gameId', (req: any, res: any) => {
     games.push({
         id: req.params.gameId,
         players: [],
@@ -93,7 +107,7 @@ app.post('/:gameId', (req, res) => {
     res.status(200).send(games);
 });
 
-app.post('/:gameId/addLine', (req, res) => {
+app.post('/:gameId/addLine', (req: any, res: any) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         currentGame.lines.push(req.body.line);
@@ -103,7 +117,7 @@ app.post('/:gameId/addLine', (req, res) => {
     }
 });
 
-app.post('/:gameId/clearCountdown', (req, res) => {
+app.post('/:gameId/clearCountdown', (req: any, res: any) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         clearTimeout(timerIds[currentGame.id]);
@@ -113,7 +127,7 @@ app.post('/:gameId/clearCountdown', (req, res) => {
     }
 });
 
-app.post('/:gameId/setTimeIsOver', (req, res) => {
+app.post('/:gameId/setTimeIsOver', (req: any, res: any) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         currentGame.isTimeOver = true;
@@ -134,15 +148,61 @@ app.listen(port, () => { //TODO (err) ?
 const wss = new WebSocket.Server({port: 8080});
 const webSockets: any = {}; //TODO
 
-wss.on('connection', ws => {
+wss.on('connection', (ws: any) => {
     ws.on('message', (message: any) => { //TODO
         const messageType = JSON.parse(message).messageType;
         const gameId = JSON.parse(message).gameId;
-        const currentGame = games.find(game => game.id === gameId);
-        if (currentGame === undefined) {
-            return;
-        }
+        const currentGame = games.find(game => game.id === gameId) || games[0];
+        const suggestedWord = suggestedWords.find(word => word.id === JSON.parse(message).wordId) || suggestedWords[0];
+        const author = JSON.parse(message).author;
+        // if (currentGame === undefined) {
+        //     return;
+        // }
         switch (messageType) {
+        case 'sendSuggestedWord':
+            suggestedWords.push({word: JSON.parse(message).word, id: JSON.parse(message).id, likes: [], dislikes: [], isApproved: false, isDeclined: false});
+            wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+                client.send(JSON.stringify(suggestedWords));
+            });
+            break;
+        case 'likeWord':
+            if (suggestedWord.dislikes.includes(author)) {
+                suggestedWord.dislikes.splice(suggestedWord.dislikes.indexOf(author), 1);
+            } else if (!suggestedWord.likes.includes(author)) {
+                suggestedWord.likes.push(author);
+            }
+            wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+                client.send(JSON.stringify(suggestedWords));
+            });
+            if (suggestedWord.likes.length > 2) {
+                suggestedWord.isApproved = true;
+                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+                    client.send(JSON.stringify(suggestedWords));
+                });
+                const words = fs.readJsonSync('./src/utils/words.json');
+                const newWords: {words?: string[]} = {};
+                newWords.words = [...words.words, suggestedWord.word];
+                fs.outputJsonSync('./src/utils/words.json', newWords);
+                suggestedWords.splice(suggestedWords.indexOf(suggestedWord), 1);
+            }
+            break;
+        case 'dislikeWord':
+            if (suggestedWord.likes.includes(author)) {
+                suggestedWord.likes.splice(suggestedWord.likes.indexOf(author), 1);
+            } else if (!suggestedWord.dislikes.includes(author)) {
+                suggestedWord.dislikes.push(author);
+            }
+            wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+                client.send(JSON.stringify(suggestedWords));
+            });
+            if (suggestedWord.dislikes.length > 2) {
+                suggestedWord.isDeclined = true;
+                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+                    client.send(JSON.stringify(suggestedWords));
+                });
+                suggestedWords.splice(suggestedWords.indexOf(suggestedWord), 1);
+            }
+            break;
         case 'register':
             addPlayer(currentGame, JSON.parse(message).player);
             if (webSockets[gameId]) {
