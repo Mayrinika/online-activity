@@ -53,14 +53,16 @@ class Game extends Component<GameProps, GameState> {
 
     async componentDidMount() {
         await this.getDataFromServer();
-        this.props.ws.onmessage = (response: any) => {
-            this.setState({
-                chatMessages: JSON.parse(response.data).chatMessages,
-                isGameOver: JSON.parse(response.data).isGameOver,
-                time: JSON.parse(response.data).time,
-                imgURL: JSON.parse(response.data).img,
-                players: JSON.parse(response.data).players
-            });
+        if (this.props.ws) {
+            this.props.ws.onmessage = (response: any) => {
+                this.setState({
+                    chatMessages: JSON.parse(response.data).chatMessages,
+                    isGameOver: JSON.parse(response.data).isGameOver,
+                    time: JSON.parse(response.data).time,
+                    imgURL: JSON.parse(response.data).img,
+                    players: JSON.parse(response.data).players
+                });
+            }
         }
         newWS.onmessage = (response: any) => {
             this.setState({
@@ -110,21 +112,33 @@ class Game extends Component<GameProps, GameState> {
     gameOver = () => {
         const {history, ws} = this.props;
         history.push(getDomRoutes(localStorage.getItem('gameId')).gameOver);
-        ws.close();
-        newWS.close();
+        if (ws) {
+            ws.close();
+        }
+        if (newWS) {
+            newWS.close();
+        }
     };
 
     sendMessage = (message: Message) => {
-        this.props.ws.send(JSON.stringify({'messageType':'sendMessage','gameId':localStorage.getItem('gameId'), 'message':message}));
+        this.props.ws ?
+            this.props.ws.send(JSON.stringify({'messageType':'sendMessage','gameId':localStorage.getItem('gameId'), 'message':message}))
+            : newWS.send(JSON.stringify({'messageType':'sendMessage','gameId':localStorage.getItem('gameId'), 'message':message}));
     }
     postMarks = (value: {id: string, marks: {hot: boolean, cold: boolean}}) => {
-        this.props.ws.send(JSON.stringify({'messageType':'postMarks','gameId':localStorage.getItem('gameId'), 'value':value}));
+        this.props.ws ?
+            this.props.ws.send(JSON.stringify({'messageType':'postMarks','gameId':localStorage.getItem('gameId'), 'value':value}))
+            : newWS.send(JSON.stringify({'messageType':'postMarks','gameId':localStorage.getItem('gameId'), 'value':value}));
     }
     setWinner = (winner: string | null) => {
-        this.props.ws.send(JSON.stringify({'messageType':'setWinner','gameId':localStorage.getItem('gameId'), 'winner':winner}));
+        this.props.ws ?
+            this.props.ws.send(JSON.stringify({'messageType':'setWinner','gameId':localStorage.getItem('gameId'), 'winner':winner}))
+            : newWS.send(JSON.stringify({'messageType':'setWinner','gameId':localStorage.getItem('gameId'), 'winner':winner}))
     }
     sendImg = (img: string) => {
-        this.props.ws.send(JSON.stringify({'messageType':'sendImg','gameId':localStorage.getItem('gameId'), 'img':img}));
+        this.props.ws ?
+            this.props.ws.send(JSON.stringify({'messageType':'sendImg','gameId':localStorage.getItem('gameId'), 'img':img}))
+            : newWS.send(JSON.stringify({'messageType':'sendImg','gameId':localStorage.getItem('gameId'), 'img':img}));
     }
 
     render() {
