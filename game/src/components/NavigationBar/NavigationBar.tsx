@@ -41,6 +41,13 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                                 color="secondary"
                             >Лидерборд</Button>
                         </Link>
+                        <Link to={getDomRoutes().suggestWord} className={classes.navLink}>
+                            <Button
+                                className={classes.navButton}
+                                variant="contained"
+                                color="secondary"
+                            >Предложить слово</Button>
+                        </Link>
                     </Toolbar>
                 </Container>
             </AppBar>
