@@ -6,6 +6,7 @@ import StartGame from "../StartGame/StartGame";
 import Game from "../Game/Game";
 import GameOver from "../GameOver/GameOver";
 import Leaderboard from "../Leaderboard/Leaderboard";
+import SuggestWord from "../SuggestWord/SuggestWord";
 //utils
 import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
@@ -84,6 +85,9 @@ class App extends Component<{}, AppState> {
         return (
             <div className="App">
                 <Switch>
+                    <Route exact path={getDomRoutes().suggestWord} render={(props) => (
+                        <SuggestWord {...props} />
+                    )}/>
                     <Route path={getDomRoutes().leaderboard} component={Leaderboard}/>
                     <Route path={getDomRoutes(':gameId').game} render={(props) => (
                         <Game {...props} ws={ws}/>

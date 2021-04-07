@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import WebSocket from 'ws';
 
 const app = express();
-const port = 9000;
+const port = process.env.PORT ||9000;
 const GAME_TIME: number = 1 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
 
 interface Message {
@@ -38,8 +38,19 @@ interface TimerIds {
     [index: string]: number;
 }
 
+interface SuggestedWord {
+    id: string;
+    word: string;
+    likes: {
+        author: string;
+        plus: boolean;
+        minus: boolean;
+    } [];
+}
+
 const games: GameType[] = [];
 const timerIds: TimerIds = {};
+const suggestedWords: SuggestedWord[] = [{id:'sf', word:'sf', likes:[]}];
 
 app.use(cors());
 app.use(express.json());
@@ -51,6 +62,11 @@ app.use((err: any, req: any, res: any, next: any) => { //TODO разобрать
 
 app.get('/app', (req, res) => {
     res.status(200).send(games);
+});
+
+app.get('/suggestedWords', (req, res) => {
+    console.log('suggested words, get router');
+    res.status(200).send('hi');
 });
 
 app.get('/leaderboard', (req, res) => {
@@ -143,6 +159,14 @@ wss.on('connection', ws => {
             return;
         }
         switch (messageType) {
+        case 'sendSuggestedWord':
+            console.log('get suggested word: ', JSON.parse(message).word);
+            suggestedWords.push({word: JSON.parse(message).word, id: JSON.parse(message).id, likes: []});
+            wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+                console.log('sending words: ', suggestedWords);
+                client.send(JSON.stringify(suggestedWords));
+            });
+            break;
         case 'register':
             addPlayer(currentGame, JSON.parse(message).player);
             if (webSockets[gameId]) {
