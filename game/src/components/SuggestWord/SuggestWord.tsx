@@ -5,7 +5,7 @@ import {v4 as uuidv4} from 'uuid';
 //utils
 import getRoutes from "../../utils/routes";
 //styles
-//import './SuggestWord.css';
+import './SuggestWord.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField, Box} from '@material-ui/core';
 
