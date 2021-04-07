@@ -53,14 +53,16 @@ class Game extends Component<GameProps, GameState> {
 
     async componentDidMount() {
         await this.getDataFromServer();
-        this.props.ws.onmessage = (response: any) => {
-            this.setState({
-                chatMessages: JSON.parse(response.data).chatMessages,
-                isGameOver: JSON.parse(response.data).isGameOver,
-                time: JSON.parse(response.data).time,
-                imgURL: JSON.parse(response.data).img,
-                players: JSON.parse(response.data).players
-            });
+        if (this.props.ws) {
+            this.props.ws.onmessage = (response: any) => {
+                this.setState({
+                    chatMessages: JSON.parse(response.data).chatMessages,
+                    isGameOver: JSON.parse(response.data).isGameOver,
+                    time: JSON.parse(response.data).time,
+                    imgURL: JSON.parse(response.data).img,
+                    players: JSON.parse(response.data).players
+                });
+            }
         }
         newWS.onmessage = (response: any) => {
             this.setState({
