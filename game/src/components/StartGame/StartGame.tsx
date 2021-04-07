@@ -4,10 +4,10 @@ import {RouteComponentProps} from 'react-router-dom';
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 //styles
-import {createStyles, withStyles, WithStyles} from "@material-ui/core/styles";
+import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box} from '@material-ui/core';
 
-const styles = (theme: any) => createStyles({ //TODO
+const styles = (theme: { content: any; }) => ({
     ...theme.content,
 });
 

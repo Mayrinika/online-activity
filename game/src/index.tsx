@@ -12,10 +12,6 @@ import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 
 const theme = createMuiTheme(themeFile);
 
-const styles = (theme: any) => ({ //TODO
-    ...theme.content
-});
-
 ReactDOM.render(
     <MuiThemeProvider theme={theme}>
         <React.StrictMode>
