@@ -1,0 +1,24 @@
+.SuggestWord {
+    width: 600px;
+    height: 600px;
+    background-color: #fff;
+    margin: 0 auto;
+    display: flex;
+}
+.SuggestWord-form {
+    flex: 0 1 50%;
+}
+.SuggestWord-words-list {
+    flex: 0 1 50%;
+    text-align: left;
+}
+.SuggestWord-buttons {
+    justify-self: flex-end;
+    display: flex;
+}
+.SuggestWord-word {
+    display: flex;
+    justify-content: space-between;
+    background-color: #6a8759;
+    margin: 5px;
+}

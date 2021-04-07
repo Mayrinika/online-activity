@@ -9,16 +9,14 @@ const ws= new WebSocket('ws://localhost:8080');
 interface SuggestedWord {
     id: string;
     word: string;
-    likes: {
-        author: string;
-        plus: boolean;
-        minus: boolean;
-    } [];
+    likes: string[];
+    dislikes: string[];
+
 }
 
 interface SuggestWordState {
     enteredWord: string;
-    words: SuggestWord[];
+    words: SuggestedWord[];
 }
 interface SuggestWordProps extends RouteComponentProps {
 
@@ -35,7 +33,7 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
     componentDidMount() {
         this.getWordsFromServer();
         ws.onmessage = (response: any) => {
-            this.setState({words: JSON.parse(response.data).words});
+            this.setState({words: JSON.parse(response.data)});
         }
     }
     sendWord = (evt: React.ChangeEvent<HTMLFormElement>) => {
@@ -49,15 +47,19 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
     getWordsFromServer = async() => {
         const res = await fetch(getRoutes().suggestedWords);
         const data = await res.text();
-        console.log(data);
         const words = JSON.parse(data);
         this.setState({words});
     }
-
+    likeWord = (wordId: string) => {
+        ws.send(JSON.stringify({'messageType':'likeWord', 'wordId':wordId, 'author':localStorage.getItem('playerName')}));
+    }
+    dislikeWord = (wordId: string) => {
+        ws.send(JSON.stringify({'messageType':'dislikeWord', 'wordId':wordId, 'author':localStorage.getItem('playerName')}));
+    }
     render() {
         return (
             <div className="SuggestWord">
-                <form onSubmit={this.sendWord}>
+                <form className="SuggestWord-from" onSubmit={this.sendWord}>
                     <label htmlFor="wordInput">Предложите слово для игр:</label>
                     <input
                         type="text"
@@ -67,9 +69,16 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                     />
                     <input type='submit' />
                 </form>
-                <div className="words-list">
+                <div className="SuggestWord-words-list">
                     {this.state.words.map((word) => (
-                        <div>word.word</div>
+                        <div key={word.id} className="SuggestWord-word">
+                            {word.word}
+                            <div className="SuggestWord-buttons">
+                                <button className="SuggestedWord-button SuggestWord-button-plus" onClick={() => this.likeWord(word.id)}>+</button>
+                                <button className="SuggestedWord-button SuggestWord-button-minus" onClick={() => this.dislikeWord(word.id)}>-</button>
+                                <div>{word.likes.length - word.dislikes.length}</div>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>
