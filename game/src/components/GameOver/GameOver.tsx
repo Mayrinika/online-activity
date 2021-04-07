@@ -174,7 +174,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                 >Начать заново</Button>
                 <Button
                     className={classes.button}
-                    variant="outlined"
+                    variant="contained"
                     color="secondary"
                     size="large"
                     onClick={this.goToLeaderboard}

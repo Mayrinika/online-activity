@@ -4,6 +4,7 @@ import {BrowserRouter} from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
 //components
 import App from './components/App/App';
+import NavigationBar from "./components/NavigationBar/NavigationBar";
 //utils
 import themeFile from './utils/theme';
 //styles
@@ -16,6 +17,7 @@ ReactDOM.render(
     <MuiThemeProvider theme={theme}>
         <React.StrictMode>
             <BrowserRouter>
+                <NavigationBar/>
                 <App/>
             </BrowserRouter>
         </React.StrictMode>,

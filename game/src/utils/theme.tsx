@@ -7,14 +7,25 @@ export default {
             contrastText: '#fff'
         },
         secondary: {
-            light: '#6d6c6b',
-            main: '#494846',
-            dark: '#333231',
+            light: '#90b749',
+            main: '#75a61c',
+            dark: '#517413',
             contrastText: '#fff'
         },
     },
 
     content: {
+        navBarContainer: {
+           // backgroundColor: 'rgba(244,244,244,0.85)',
+            border: '1px solid black',
+            borderRadius: 10,
+        },
+        navButton: {
+            margin: '16px 8px 16px 8px',
+        },
+        navLink: {
+            textDecoration: 'none'
+        },
         outerContainer: {
             // width: 1000,
             // height: 500,
