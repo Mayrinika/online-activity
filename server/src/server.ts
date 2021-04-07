@@ -184,9 +184,6 @@ wss.on('connection', (ws: any) => {
                 newWords.words = [...words.words, suggestedWord.word];
                 fs.outputJsonSync('./src/utils/words.json', newWords);
                 suggestedWords.splice(suggestedWords.indexOf(suggestedWord), 1);
-                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
-                    client.send(JSON.stringify(suggestedWords));
-                });
             }
             break;
         case 'dislikeWord':
@@ -204,9 +201,6 @@ wss.on('connection', (ws: any) => {
                     client.send(JSON.stringify(suggestedWords));
                 });
                 suggestedWords.splice(suggestedWords.indexOf(suggestedWord), 1);
-                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
-                    client.send(JSON.stringify(suggestedWords));
-                });
             }
             break;
         case 'register':

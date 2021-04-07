@@ -19,6 +19,8 @@
 .SuggestWord-word {
     display: flex;
     justify-content: space-between;
-    background-color: #6a8759;
     margin: 5px;
+}
+.active {
+    background-color: #6a8759;
 }
