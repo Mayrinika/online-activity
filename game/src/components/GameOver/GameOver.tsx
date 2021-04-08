@@ -39,6 +39,7 @@ interface GameOverState {
     chatMessages: Message[];
     players: [];
     localLeaderboard: LocalLeaderboardType[];
+    time: number;
 }
 
 class GameOver extends Component<GameOverProps, GameOverState> {
@@ -52,7 +53,8 @@ class GameOver extends Component<GameOverProps, GameOverState> {
             painter: '',
             chatMessages: [],
             players: [],
-            localLeaderboard: []
+            localLeaderboard: [],
+            time: 0
         };
     }
 
@@ -71,7 +73,8 @@ class GameOver extends Component<GameOverProps, GameOverState> {
             winner: game.winner,
             painter: game.painter,
             chatMessages: game.chatMessages,
-            players: game.players
+            players: game.players,
+            time: game.time
         }, this.calculateScores);
     };
 
@@ -84,7 +87,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
 
         results.push({
             playerName: painter,
-            score: 50
+            score: this.state.time
         });
 
         for (const player of players) {
