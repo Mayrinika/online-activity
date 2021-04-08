@@ -96,7 +96,7 @@ class App extends Component<{}, AppState> {
                         <GameOver {...props}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').startGame} render={(props) => (
-                        <StartGame {...props} ws={ws}/>
+                        <StartGame {...props}/>
                     )}/>
                     <Route exact path={getDomRoutes().login} render={(props) => (
                         <Login {...props} joinGame={this.joinGame}/>

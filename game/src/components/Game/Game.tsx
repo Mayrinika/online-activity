@@ -88,7 +88,7 @@ class Game extends Component<GameProps, GameState> {
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {
                 return newWS.send(message);
-            }, 1000);
+            }, 500);
         };
 
         const waitForConnection = function (callback: () => void, interval: number) {
