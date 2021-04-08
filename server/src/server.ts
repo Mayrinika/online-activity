@@ -45,11 +45,12 @@ interface SuggestedWord {
     dislikes: string[];
     isApproved: boolean;
     isDeclined: boolean;
+    isInDictionary: boolean;
 }
 
 const games: GameType[] = [];
 const timerIds: TimerIds = {};
-const suggestedWords: SuggestedWord[] = [{id:'sf', word:'sf', likes:[], dislikes:[], isApproved: false, isDeclined: false}];
+const suggestedWords: SuggestedWord[] = [];
 
 app.use(cors());
 app.use(express.json());
@@ -160,10 +161,35 @@ wss.on('connection', (ws: any) => {
         // }
         switch (messageType) {
         case 'sendSuggestedWord':
-            suggestedWords.push({word: JSON.parse(message).word, id: JSON.parse(message).id, likes: [], dislikes: [], isApproved: false, isDeclined: false});
-            wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
-                client.send(JSON.stringify(suggestedWords));
-            });
+            const words = fs.readJsonSync('./src/utils/words.json');
+            if (words.words.includes(JSON.parse(message).word)) {
+                suggestedWords.push({
+                    word: JSON.parse(message).word,
+                    id: JSON.parse(message).id,
+                    likes: [],
+                    dislikes: [],
+                    isApproved: false,
+                    isDeclined: false,
+                    isInDictionary: true,
+                });
+                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+                    client.send(JSON.stringify(suggestedWords));
+                });
+                suggestedWords.splice(suggestedWords.indexOf(JSON.parse(message).word), 1);
+            } else {
+                suggestedWords.push({
+                    word: JSON.parse(message).word,
+                    id: JSON.parse(message).id,
+                    likes: [],
+                    dislikes: [],
+                    isApproved: false,
+                    isDeclined: false,
+                    isInDictionary: false,
+                });
+                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+                    client.send(JSON.stringify(suggestedWords));
+                });
+            }
             break;
         case 'likeWord':
             if (suggestedWord.dislikes.includes(author)) {

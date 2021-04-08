@@ -22,6 +22,7 @@ interface SuggestedWord {
     dislikes: string[];
     isApproved: boolean;
     isDeclined: boolean;
+    isInDictionary: boolean;
 }
 
 interface SuggestWordState {
@@ -91,6 +92,11 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
             // @ts-ignore
             wordStatusHasChanged = `Слово ${declinedWord.word} было удалено, так как не понравилось трем игрокам`;
         }
+        if (words.some((word: SuggestedWord) => word.isInDictionary)) {
+            const suggestedWord = words.find(word => word.isInDictionary);
+            // @ts-ignore
+            wordStatusHasChanged = `Слово ${suggestedWord.word} уже есть в словаре`;
+        }
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
@@ -119,7 +125,7 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                         </Button>
                     </form>
                     <Box>
-                        {this.state.words.map((word) => (
+                        {this.state.words.filter(word => !word.isInDictionary).map((word) => (
                             <div key={word.id} className="SuggestWord-word">
                                 {word.word}
                                 <div className="SuggestWord-buttons">
