@@ -6,6 +6,7 @@ import getDomRoutes from "../../utils/domRoutes";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box} from '@material-ui/core';
+import getRoutes from "../../utils/routes";
 
 const styles = (theme: { content: any; }) => ({
     ...theme.content,
@@ -32,11 +33,20 @@ class StartGame extends Component<StartGameProps, StartGameState> {
 
     async componentDidMount() {
         this._isMounted = true;
-        this.props.ws.onmessage = (response: any) => {
-            if (this._isMounted) {
-                this.setState({players: JSON.parse(response.data).players});
-            }
-        };
+        if( this.props.ws) {
+            this.props.ws.onmessage = (response: any) => {
+                if (this._isMounted) {
+                    this.setState({players: JSON.parse(response.data).players});
+                }
+            };
+        } else {
+            const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
+            const data = await res.text();
+            const game = JSON.parse(data);
+            this.setState({
+                players: game.players,
+            });
+        }
     }
 
     componentWillUnmount() {
