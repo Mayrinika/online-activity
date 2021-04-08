@@ -32,11 +32,11 @@ interface GameType {
     lines: any[]; //TODO разобраться с типом
 }
 
-interface TimerIds {
-    [index: number]: number;
-
-    [index: string]: number;
-}
+// interface TimerIds { //TODO разобраться с типом TimerIds
+//     [index: number]: number;
+//
+//     [index: string]: number;
+// }
 
 interface SuggestedWord {
     id: string;
@@ -49,7 +49,7 @@ interface SuggestedWord {
 }
 
 const games: GameType[] = [];
-const timerIds: TimerIds = {};
+const timerIds: any = {}; //TODO разобраться с типом TimerIds
 const suggestedWords: SuggestedWord[] = [];
 
 app.use(cors());
@@ -153,12 +153,9 @@ wss.on('connection', (ws: any) => {
     ws.on('message', (message: any) => { //TODO
         const messageType = JSON.parse(message).messageType;
         const gameId = JSON.parse(message).gameId;
-        const currentGame = games.find(game => game.id === gameId) || games[0];
-        const suggestedWord = suggestedWords.find(word => word.id === JSON.parse(message).wordId) || suggestedWords[0];
+        const currentGame = games.find(game => game.id === gameId) || games[0]; //TODO придумать как обрабатывать вариант, когда currentGame===undefined
+        const suggestedWord = suggestedWords.find(word => word.id === JSON.parse(message).wordId) || suggestedWords[0]; //TODO придумать как обрабатывать вариант, когда suggestedWord===undefined
         const author = JSON.parse(message).author;
-        // if (currentGame === undefined) {
-        //     return;
-        // }
         switch (messageType) {
         case 'sendSuggestedWord':
             const words = fs.readJsonSync('./src/utils/words.json');
@@ -259,8 +256,6 @@ wss.on('connection', (ws: any) => {
                 currentGame.painter = getPainter(currentGame.players);
             }
             if (currentGame.time === GAME_TIME) {
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
                 timerIds[currentGame.id] = setInterval((currentGame) => {
                     if (currentGame.time > 0) {
                         currentGame.time -= 1;

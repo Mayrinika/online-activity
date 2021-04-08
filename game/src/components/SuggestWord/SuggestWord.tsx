@@ -84,18 +84,21 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         let wordStatusHasChanged;
         if (words.some((word: SuggestedWord) => word.isApproved)) {
             const approvedWord = words.find(word => word.isApproved);
-            // @ts-ignore
-            wordStatusHasChanged = `Слово ${approvedWord.word} было одобрено тремя игроками и попало в наш словарь!`;
+            if (approvedWord) {
+                wordStatusHasChanged = `Слово ${approvedWord.word} было одобрено тремя игроками и попало в наш словарь!`;
+            }
         }
         if (words.some((word: SuggestedWord) => word.isDeclined)) {
             const declinedWord = words.find(word => word.isDeclined);
-            // @ts-ignore
-            wordStatusHasChanged = `Слово ${declinedWord.word} было удалено, так как не понравилось трем игрокам`;
+            if (declinedWord) {
+                wordStatusHasChanged = `Слово ${declinedWord.word} было удалено, так как не понравилось трем игрокам`;
+            }
         }
         if (words.some((word: SuggestedWord) => word.isInDictionary)) {
             const suggestedWord = words.find(word => word.isInDictionary);
-            // @ts-ignore
-            wordStatusHasChanged = `Слово ${suggestedWord.word} уже есть в словаре`;
+            if (suggestedWord) {
+                wordStatusHasChanged = `Слово ${suggestedWord.word} уже есть в словаре`;
+            }
         }
         const {classes} = this.props;
         return (
@@ -130,13 +133,11 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                                 {word.word}
                                 <div className="SuggestWord-buttons">
                                     <button
-                                        // @ts-ignore
-                                        className={`"SuggestedWord-button SuggestWord-button-plus" ${word.likes.includes(localStorage.getItem('playerName')) ? "active" : ""}`}
+                                        className={`"SuggestedWord-button SuggestWord-button-plus" ${word.likes.includes(localStorage.getItem('playerName')||'Аноним') ? "active" : ""}`}
                                         onClick={() => this.likeWord(word.id)}>+
                                     </button>
                                     <button
-                                        // @ts-ignore
-                                        className={`"SuggestedWord-button SuggestWord-button-plus" ${word.dislikes.includes(localStorage.getItem('playerName')) ? "active" : ""}`}
+                                        className={`"SuggestedWord-button SuggestWord-button-plus" ${word.dislikes.includes(localStorage.getItem('playerName')||'Аноним') ? "active" : ""}`}
                                         onClick={() => this.dislikeWord(word.id)}>-
                                     </button>
                                     <div>{word.likes.length - word.dislikes.length}</div>
