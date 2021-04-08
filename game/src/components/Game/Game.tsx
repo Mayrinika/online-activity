@@ -11,7 +11,7 @@ import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './Game.css';
 
-const newWS= new WebSocket('ws://localhost:8080');
+let newWS: any;
 
 interface GameState {
     wordToGuess: string;
@@ -34,7 +34,6 @@ interface Message {
 }
 
 interface GameProps extends RouteComponentProps {
-    ws: any //todo поправить тип
 }
 
 class Game extends Component<GameProps, GameState> {
@@ -54,19 +53,6 @@ class Game extends Component<GameProps, GameState> {
 
     async componentDidMount() {
         await this.getDataFromServer();
-        // if (this.props.ws) {
-        //     console.log(this.props.ws);
-        //     this.props.ws.onmessage = (response: any) => {
-        //         console.log(JSON.parse(response.data))
-        //         this.setState({
-        //             chatMessages: JSON.parse(response.data).chatMessages,
-        //             isGameOver: JSON.parse(response.data).isGameOver,
-        //             time: JSON.parse(response.data).time,
-        //             imgURL: JSON.parse(response.data).img,
-        //             players: JSON.parse(response.data).players
-        //         });
-        //     }
-        // }
         newWS.onmessage = (response: any) => {
             this.setState({
                 chatMessages: JSON.parse(response.data).chatMessages,
@@ -98,6 +84,7 @@ class Game extends Component<GameProps, GameState> {
         });
     };
     refreshConnection = () => {
+        newWS = new WebSocket('ws://localhost:8080');
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {
                 return newWS.send(message);
@@ -117,40 +104,22 @@ class Game extends Component<GameProps, GameState> {
     }
 
     gameOver = () => {
-        const {history, ws} = this.props;
+        const {history} = this.props;
         history.push(getDomRoutes(localStorage.getItem('gameId')).gameOver);
-        // if (ws) {
-        //     console.log('closing')
-        //     ws.close();
-        // }
-        if (newWS) {
-            newWS.close();
-        }
+        newWS.close();
     };
 
     sendMessage = (message: Message) => {
-        //this.props.ws ?
-            //this.props.ws.send(JSON.stringify({'messageType':'sendMessage','gameId':localStorage.getItem('gameId'), 'message':message}))
-            newWS.send(JSON.stringify({'messageType':'sendMessage','gameId':localStorage.getItem('gameId'), 'message':message}));
+        newWS.send(JSON.stringify({'messageType':'sendMessage','gameId':localStorage.getItem('gameId'), 'message':message}));
     }
     postMarks = (value: {id: string, marks: {hot: boolean, cold: boolean}}) => {
-        //this.props.ws ?
-            //this.props.ws.send(JSON.stringify({'messageType':'postMarks','gameId':localStorage.getItem('gameId'), 'value':value}))
-            newWS.send(JSON.stringify({'messageType':'postMarks','gameId':localStorage.getItem('gameId'), 'value':value}));
+        newWS.send(JSON.stringify({'messageType':'postMarks','gameId':localStorage.getItem('gameId'), 'value':value}));
     }
     setWinner = (winner: string | null) => {
-        //this.props.ws ?
-            //this.props.ws.send(JSON.stringify({'messageType':'setWinner','gameId':localStorage.getItem('gameId'), 'winner':winner}))
-            newWS.send(JSON.stringify({'messageType':'setWinner','gameId':localStorage.getItem('gameId'), 'winner':winner}))
+        newWS.send(JSON.stringify({'messageType':'setWinner','gameId':localStorage.getItem('gameId'), 'winner':winner}))
     }
     sendImg = (img: string) => {
-        //if (this.props.ws.readyState === 1) {
-        //     console.log('here');
-        //     this.props.ws.send(JSON.stringify({'messageType':'sendImg','gameId':localStorage.getItem('gameId'), 'img':img}));
-        // } else {
-           // console.log('there');
-            newWS.send(JSON.stringify({'messageType':'sendImg','gameId':localStorage.getItem('gameId'), 'img':img}));
-        // }
+        newWS.send(JSON.stringify({'messageType':'sendImg','gameId':localStorage.getItem('gameId'), 'img':img}));
     }
 
     render() {

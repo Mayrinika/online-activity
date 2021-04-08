@@ -90,7 +90,7 @@ class App extends Component<{}, AppState> {
                     )}/>
                     <Route path={getDomRoutes().leaderboard} component={Leaderboard}/>
                     <Route path={getDomRoutes(':gameId').game} render={(props) => (
-                        <Game {...props} ws={ws}/>
+                        <Game {...props}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').gameOver} render={(props) => (
                         <GameOver {...props}/>
