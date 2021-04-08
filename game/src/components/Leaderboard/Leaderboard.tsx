@@ -8,9 +8,9 @@ import getDomRoutes from "../../utils/domRoutes";
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
 
-const styles = (theme: { content: any; }) => ({
-    ...theme.content,
-});
+const styles = (theme: { content: any; }) => (
+    theme.content
+);
 
 interface LeaderboardProps extends RouteComponentProps, WithStyles<typeof styles> {
 }

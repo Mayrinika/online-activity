@@ -10,9 +10,9 @@ import getRoutes from "../../utils/routes";
 
 let newWS: any;
 
-const styles = (theme: { content: any; }) => ({
-    ...theme.content,
-});
+const styles = (theme: { content: any; }) => (
+    theme.content
+);
 
 interface StartGameProps extends RouteComponentProps, WithStyles<typeof styles> {
 }

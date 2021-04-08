@@ -10,9 +10,9 @@ import getDomRoutes from "../../utils/domRoutes";
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
 
-const styles = (theme: { content: any; }) => ({
-    ...theme.content,
-});
+const styles = (theme: { content: any; }) => (
+    theme.content
+);
 
 interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
     joinGame: (player: string, gameId: string) => void;

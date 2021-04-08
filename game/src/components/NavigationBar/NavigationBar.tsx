@@ -8,9 +8,9 @@ import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField, AppBar, Toolbar} from '@material-ui/core';
 import {RouteComponentProps} from "react-router-dom";
 
-const styles = (theme: { content: any; }) => ({
-    ...theme.content,
-});
+const styles = (theme: { content: any; }) => (
+    theme.content
+);
 
 interface NavigationBarProps extends WithStyles<typeof styles> {
 

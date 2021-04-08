@@ -9,9 +9,9 @@ import './SuggestWord.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField, Box} from '@material-ui/core';
 
-const styles = (theme: { content: any; }) => ({
-    ...theme.content,
-});
+const styles = (theme: { content: any; }) => (
+    theme.content
+);
 
 const ws = new WebSocket('ws://localhost:8080');
 
