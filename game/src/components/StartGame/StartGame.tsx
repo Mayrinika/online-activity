@@ -8,6 +8,8 @@ import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box} from '@material-ui/core';
 import getRoutes from "../../utils/routes";
 
+const newWS= new WebSocket('ws://localhost:8080');
+
 const styles = (theme: { content: any; }) => ({
     ...theme.content,
 });
@@ -32,25 +34,47 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     }
 
     async componentDidMount() {
+        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
+            waitForConnection(function () {
+                return newWS.send(message);
+            }, 1000);
+        };
+
+        const waitForConnection = function (callback: () => void, interval: number) {
+            if (newWS.readyState === 1) {
+                callback();
+            } else {
+                setTimeout(function () {
+                    waitForConnection(callback, interval);
+                }, interval);
+            }
+        };
+        send(JSON.stringify({'messageType':'refresh','gameId':localStorage.getItem('gameId')}));
         this._isMounted = true;
-        if( this.props.ws) {
+        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
+        const data = await res.text();
+        const game = JSON.parse(data);
+        this.setState({
+            players: game.players,
+        });
+        if (this.props.ws) {
             this.props.ws.onmessage = (response: any) => {
-                if (this._isMounted) {
-                    this.setState({players: JSON.parse(response.data).players});
-                }
-            };
-        } else {
-            const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
-            const data = await res.text();
-            const game = JSON.parse(data);
-            this.setState({
-                players: game.players,
-            });
+                this.setState({players: JSON.parse(response.data).players});
+            }
+        }
+        newWS.onmessage = (response: any) => {
+            this.setState({players: JSON.parse(response.data).players});
         }
     }
 
     componentWillUnmount() {
         this._isMounted = false;
+        if (this.props.ws) {
+            this.props.ws.close();
+        }
+        if (newWS) {
+            newWS.close();
+        }
     }
 
     startGame = async () => {
@@ -59,10 +83,10 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     };
 
     addWordAndPainter = async (gameId: string | null) => {
-        this.props.ws.send(JSON.stringify({
-            'messageType': 'addWordAndPainter',
-            'gameId': localStorage.getItem('gameId')
-        }));
+        this.props.ws ?
+            this.props.ws.send(JSON.stringify({'messageType': 'addWordAndPainter', 'gameId': localStorage.getItem('gameId')}))
+            : newWS.send(JSON.stringify({'messageType': 'addWordAndPainter', 'gameId': localStorage.getItem('gameId')}));
+
         // await fetch(getRoutes(gameId).addWordAndPainter, {
         //     method: 'POST',
         //     headers: {

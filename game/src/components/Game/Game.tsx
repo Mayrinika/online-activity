@@ -69,7 +69,8 @@ class Game extends Component<GameProps, GameState> {
                 chatMessages: JSON.parse(response.data).chatMessages,
                 isGameOver: JSON.parse(response.data).isGameOver,
                 time: JSON.parse(response.data).time,
-                imgURL: JSON.parse(response.data).img
+                imgURL: JSON.parse(response.data).img,
+                players: JSON.parse(response.data).players
             });
         }
     }
