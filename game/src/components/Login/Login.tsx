@@ -64,7 +64,6 @@ class Login extends Component<LoginProps, LoginState> {
         await this.getAllGames();
         if (code === '') {
             const newCode = uuidv4();
-            alert(`code is: ${newCode}`); //TODO использовать библиотеку TOAST вместо alarm
             await this.joinGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
@@ -78,12 +77,12 @@ class Login extends Component<LoginProps, LoginState> {
         }
     };
 
-    joinGame = async (name: string, newCode: string) => {
+    joinGame = async (name: string, code: string) => {
         const {joinGame, history} = this.props;
         localStorage.setItem('playerName', name);
-        localStorage.setItem('gameId', newCode);
-        await joinGame(name, newCode);
-        history.push(getDomRoutes(newCode).startGame);
+        localStorage.setItem('gameId', code);
+        await joinGame(name, code);
+        history.push(getDomRoutes(code).startGame);
     };
 
     render() {
@@ -109,7 +108,6 @@ class Login extends Component<LoginProps, LoginState> {
                                 id="name"
                                 label="Введите имя"
                                 name="name"
-                                autoComplete="name"
                                 autoFocus
                                 onChange={this.handleChange}
                                 value={this.state.name}
@@ -121,7 +119,6 @@ class Login extends Component<LoginProps, LoginState> {
                                 id="code"
                                 label="Введите код приглашения"
                                 name="code"
-                                autoComplete="code"
                                 onChange={this.handleChange}
                                 value={this.state.code}
                             />

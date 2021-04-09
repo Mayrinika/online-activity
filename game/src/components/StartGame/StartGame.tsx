@@ -23,6 +23,7 @@ interface StartGameState {
 
 class StartGame extends Component<StartGameProps, StartGameState> {
     private _isMounted: boolean;
+
     constructor(props: StartGameProps) {
         super(props);
         this.state = {
@@ -43,7 +44,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         });
         newWS.onmessage = (response: any) => {
             this.setState({players: JSON.parse(response.data).players});
-        }
+        };
     }
 
     refreshConnection = () => {
@@ -63,8 +64,8 @@ class StartGame extends Component<StartGameProps, StartGameState> {
                 }, interval);
             }
         };
-        send(JSON.stringify({'messageType':'refresh','gameId':localStorage.getItem('gameId')}));
-    }
+        send(JSON.stringify({'messageType': 'refresh', 'gameId': localStorage.getItem('gameId')}));
+    };
 
     componentWillUnmount() {
         this._isMounted = false;
@@ -77,7 +78,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     };
 
     addWordAndPainter = async (gameId: string | null) => {
-         newWS.send(JSON.stringify({'messageType': 'addWordAndPainter', 'gameId': localStorage.getItem('gameId')}));
+        newWS.send(JSON.stringify({'messageType': 'addWordAndPainter', 'gameId': localStorage.getItem('gameId')}));
     };
 
     render() {
@@ -86,14 +87,23 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
                 <Box>
+                    <Box style={{marginBottom: 32}}>
+                        <Typography variant='h4' paragraph>
+                            Пригласи друзей!
+                        </Typography>
+                        <Typography variant='subtitle1' paragraph className={classes.playerContainer}
+                                    style={{backgroundColor: '#F3F3F3'}}>
+                            {localStorage.getItem('gameId')}
+                        </Typography>
+                    </Box>
                     <Typography variant='h5' paragraph>
                         Все игроки в сборе?
                     </Typography>
                     <Box className={classes.innerContainer}>
                         <Typography variant='subtitle1'>
-                            {players && players.map(player=>{
+                            {players && players.map(player => {
                                 return <div key={player} className={classes.playerContainer}>{player}</div>;
-                        })}
+                            })}
                         </Typography>
                     </Box>
                     <Button

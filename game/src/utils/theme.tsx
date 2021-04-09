@@ -58,6 +58,7 @@ export default {
         },
         playerContainer: {
             borderRadius: 10,
+            border: '1px solid gray',
             backgroundColor: '#A1C1EC',
             margin: 8,
             padding: 8,
