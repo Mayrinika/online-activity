@@ -3,10 +3,10 @@ import {RouteComponentProps} from 'react-router-dom';
 //components
 //utils
 import getDomRoutes from "../../utils/domRoutes";
+import getRoutes from "../../utils/routes";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, Typography, Box} from '@material-ui/core';
-import getRoutes from "../../utils/routes";
+import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
 
 let newWS: any;
 
@@ -81,6 +81,22 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         newWS.send(JSON.stringify({'messageType': 'addWordAndPainter', 'gameId': localStorage.getItem('gameId')}));
     };
 
+    copyGameId = () => {
+        const inputEl = document.querySelector('#gameId') as HTMLInputElement;
+        const inputValue = inputEl!.value.trim();
+
+        if (!navigator.clipboard) {
+            inputEl.select();
+            document.execCommand("copy");
+        } else {
+            navigator.clipboard.writeText(inputValue)
+                .then(() => {})
+                .catch(err => {
+                    console.log('Something went wrong', err);
+                });
+        }
+    };
+
     render() {
         const {players} = this.state;
         const {classes} = this.props;
@@ -91,10 +107,14 @@ class StartGame extends Component<StartGameProps, StartGameState> {
                         <Typography variant='h4' paragraph>
                             Пригласи друзей!
                         </Typography>
-                        <Typography variant='subtitle1' paragraph className={classes.playerContainer}
-                                    style={{backgroundColor: '#F3F3F3'}}>
-                            {localStorage.getItem('gameId')}
-                        </Typography>
+                        <Box>
+                            <TextField id='gameId' variant="outlined" size='small'
+                                       style={{backgroundColor: '#F3F3F3'}} value={localStorage.getItem('gameId')}/>
+                            <Button id='readButton' variant="contained" size='medium' color='secondary'
+                                    style={{marginLeft: 8}}
+                                    onClick={this.copyGameId}>Copy
+                            </Button>
+                        </Box>
                     </Box>
                     <Typography variant='h5' paragraph>
                         Все игроки в сборе?
