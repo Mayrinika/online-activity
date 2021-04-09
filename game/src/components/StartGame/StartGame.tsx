@@ -39,12 +39,19 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
-        this.setState({
-            players: game.players,
-        });
+        if (this._isMounted) {
+            this.setState({
+                players: game.players,
+            });
+        }
         newWS.onmessage = (response: any) => {
             this.setState({players: JSON.parse(response.data).players});
         };
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+        newWS.close();
     }
 
     refreshConnection = () => {
@@ -66,11 +73,6 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         };
         send(JSON.stringify({'messageType': 'refresh', 'gameId': localStorage.getItem('gameId')}));
     };
-
-    componentWillUnmount() {
-        this._isMounted = false;
-        newWS.close();
-    }
 
     startGame = async () => {
         await this.addWordAndPainter(localStorage.getItem('gameId'));

@@ -67,7 +67,9 @@ class Game extends Component<GameProps, GameState> {
     componentDidUpdate() {
         if (this.state.isGameOver) this.gameOver();
     }
-
+    componentWillUnmount() {
+        newWS.close();
+    }
     getDataFromServer = async () => {
         this.refreshConnection();
         const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
