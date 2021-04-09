@@ -8,12 +8,13 @@ import getRoutes from "../../utils/routes";
 import './SuggestWord.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField, Box} from '@material-ui/core';
+import websocket from "../../utils/websocket";
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
 
-const ws = new WebSocket('ws://localhost:8080');
+let ws: any;
 
 interface SuggestedWord {
     id: string;
@@ -41,18 +42,43 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
             enteredWord: '',
             words: [],
         };
+        this.setConnection();
     }
 
     componentDidMount() {
         this.getWordsFromServer();
+        this.setConnection();
         ws.onmessage = (response: any) => {
             this.setState({words: JSON.parse(response.data)});
         };
     }
+    componentWillUnmount() {
+        ws.close();
+    }
+
+    setConnection = () => {
+        ws = new WebSocket('ws://localhost:8080');
+        // const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
+        //     waitForConnection(function () {
+        //         return ws.send(message);
+        //     }, 100);
+        // };
+        //
+        // const waitForConnection = function (callback: () => void, interval: number) {
+        //     if (ws.readyState === 1) {
+        //         callback();
+        //     } else {
+        //         setTimeout(function () {
+        //             waitForConnection(callback, interval);
+        //         }, interval);
+        //     }
+        // };
+        // send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
+    };
 
     sendWord = (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
-        ws.send(JSON.stringify({'messageType': 'sendSuggestedWord', 'word': this.state.enteredWord, 'id': uuidv4()}));
+        ws.send(JSON.stringify({'messageType': websocket.sendSuggestedWordToServer, 'word': this.state.enteredWord, 'id': uuidv4()}));
         this.setState({enteredWord: ''});
     };
     enterWord = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,14 +92,14 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
     };
     likeWord = (wordId: string) => {
         ws.send(JSON.stringify({
-            'messageType': 'likeWord',
+            'messageType': websocket.likeWord,
             'wordId': wordId,
             'author': localStorage.getItem('playerName')
         }));
     };
     dislikeWord = (wordId: string) => {
         ws.send(JSON.stringify({
-            'messageType': 'dislikeWord',
+            'messageType': websocket.dislikeWord,
             'wordId': wordId,
             'author': localStorage.getItem('playerName')
         }));
@@ -128,7 +154,7 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                         </Button>
                     </form>
                     <Box>
-                        {this.state.words.filter(word => !word.isInDictionary).map((word) => (
+                        {this.state.words.filter(word => !word.isInDictionary && !word.isApproved && !word.isDeclined).map((word) => (
                             <div key={word.id} className="SuggestWord-word">
                                 {word.word}
                                 <div className="SuggestWord-buttons">

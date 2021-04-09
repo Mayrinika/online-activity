@@ -10,6 +10,7 @@ import SuggestWord from "../SuggestWord/SuggestWord";
 //utils
 import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
+import websocket from "../../utils/websocket";
 //styles
 import './App.css';
 
@@ -53,7 +54,7 @@ class App extends Component<{}, AppState> {
                 }, interval);
             }
         };
-        send(JSON.stringify({'gameId':gameId,'messageType':'register', 'player':player}));
+        send(JSON.stringify({'gameId':gameId,'messageType':websocket.register, 'player':player}));
     }
 
     addGame = async (gameId: string) => {

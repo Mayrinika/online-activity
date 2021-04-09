@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import fs from 'fs-extra';
 import WebSocket from 'ws';
+import WebsocketMessage from "./utils/websocket";
 
 const app = express();
 const port = process.env.PORT ||9000;
@@ -157,151 +158,79 @@ wss.on('connection', (ws: any) => {
         const suggestedWord = suggestedWords.find(word => word.id === JSON.parse(message).wordId) || suggestedWords[0]; //TODO придумать как обрабатывать вариант, когда suggestedWord===undefined
         const author = JSON.parse(message).author;
         switch (messageType) {
-        case 'sendSuggestedWord':
-            const words = fs.readJsonSync('./src/utils/words.json');
-            if (words.words.includes(JSON.parse(message).word)) {
-                suggestedWords.push({
-                    word: JSON.parse(message).word,
-                    id: JSON.parse(message).id,
-                    likes: [],
-                    dislikes: [],
-                    isApproved: false,
-                    isDeclined: false,
-                    isInDictionary: true,
-                });
-                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
-                    client.send(JSON.stringify(suggestedWords));
-                });
-                suggestedWords.splice(suggestedWords.indexOf(JSON.parse(message).word), 1);
+        case WebsocketMessage.sendSuggestedWordToServer:
+            const dictionary = fs.readJsonSync('./src/utils/words.json');
+            if (dictionary.words.includes(JSON.parse(message).word)) {
+                addSuggestedWord(message, true);
+                sendSuggestedWordsToAllClients();
+                deleteElementFromArray(suggestedWords, JSON.parse(message).word);
             } else {
-                suggestedWords.push({
-                    word: JSON.parse(message).word,
-                    id: JSON.parse(message).id,
-                    likes: [],
-                    dislikes: [],
-                    isApproved: false,
-                    isDeclined: false,
-                    isInDictionary: false,
-                });
-                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
-                    client.send(JSON.stringify(suggestedWords));
-                });
+                addSuggestedWord(message, false);
+                sendSuggestedWordsToAllClients();
             }
             break;
-        case 'likeWord':
+        case WebsocketMessage.likeWord:
             if (suggestedWord.dislikes.includes(author)) {
-                suggestedWord.dislikes.splice(suggestedWord.dislikes.indexOf(author), 1);
+                deleteElementFromArray(suggestedWord.dislikes, author);
             } else if (!suggestedWord.likes.includes(author)) {
                 suggestedWord.likes.push(author);
             }
-            wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
-                client.send(JSON.stringify(suggestedWords));
-            });
+            sendSuggestedWordsToAllClients();
             if (suggestedWord.likes.length > 2) {
                 suggestedWord.isApproved = true;
-                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
-                    client.send(JSON.stringify(suggestedWords));
-                });
-                const words = fs.readJsonSync('./src/utils/words.json');
-                const newWords: {words?: string[]} = {};
-                newWords.words = [...words.words, suggestedWord.word];
-                fs.outputJsonSync('./src/utils/words.json', newWords);
-                suggestedWords.splice(suggestedWords.indexOf(suggestedWord), 1);
+                sendSuggestedWordsToAllClients();
+                addNewWordToDictionary(suggestedWord.word);
+                deleteElementFromArray(suggestedWords, suggestedWord);
             }
             break;
-        case 'dislikeWord':
+        case WebsocketMessage.dislikeWord:
             if (suggestedWord.likes.includes(author)) {
-                suggestedWord.likes.splice(suggestedWord.likes.indexOf(author), 1);
+                deleteElementFromArray(suggestedWord.likes, author);
             } else if (!suggestedWord.dislikes.includes(author)) {
                 suggestedWord.dislikes.push(author);
             }
-            wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
-                client.send(JSON.stringify(suggestedWords));
-            });
+            sendSuggestedWordsToAllClients();
             if (suggestedWord.dislikes.length > 2) {
                 suggestedWord.isDeclined = true;
-                wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
-                    client.send(JSON.stringify(suggestedWords));
-                });
-                suggestedWords.splice(suggestedWords.indexOf(suggestedWord), 1);
+                sendSuggestedWordsToAllClients();
+                deleteElementFromArray(suggestedWords, suggestedWord);
             }
             break;
-        case 'register':
+        case WebsocketMessage.register:
             addPlayer(currentGame, JSON.parse(message).player);
-            if (webSockets[gameId]) {
-                webSockets[gameId].push(ws);
-            } else {
-                webSockets[gameId] = [ws];
-            }
-            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
-                client.send(JSON.stringify(currentGame));
-            });
+            addNewWebSocketClient(gameId, ws);
+            sendGameToClientsByGameId(gameId, currentGame);
             break;
-        case 'refresh':
-            if (webSockets[gameId]) {
-                webSockets[gameId].push(ws);
-            } else {
-                webSockets[gameId] = [ws];
-            }
-            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
-                client.send(JSON.stringify(currentGame));
-            });
+        case WebsocketMessage.refresh:
+            addNewWebSocketClient(gameId, ws);
+            sendGameToClientsByGameId(gameId, currentGame);
             break;
-        case 'addWordAndPainter':
-            if (currentGame.wordToGuess === '') {
-                const words = fs.readJsonSync('./src/utils/words.json').words;
-                currentGame.wordToGuess = getRandomWord(words);
-            }
-            if (currentGame.painter === '') {
-                currentGame.painter = getPainter(currentGame.players);
-            }
-            if (currentGame.time === GAME_TIME) {
-                timerIds[currentGame.id] = setInterval((currentGame) => {
-                    if (currentGame.time > 0) {
-                        currentGame.time -= 1;
-                        webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
-                            client.send(JSON.stringify(currentGame));
-                        });
-                    } else {
-                        currentGame.isTimeOver = true;
-                        currentGame.isGameOver = true;
-                        clearInterval(timerIds[currentGame]);
-                        webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
-                            client.send(JSON.stringify(currentGame));
-                        });
-                    }
-                }, 1000, currentGame);
-            }
+        case WebsocketMessage.addWordAndPainter:
+            chooseWordToGuess(currentGame);
+            choosePainter(currentGame);
+            setTimerForGame(currentGame, gameId);
             break;
-        case 'sendMessage':
+        case WebsocketMessage.sendMessage:
             currentGame.chatMessages.push(JSON.parse(message).message);
-            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
-                client.send(JSON.stringify(currentGame));
-            });
+            sendGameToClientsByGameId(gameId, currentGame);
             break;
-        case 'postMarks':
-            const currentMessage = currentGame.chatMessages //TODO
+        case WebsocketMessage.postMarks:
+            const currentMessage = currentGame.chatMessages
                 .find(item => item.id === JSON.parse(message).value.id);
             if (currentMessage === undefined)
                 return;
             currentMessage.marks = JSON.parse(message).value.marks;
-            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
-                client.send(JSON.stringify(currentGame));
-            });
+            sendGameToClientsByGameId(gameId, currentGame);
             break;
-        case 'setWinner':
+        case WebsocketMessage.setWinner:
             currentGame.winner = JSON.parse(message).winner;
             currentGame.isWordGuessed = true;
             currentGame.isGameOver = true;
-            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
-                client.send(JSON.stringify(currentGame));
-            });
+            sendGameToClientsByGameId(gameId, currentGame);
             break;
-        case 'sendImg':
+        case WebsocketMessage.sendImg:
             currentGame.img = JSON.parse(message).img;
-            webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
-                client.send(JSON.stringify(currentGame));
-            });
+            sendGameToClientsByGameId(gameId, currentGame);
             break;
         }
     });
@@ -319,5 +248,73 @@ function getPainter(players: string[]): string {
 
 function addPlayer(currentGame: GameType, player: string) {
     currentGame.players.push(player);
+}
+
+function sendSuggestedWordsToAllClients() {
+    wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+        client.send(JSON.stringify(suggestedWords));
+    });
+}
+function addSuggestedWord(message: any, inDictionary: boolean): void {
+    suggestedWords.push({
+        word: JSON.parse(message).word,
+        id: JSON.parse(message).id,
+        likes: [],
+        dislikes: [],
+        isApproved: false,
+        isDeclined: false,
+        isInDictionary: inDictionary,
+    });
+}
+function addNewWordToDictionary(word: string) {
+    const words = fs.readJsonSync('./src/utils/words.json');
+    const newWords: {words?: string[]} = {};
+    newWords.words = [...words.words, word];
+    fs.outputJsonSync('./src/utils/words.json', newWords);
+}
+function deleteElementFromArray (array: any[], element: any) {
+    array.splice(array.indexOf(element), 1);
+}
+function addNewWebSocketClient(gameId: string, ws: any) {
+    if (webSockets[gameId]) {
+        webSockets[gameId].push(ws);
+    } else {
+        webSockets[gameId] = [ws];
+    }
+}
+function sendGameToClientsByGameId(gameId: string, currentGame: GameType) {
+    webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+        client.send(JSON.stringify(currentGame));
+    });
+}
+function chooseWordToGuess(currentGame: GameType) {
+    if (currentGame.wordToGuess === '') {
+        const words = fs.readJsonSync('./src/utils/words.json').words;
+        currentGame.wordToGuess = getRandomWord(words);
+    }
+}
+function choosePainter(currentGame: GameType) {
+    if (currentGame.painter === '') {
+        currentGame.painter = getPainter(currentGame.players);
+    }
+}
+function setTimerForGame(currentGame: GameType, gameId: string) {
+    if (currentGame.time === GAME_TIME) {
+        timerIds[currentGame.id] = setInterval((currentGame) => {
+            if (currentGame.time > 0) {
+                currentGame.time -= 1;
+                webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+                    client.send(JSON.stringify(currentGame));
+                });
+            } else {
+                currentGame.isTimeOver = true;
+                currentGame.isGameOver = true;
+                clearInterval(timerIds[currentGame]);
+                webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
+                    client.send(JSON.stringify(currentGame));
+                });
+            }
+        }, 1000, currentGame);
+    }
 }
 

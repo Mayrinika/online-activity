@@ -10,6 +10,7 @@ import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './Game.css';
+import websocket from "../../utils/websocket";
 
 let newWS: any;
 
@@ -54,13 +55,15 @@ class Game extends Component<GameProps, GameState> {
     async componentDidMount() {
         await this.getDataFromServer();
         newWS.onmessage = (response: any) => {
-            this.setState({
-                chatMessages: JSON.parse(response.data).chatMessages,
-                isGameOver: JSON.parse(response.data).isGameOver,
-                time: JSON.parse(response.data).time,
-                imgURL: JSON.parse(response.data).img,
-                players: JSON.parse(response.data).players
-            });
+            if (JSON.parse(response.data).id === localStorage.getItem('gameId')) {
+                this.setState({
+                    chatMessages: JSON.parse(response.data).chatMessages,
+                    isGameOver: JSON.parse(response.data).isGameOver,
+                    time: JSON.parse(response.data).time,
+                    imgURL: JSON.parse(response.data).img,
+                    players: JSON.parse(response.data).players
+                });
+            }
         }
     }
 
@@ -102,7 +105,7 @@ class Game extends Component<GameProps, GameState> {
                 }, interval);
             }
         };
-        send(JSON.stringify({'messageType':'refresh','gameId':localStorage.getItem('gameId')}));
+        send(JSON.stringify({'messageType':websocket.refresh,'gameId':localStorage.getItem('gameId')}));
     }
 
     gameOver = () => {
@@ -112,16 +115,16 @@ class Game extends Component<GameProps, GameState> {
     };
 
     sendMessage = (message: Message) => {
-        newWS.send(JSON.stringify({'messageType':'sendMessage','gameId':localStorage.getItem('gameId'), 'message':message}));
+        newWS.send(JSON.stringify({'messageType':websocket.sendMessage,'gameId':localStorage.getItem('gameId'), 'message':message}));
     }
     postMarks = (value: {id: string, marks: {hot: boolean, cold: boolean}}) => {
-        newWS.send(JSON.stringify({'messageType':'postMarks','gameId':localStorage.getItem('gameId'), 'value':value}));
+        newWS.send(JSON.stringify({'messageType':websocket.postMarks,'gameId':localStorage.getItem('gameId'), 'value':value}));
     }
     setWinner = (winner: string | null) => {
-        newWS.send(JSON.stringify({'messageType':'setWinner','gameId':localStorage.getItem('gameId'), 'winner':winner}))
+        newWS.send(JSON.stringify({'messageType':websocket.setWinner,'gameId':localStorage.getItem('gameId'), 'winner':winner}))
     }
     sendImg = (img: string) => {
-        newWS.send(JSON.stringify({'messageType':'sendImg','gameId':localStorage.getItem('gameId'), 'img':img}));
+        newWS.send(JSON.stringify({'messageType':websocket.sendImg,'gameId':localStorage.getItem('gameId'), 'img':img}));
     }
 
     render() {

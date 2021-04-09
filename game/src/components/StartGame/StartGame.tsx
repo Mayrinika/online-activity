@@ -4,6 +4,7 @@ import {RouteComponentProps} from 'react-router-dom';
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import getRoutes from "../../utils/routes";
+import websocket from "../../utils/websocket";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
@@ -45,7 +46,9 @@ class StartGame extends Component<StartGameProps, StartGameState> {
             });
         }
         newWS.onmessage = (response: any) => {
-            this.setState({players: JSON.parse(response.data).players});
+            if (JSON.parse(response.data).id === localStorage.getItem('gameId')) {
+                this.setState({players: JSON.parse(response.data).players});
+            }
         };
     }
 
@@ -71,16 +74,16 @@ class StartGame extends Component<StartGameProps, StartGameState> {
                 }, interval);
             }
         };
-        send(JSON.stringify({'messageType': 'refresh', 'gameId': localStorage.getItem('gameId')}));
+        send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
     };
 
     startGame = async () => {
-        await this.addWordAndPainter(localStorage.getItem('gameId'));
+        await this.addWordAndPainter();
         this.props.history.push(getDomRoutes(localStorage.getItem('gameId')).game);
     };
 
-    addWordAndPainter = async (gameId: string | null) => {
-        newWS.send(JSON.stringify({'messageType': 'addWordAndPainter', 'gameId': localStorage.getItem('gameId')}));
+    addWordAndPainter = async () => {
+        newWS.send(JSON.stringify({'messageType': websocket.addWordAndPainter, 'gameId': localStorage.getItem('gameId')}));
     };
 
     copyGameId = () => {
