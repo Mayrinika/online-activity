@@ -24,7 +24,7 @@ class ApiClient extends Component<any, any> {
                 'Content-Type': 'application/json;charset=utf-8'
             },
         });
-    }
+    };
 
     getAllGames = async () => {
         const res = await fetch(getRoutes().app);
@@ -36,7 +36,7 @@ class ApiClient extends Component<any, any> {
         const res = await fetch(getRoutes(this._gameId).gameId);
         const data = await res.text();
         return JSON.parse(data);
-    }
+    };
 
     clearCountdown = async () => {
         await fetch(getRoutes(this._gameId).clearCountdown, {
@@ -63,6 +63,20 @@ class ApiClient extends Component<any, any> {
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(localLeaderboard)
         });
+    };
+
+    getLeaderboardDataFromServer = async () => {
+        const res = await fetch(getRoutes().leaderboard);
+        const data = await res.text();
+        const leaderboard = JSON.parse(data);
+        return  Object.entries(leaderboard as { [playerName: string]: number })
+            .sort((a, b) => b[1] - a[1]);
+    };
+
+    getSuggestWordsFromServer = async () => {
+        const res = await fetch(getRoutes().suggestedWords);
+        const data = await res.text();
+        return  JSON.parse(data);
     };
 }
 

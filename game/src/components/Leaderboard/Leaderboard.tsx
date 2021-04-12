@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 //components
+import {ApiClientContext} from "../Api/apiClientContext";
 //utils
-import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
+import getRoutes from "../../utils/routes";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
+
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -20,6 +22,7 @@ interface LeaderboardState {
 }
 
 class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
+    static contextType = ApiClientContext;
     constructor(props: LeaderboardProps) {
         super(props);
         this.state = {
@@ -27,21 +30,10 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
         };
     }
 
-    componentDidMount() {
-        this.getDataFromServer();
+    async componentDidMount() {
+        const sortedLeaderboard = await this.context.getLeaderboardDataFromServer();
+        this.setState({sortedLeaderboard});
     }
-
-    getDataFromServer = async () => {
-        await fetch(getRoutes().leaderboard)
-            .then(res => res.json())
-            .then(leaderboard => {
-                const sortedLeaderboard = Object.entries(leaderboard as { [playerName: string]: number })
-                    .sort((a, b) => b[1] - a[1]);
-                this.setState({
-                    sortedLeaderboard
-                });
-            });
-    };
 
     startOver = () => {
         this.props.history.push(getDomRoutes().login);

@@ -2,12 +2,13 @@ import {RouteComponentProps} from "react-router-dom";
 import React, {Component} from "react";
 import {v4 as uuidv4} from 'uuid';
 //components
+import {ApiClientContext} from "../Api/apiClientContext";
 //utils
 import getRoutes from "../../utils/routes";
 //styles
 import './SuggestWord.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, Grid, Typography, TextField, Box} from '@material-ui/core';
+import {Button, Container, TextField, Box} from '@material-ui/core';
 import websocket from "../../utils/websocket";
 
 const styles = (theme: { content: any; }) => (
@@ -36,6 +37,7 @@ interface SuggestWordProps extends RouteComponentProps, WithStyles<typeof styles
 }
 
 class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
+    static contextType = ApiClientContext;
     constructor(props: SuggestWordProps) {
         super(props);
         this.state = {
@@ -85,9 +87,7 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         this.setState({...this.state, enteredWord: evt.target.value});
     };
     getWordsFromServer = async () => {
-        const res = await fetch(getRoutes().suggestedWords);
-        const data = await res.text();
-        const words = JSON.parse(data);
+        const words = await this.context.getSuggestWordsFromServer();
         this.setState({words});
     };
     likeWord = (wordId: string) => {
