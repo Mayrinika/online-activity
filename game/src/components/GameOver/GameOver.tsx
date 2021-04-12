@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
 //components
+import {ApiClientContext} from "../Api/apiClientContext";
 //utils
 import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
@@ -43,6 +44,8 @@ interface GameOverState {
 }
 
 class GameOver extends Component<GameOverProps, GameOverState> {
+    static contextType = ApiClientContext;
+
     constructor(props: GameOverProps) {
         super(props);
         this.state = {
@@ -63,9 +66,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
     }
 
     getDataFromServer = async () => {
-        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
-        const data = await res.text();
-        const game = JSON.parse(data);
+        const game = await this.context.getGame();
         this.setState({
             wordToGuess: game.wordToGuess,
             isTimeOver: game.isTimeOver,
@@ -106,7 +107,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
             localLeaderboard: results
         });
 
-        this.pushScoreToLeaderboard(results);
+        this.context.pushScoreToLeaderboard(results);
     };
 
     calculateScoresForHotMessages = (player: string) => {
@@ -118,15 +119,6 @@ class GameOver extends Component<GameOverProps, GameOverState> {
             return currentScore;
         });
         return Math.min(currentScore, 50);
-    };
-
-    pushScoreToLeaderboard = (localLeaderboard: LocalLeaderboardType[]) => {
-        fetch(getRoutes().leaderboard, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(localLeaderboard)
-        });
-        //.then(res => console.log(res));
     };
 
     startOver = () => {

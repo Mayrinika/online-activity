@@ -1,6 +1,11 @@
 import {Component} from 'react';
 import getRoutes from "../../utils/routes";
 
+interface LocalLeaderboardType {
+    playerName: string;
+    score: number;
+}
+
 class ApiClient extends Component<any, any> {
     private _gameId: string | undefined; //TODO
     constructor(props: any) {
@@ -49,6 +54,14 @@ class ApiClient extends Component<any, any> {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({line})
+        });
+    };
+
+    pushScoreToLeaderboard = (localLeaderboard: LocalLeaderboardType[]) => {
+        fetch(getRoutes().leaderboard, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(localLeaderboard)
         });
     };
 }
