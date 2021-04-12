@@ -10,6 +10,9 @@ import themeFile from './utils/theme';
 //styles
 import './index.css';
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
+import ApiClient from "./components/Api/ApiClient";
+
+import {ApiClientContext} from './components/Api/apiClientContext';
 
 const theme = createMuiTheme(themeFile);
 
@@ -17,8 +20,10 @@ ReactDOM.render(
     <MuiThemeProvider theme={theme}>
         <React.StrictMode>
             <BrowserRouter>
-                <NavigationBar/>
-                <App/>
+                <ApiClientContext.Provider value={new ApiClient('')}>
+                    <NavigationBar/>
+                    <App/>
+                </ApiClientContext.Provider>
             </BrowserRouter>
         </React.StrictMode>,
     </MuiThemeProvider>,

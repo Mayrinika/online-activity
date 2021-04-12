@@ -14,6 +14,8 @@ import websocket from "../../utils/websocket";
 //styles
 import './App.css';
 
+import {ApiClientContext} from '../Api/apiClientContext';
+
 let ws: any;
 
 interface GameType {
@@ -57,13 +59,19 @@ class App extends Component<{}, AppState> {
         send(JSON.stringify({'gameId':gameId,'messageType':websocket.register, 'player':player}));
     }
 
+    // addGame = async (gameId: string) => {
+    //     await fetch(getRoutes(gameId).gameId, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json;charset=utf-8'
+    //         },
+    //     });
+    // }
+
     addGame = async (gameId: string) => {
-        await fetch(getRoutes(gameId).gameId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-        });
+        let value = this.context;
+        value.addGame(gameId);
+        console.log('hello from App');
     }
 
     getAllGames = async () => {
@@ -107,5 +115,7 @@ class App extends Component<{}, AppState> {
         );
     }
 }
+
+App.contextType = ApiClientContext;
 
 export default App;
