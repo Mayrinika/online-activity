@@ -2,7 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import fs from 'fs-extra';
 import WebSocket from 'ws';
-import WebsocketMessage from "./utils/websocket";
+import WebsocketMessage from './utils/websocket';
+import bcrypt from 'bcrypt';
+import expressSession from 'express-session';
+import { v4 as uuidv4 } from 'uuid';
 
 const app = express();
 const port = process.env.PORT ||9000;
@@ -48,13 +51,20 @@ interface SuggestedWord {
     isDeclined: boolean;
     isInDictionary: boolean;
 }
+interface Names {
+    id: string;
+    name: string;
+    password: string;
+}
 
 const games: GameType[] = [];
 const timerIds: any = {}; //TODO разобраться с типом TimerIds
 const suggestedWords: SuggestedWord[] = [];
+const names: Names[] = [{id: 'etituiuru',name: 'admin', password: '123'}];
 
 app.use(cors());
 app.use(express.json());
+app.use(expressSession({secret:'secret'}));
 
 app.use((err: any, req: any, res: any, next: any) => { //TODO разобраться с типом
     const {status = 500, message = 'Something went wrong'} = err;
@@ -65,13 +75,39 @@ app.get('/app', (req: any, res: any) => {
     res.status(200).send(games);
 });
 
+app.get('/names', (req: any, res: any) => {
+    res.status(200).send(names);
+});
+
+app.post('/names', async (req: any, res: any) => {
+    const {name, password} = req.body;
+    const hash = await hashPassword(password);
+    names.push({id: uuidv4(), name, password: hash});
+    res.status(200).send(names);
+});
+
+app.post('/login', async (req: any, res: any) => {
+    const {name, password} = req.body;
+    const user = names.find(user => user.name === name);
+    if (!user) {
+        res.status(501).send('Некорректное имя пользователя или пароль');
+    } else {
+        const valid = await bcrypt.compare(password, user.password);
+        if (valid) {
+            res.status(200).send('ок');
+        } else {
+            res.status(501).send('Некорректное имя пользователя или пароль');
+        }
+    }
+});
+
 app.get('/suggestedWords', (req: any, res: any) => {
     res.status(200).send(suggestedWords);
 });
 
 app.get('/leaderboard', (req: any, res: any) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    res.status(200).send(leaderboard.players);
+    res.status(200).send(names);
 });
 
 app.post('/leaderboard', (req: any, res: any) => {
@@ -317,4 +353,10 @@ function setTimerForGame(currentGame: GameType, gameId: string) {
         }, 1000, currentGame);
     }
 }
+
+const hashPassword = async (password: string): Promise<string> => {
+    const hash = await bcrypt.hash(password, 12);
+    return hash;
+};
+
 
