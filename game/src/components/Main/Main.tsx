@@ -16,6 +16,7 @@ const styles = (theme: { content: any; }) => (
 
 interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
     joinGame: (player: string, gameId: string) => void;
+    isAuthorized: boolean;
 }
 
 interface GameType {
@@ -35,7 +36,7 @@ interface LoginState {
     possibleGames: GameType[]
 }
 
-class Login extends Component<LoginProps, LoginState> {
+class Main extends Component<LoginProps, LoginState> {
     constructor(props: LoginProps) {
         super(props);
         this.state = {
@@ -100,37 +101,43 @@ class Login extends Component<LoginProps, LoginState> {
                             Онлайн - активити
                         </Typography>
                         <form onSubmit={this.handleSubmit} className={classes.innerContainer} style={{paddingBottom: 16}}>
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="name"
-                                label="Введите имя"
-                                name="name"
-                                autoFocus
-                                onChange={this.handleChange}
-                                value={this.state.name}
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                fullWidth
-                                id="code"
-                                label="Введите код приглашения"
-                                name="code"
-                                onChange={this.handleChange}
-                                value={this.state.code}
-                            />
-                            <Button
-                                className={classes.button}
-                                variant="contained"
-                                color="primary"
-                                type="submit"
-                                size="large"
-                            >
-                                Играть!
-                            </Button>
+                            {/*<TextField*/}
+                            {/*    variant="outlined"*/}
+                            {/*    margin="normal"*/}
+                            {/*    required*/}
+                            {/*    fullWidth*/}
+                            {/*    id="name"*/}
+                            {/*    label="Введите имя"*/}
+                            {/*    name="name"*/}
+                            {/*    autoFocus*/}
+                            {/*    onChange={this.handleChange}*/}
+                            {/*    value={this.state.name}*/}
+                            {/*/>*/}
+                            {!this.props.isAuthorized ?
+                                <p>Пожалуйста, войдите или зарегистрируйтесь</p>
+                                : <div>
+                                    <p>Добро пожаловать, {localStorage.getItem('playerName')}</p>
+                                    <TextField
+                                        variant="outlined"
+                                        margin="normal"
+                                        fullWidth
+                                        id="code"
+                                        label="У меня есть код приглашения"
+                                        name="code"
+                                        onChange={this.handleChange}
+                                        value={this.state.code}
+                                    />
+                                    <Button
+                                        className={classes.button}
+                                        variant="contained"
+                                        color="primary"
+                                        type="submit"
+                                        size="large"
+                                    >
+                                        Играть!
+                                    </Button>
+                                </div>
+                            }
                         </form>
                     </Grid>
                 </Grid>
@@ -139,4 +146,4 @@ class Login extends Component<LoginProps, LoginState> {
     }
 }
 
-export default (withStyles(styles)(Login));
+export default (withStyles(styles)(Main));

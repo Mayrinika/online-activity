@@ -27,7 +27,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
             <AppBar className={classes.navBarContainer}>
                 <Container>
                     <Toolbar>
-                        <Link to={getDomRoutes().login} className={classes.navLink}>
+                        <Link to={getDomRoutes().main} className={classes.navLink}>
                             <Button
                                 className={classes.navButton}
                                 variant="contained"
@@ -47,6 +47,20 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                                 variant="contained"
                                 color="secondary"
                             >Предложить слово</Button>
+                        </Link>
+                        <Link to={getDomRoutes().login} className={classes.navLink}>
+                            <Button
+                                className={classes.navButton}
+                                variant="contained"
+                                color="default"
+                            >Войти</Button>
+                        </Link>
+                        <Link to={getDomRoutes().signup} className={classes.navLink}>
+                            <Button
+                                className={classes.navButton}
+                                variant="contained"
+                                color="default"
+                            >Зарегистрироваться</Button>
                         </Link>
                     </Toolbar>
                 </Container>

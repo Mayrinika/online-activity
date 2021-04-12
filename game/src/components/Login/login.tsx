@@ -1,36 +1,34 @@
 import React, {Component} from "react";
 import {RouteComponentProps} from "react-router-dom";
 import getRoutes from "../../utils/routes";
+import getDomRoutes from "../../utils/domRoutes";
 
-interface Login2Props extends RouteComponentProps{
-
+interface LoginProps extends RouteComponentProps{
+    setAuthorized: () => void;
 }
 
-interface Login2State {
+interface LoginState {
     name: string;
     password: string;
-    possibleNames: string[];
-    nameIsTaken: boolean;
+    isIncorrect: boolean;
 }
 
-class Login2 extends Component<Login2Props, Login2State> {
-    constructor(props: Login2Props) {
+class Login extends Component<LoginProps, LoginState> {
+    private _isMounted: boolean;
+    constructor(props: LoginProps) {
         super(props);
         this.state = {
             name: '',
             password: '',
-            possibleNames: [],
-            nameIsTaken: false,
+            isIncorrect: false,
         }
+        this._isMounted = false
     }
-    async componentDidMount() {
-        await this.getAllNames();
+    componentDidMount() {
+        this._isMounted = true;
     }
-
-    getAllNames = async () => {
-        const res = await fetch(getRoutes().names);
-        const data = await res.text();
-        this.setState({possibleNames: JSON.parse(data)});
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
@@ -38,18 +36,37 @@ class Login2 extends Component<Login2Props, Login2State> {
             ...state,
             [evt.target.name]: evt.target.value
         }));
-        if (this.state.possibleNames.includes(evt.target.value)) {
-            this.setState({nameIsTaken: true});
-        } else {
-            this.setState({nameIsTaken: false});
-        }
     };
-    handleLogin = (evt: React.ChangeEvent<HTMLFormElement>) => {
+    handleLogin = async (evt: React.ChangeEvent<HTMLFormElement>) => {
         evt.preventDefault();
+        await this.login();
+        if (!this.state.isIncorrect) {
+            localStorage.setItem('playerName', this.state.name);
+            this.props.setAuthorized();
+            this.props.history.push(getDomRoutes().main);
+        }
+        if (this._isMounted) {
+            this.setState({name: '', password: ''});
+        }
+    }
+    login = async () => {
+        const response = await fetch(getRoutes().login, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({name: this.state.name, password: this.state.password})
+        });
+        if (response.status === 501) {
+            this.setState({isIncorrect:true});
+        } else {
+            this.setState({isIncorrect:false});
+        }
     }
     render() {
         return (
             <form onSubmit={this.handleLogin}>
+                {this.state.isIncorrect && <p>Неправильный логин или пароль, попробуйте еще раз</p>}
                 <label htmlFor="name">Введите ваше имя</label>
                 <input
                     type="text"
@@ -58,6 +75,7 @@ class Login2 extends Component<Login2Props, Login2State> {
                     name="name"
                     value={this.state.name}
                     onChange={this.handleChange}
+                    required={true}
                 />
                 <label htmlFor="password">Введите ваш пароль</label>
                 <input
@@ -67,12 +85,12 @@ class Login2 extends Component<Login2Props, Login2State> {
                     name="password"
                     value={this.state.password}
                     onChange={this.handleChange}
+                    required={true}
                 />
-                {this.state.nameIsTaken && <p>Извините, имя {this.state.name} уже занято</p>}
                 <input type="submit"/>
             </form>
         )
     }
 }
 
-export default Login2;
+export default Login;

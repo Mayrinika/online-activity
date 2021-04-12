@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {Switch, Route} from 'react-router-dom';
 //components
-import Login from '../Login/Login';
+import Main from '../Main/Main';
+import Login from "../Login/login";
 import StartGame from "../StartGame/StartGame";
 import Game from "../Game/Game";
 import GameOver from "../GameOver/GameOver";
@@ -13,6 +14,7 @@ import getDomRoutes from "../../utils/domRoutes";
 import websocket from "../../utils/websocket";
 //styles
 import './App.css';
+import Signup from "../Signup/signup";
 
 let ws: any;
 
@@ -23,18 +25,23 @@ interface GameType {
 
 interface AppState {
     possibleGames: GameType[];
+    isAuthorized: boolean;
 }
 
 class App extends Component<{}, AppState> {
     constructor(props: {}) {
         super(props);
         this.state = {
-            possibleGames: []
+            possibleGames: [],
+            isAuthorized: false,
         }
     }
 
     async componentDidMount() {
         await this.getAllGames();
+    }
+    setAuthorized = () => {
+        this.setState({isAuthorized: true});
     }
 
     addPlayer = async (gameId: string, player: string) => {
@@ -86,6 +93,12 @@ class App extends Component<{}, AppState> {
         return (
             <div className="App">
                 <Switch>
+                    <Route exact path={getDomRoutes().login} render={(props) => (
+                        <Login {...props} setAuthorized={this.setAuthorized}/>
+                    )}/>
+                    <Route exact path={getDomRoutes().signup} render={(props) => (
+                        <Signup {...props} setAuthorized={this.setAuthorized}/>
+                    )}/>
                     <Route exact path={getDomRoutes().suggestWord} render={(props) => (
                         <SuggestWord {...props} />
                     )}/>
@@ -99,8 +112,8 @@ class App extends Component<{}, AppState> {
                     <Route path={getDomRoutes(':gameId').startGame} render={(props) => (
                         <StartGame {...props}/>
                     )}/>
-                    <Route exact path={getDomRoutes().login} render={(props) => (
-                        <Login {...props} joinGame={this.joinGame}/>
+                    <Route exact path={getDomRoutes().main} render={(props) => (
+                        <Main {...props} joinGame={this.joinGame} isAuthorized={this.state.isAuthorized}/>
                     )}/>
                 </Switch>
             </div>

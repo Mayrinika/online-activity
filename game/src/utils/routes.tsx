@@ -12,6 +12,8 @@ export default function getRoutes(currentGameId?: string | null) {
         setTimeIsOver: `/${currentGameId}/setTimeIsOver`,
         addLine: `/${currentGameId}/addLine`,
         leaderboard: `/leaderboard`,
-        suggestedWords: '/suggestedWords'
+        suggestedWords: '/suggestedWords',
+        names: '/names',
+        login: '/login'
     }
 }
