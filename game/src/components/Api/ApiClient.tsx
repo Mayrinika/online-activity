@@ -23,7 +23,11 @@ class ApiClient extends Component<any, any> {
         });
     }
 
-
+    getAllGames = async () => {
+        const res = await fetch(getRoutes().app);
+        const data = await res.text();
+        return JSON.parse(data);
+    };
 }
 
 export default ApiClient;

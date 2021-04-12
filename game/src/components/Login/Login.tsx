@@ -69,7 +69,7 @@ class Login extends Component<LoginProps, LoginState> {
     }
 
     joinGame = async (player: string, gameId: string) => {
-        await this.getAllGames();
+       // await this.getAllGames();
         if (this.state.possibleGames.some(game => game.id === gameId)) {
             await this.addPlayer(gameId, player);
         } else {
@@ -78,10 +78,9 @@ class Login extends Component<LoginProps, LoginState> {
         }
     }
 
-    getAllGames = async () => { //TODO
-        const res = await fetch(getRoutes().app);
-        const data = await res.text();
-        this.setState({possibleGames: JSON.parse(data)});
+    getAllGames = async () => {
+        const allGames = await this.context.getAllGames();
+        this.setState({possibleGames: allGames});
     };
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
