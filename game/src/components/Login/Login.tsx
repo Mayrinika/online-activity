@@ -3,20 +3,22 @@ import {RouteComponentProps} from 'react-router-dom';
 import {v4 as uuidv4} from 'uuid';
 import crocoImg from '../../img/cocodrilo.png';
 //components
+import {ApiClientContext} from "../Api/apiClientContext";
 //utils
 import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
+import websocket from "../../utils/websocket";
+
+let ws: any;
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
 
-interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
-    joinGame: (player: string, gameId: string) => void;
-}
+interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {}
 
 interface GameType {
     id: string;
@@ -36,6 +38,7 @@ interface LoginState {
 }
 
 class Login extends Component<LoginProps, LoginState> {
+    static contextType = ApiClientContext;
     constructor(props: LoginProps) {
         super(props);
         this.state = {
@@ -43,6 +46,56 @@ class Login extends Component<LoginProps, LoginState> {
             code: '',
             possibleGames: []
         };
+    }
+
+    addPlayer = async (gameId: string, player: string) => {
+        ws = new WebSocket('ws://localhost:8080');
+        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
+            waitForConnection(function () {
+                return ws.send(message);
+            }, 100);
+        };
+
+        const waitForConnection = function (callback: () => void, interval: number) {
+            if (ws.readyState === 1) {
+                callback();
+            } else {
+                setTimeout(function () {
+                    waitForConnection(callback, interval);
+                }, interval);
+            }
+        };
+        send(JSON.stringify({'gameId':gameId,'messageType':websocket.register, 'player':player}));
+    }
+
+    // addGame = async (gameId: string) => {
+    //     await fetch(getRoutes(gameId).gameId, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json;charset=utf-8'
+    //         },
+    //     });
+    // }
+
+    addGame = async (gameId: string) => {
+        this.context.addGame(gameId);
+    }
+
+    // getAllGames = async () => {
+    //     const res = await fetch(getRoutes().app); //TODO fetch
+    //     const data = await res.text();
+    //     //const data = this.context.getAllGames();
+    //     this.setState({possibleGames: JSON.parse(data)});
+    // }
+
+    joinGame = async (player: string, gameId: string) => {
+        await this.getAllGames();
+        if (this.state.possibleGames.some(game => game.id === gameId)) {
+            await this.addPlayer(gameId, player);
+        } else {
+            await this.addGame(gameId);
+            await this.addPlayer(gameId, player);
+        }
     }
 
     getAllGames = async () => {
@@ -64,25 +117,24 @@ class Login extends Component<LoginProps, LoginState> {
         await this.getAllGames();
         if (code === '') {
             const newCode = uuidv4();
-            await this.joinGame(name, newCode);
+            await this.startGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
             if (currentGameId?.players.includes(name)) { //TODO добавить проверку
                 alert(`name ${name} already exist`); //TODO использовать библиотеку TOAST вместо alarm
             } else {
-                await this.joinGame(name, code);
+                await this.startGame(name, code);
             }
         } else {
             alert('no such play'); //TODO использовать библиотеку TOAST вместо alarm
         }
     };
 
-    joinGame = async (name: string, code: string) => {
-        const {joinGame, history} = this.props;
+    startGame = async (name: string, code: string) => {
         localStorage.setItem('playerName', name);
         localStorage.setItem('gameId', code);
-        await joinGame(name, code);
-        history.push(getDomRoutes(code).startGame);
+        await this.joinGame(name, code);
+        this.props.history.push(getDomRoutes(code).startGame);
     };
 
     render() {
