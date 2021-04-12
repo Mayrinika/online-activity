@@ -68,37 +68,17 @@ class Login extends Component<LoginProps, LoginState> {
         send(JSON.stringify({'gameId':gameId,'messageType':websocket.register, 'player':player}));
     }
 
-    // addGame = async (gameId: string) => {
-    //     await fetch(getRoutes(gameId).gameId, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json;charset=utf-8'
-    //         },
-    //     });
-    // }
-
-    addGame = async (gameId: string) => {
-        this.context.addGame(gameId);
-    }
-
-    // getAllGames = async () => {
-    //     const res = await fetch(getRoutes().app); //TODO fetch
-    //     const data = await res.text();
-    //     //const data = this.context.getAllGames();
-    //     this.setState({possibleGames: JSON.parse(data)});
-    // }
-
     joinGame = async (player: string, gameId: string) => {
         await this.getAllGames();
         if (this.state.possibleGames.some(game => game.id === gameId)) {
             await this.addPlayer(gameId, player);
         } else {
-            await this.addGame(gameId);
+            await this.context.addGame();
             await this.addPlayer(gameId, player);
         }
     }
 
-    getAllGames = async () => {
+    getAllGames = async () => { //TODO
         const res = await fetch(getRoutes().app);
         const data = await res.text();
         this.setState({possibleGames: JSON.parse(data)});
@@ -133,6 +113,7 @@ class Login extends Component<LoginProps, LoginState> {
     startGame = async (name: string, code: string) => {
         localStorage.setItem('playerName', name);
         localStorage.setItem('gameId', code);
+        this.context.changeGameId(code); //TODO
         await this.joinGame(name, code);
         this.props.history.push(getDomRoutes(code).startGame);
     };

@@ -1,7 +1,8 @@
-import React, {Component} from 'react';
+import {Component} from 'react';
 import getRoutes from "../../utils/routes";
 
-class ApiClient extends React.Component<any, any> {
+class ApiClient extends Component<any, any> {
+    private _gameId: string | undefined = undefined;
     constructor(props: any) {
         super(props);
         this.state = {
@@ -10,17 +11,16 @@ class ApiClient extends React.Component<any, any> {
     }
 
     changeGameId = (gameId: string) => {
-        this.setState({gameId});
+        this._gameId = gameId;
     };
 
-    addGame = async (gameId: string) => {
-        await fetch(getRoutes(gameId).gameId, {
+    addGame = async () => {
+        await fetch(getRoutes(this._gameId).gameId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
         });
-        console.log('addGame');
     }
 
 
