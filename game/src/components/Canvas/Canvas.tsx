@@ -1,14 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Layer, Stage, Line} from "react-konva";
 //components
 import ColorPalette from "../ColorPalette/ColorPalette";
+import {ApiClientContext} from "../Api/apiClientContext";
 //utils
 import getRoutes from '../../utils/routes';
 //styles
 import './Canvas.css';
 
 interface canvasProps {
-    sendImg: (img:string) => void;
+    sendImg: (img: string) => void;
 }
 
 let isDrawing = false; // TODO вообще-то это лучше сделать useRef, а не глобальной переменной. Но у меня не получилось создать два useRef в компоненте
@@ -18,6 +19,7 @@ const Canvas = (props: canvasProps) => {
     const [currentLine, setCurrentLine]: [any, any] = useState(null); //TODO поправить тип
     const [color, setColor] = useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = useState([550, 750]);
+    const context = useContext(ApiClientContext);
 
     //const isDrawing = React.useRef(false);
     const stageRef: any = React.useRef(null); //TODO поправить тип
@@ -28,11 +30,9 @@ const Canvas = (props: canvasProps) => {
     }, []);
 
     const getLinesFromServer = async () => {
-        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
-        const data = await res.text();
-        const game = JSON.parse(data);
-        setLines(game.lines)
-    }
+        const game = await context.getGame();
+        setLines(game.lines);
+    };
 
     const handleMouseDown = (e: any) => { //TODO поправить тип
         isDrawing = true;
@@ -54,17 +54,7 @@ const Canvas = (props: canvasProps) => {
 
     const addImage = async (img: string) => {
         props.sendImg(img);
-    }
-
-    const sendLineToServer = async (line: any) => {
-        await fetch(getRoutes(localStorage.getItem('gameId')).addLine, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({line})
-        });
-    }
+    };
 
     const stopDrawing = async (e: any) => { //TODO поправить тип
         const pos = e.target.getStage().getPointerPosition();
@@ -75,21 +65,21 @@ const Canvas = (props: canvasProps) => {
                 {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
             ]);
             isDrawing = false;
-            sendLineToServer(currentLine);
+            await context.sendLineToServer(currentLine);
             let uri = stageRef.current.toDataURL();
             addImage(uri);
         }
         isDrawing = false;
         setCurrentLine(null);
         //downloadURI(uri, 'stage.png');
-    }
+    };
 
     const handleMouseUp = async (e: any) => { //TODO поправить тип
         await stopDrawing(e);
     };
 
     const handleMouseLeave = async (e: any) => { //TODO поправить тип
-        await stopDrawing(e)
+        await stopDrawing(e);
     };
 
     //TODO удалить потом. Нужно только для визуализации
@@ -103,7 +93,7 @@ const Canvas = (props: canvasProps) => {
     // }
 
     const changeColor = (color: string) => {
-        setColor(color)
+        setColor(color);
     };
 
     // const undoLastDrawing = (e: any) => { //TODO поправить тип //TODO решить будем ли отменять последнюю линию с сервера с помощью пост запроса. Минусы: если при нажатии ctrZ будет задержка, художник может еще пару раз нажать и отменит больше линий чем нужно
@@ -116,7 +106,8 @@ const Canvas = (props: canvasProps) => {
 
     return (
         //onKeyDown={undoLastDrawing} TODO добавить в следующую строчку если будем отменять последнее действие с сервера
-        <div className={"Canvas " + tool} tabIndex={0} >
+
+        <div className={"Canvas " + tool} tabIndex={0}>
             <div className="Canvas-ControlPanel">
                 <ColorPalette currentColor={color} onChangeColor={changeColor}/>
                 <select

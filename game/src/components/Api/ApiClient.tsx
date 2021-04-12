@@ -41,6 +41,16 @@ class ApiClient extends Component<any, any> {
             }
         });
     };
+
+    sendLineToServer = async (line: any) => {
+        await fetch(getRoutes(this._gameId).addLine, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({line})
+        });
+    };
 }
 
 export default ApiClient;
