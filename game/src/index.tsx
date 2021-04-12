@@ -20,7 +20,7 @@ ReactDOM.render(
     <MuiThemeProvider theme={theme}>
         <React.StrictMode>
             <BrowserRouter>
-                <ApiClientContext.Provider value={new ApiClient('')}>
+                <ApiClientContext.Provider value={new ApiClient(localStorage.getItem('gameId'))}>
                     <NavigationBar/>
                     <App/>
                 </ApiClientContext.Provider>

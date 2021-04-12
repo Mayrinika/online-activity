@@ -5,7 +5,6 @@ import crocoImg from '../../img/cocodrilo.png';
 //components
 import {ApiClientContext} from "../Api/apiClientContext";
 //utils
-import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";

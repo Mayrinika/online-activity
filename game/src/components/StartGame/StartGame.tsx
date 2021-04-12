@@ -8,6 +8,7 @@ import websocket from "../../utils/websocket";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
+import {ApiClientContext} from "../Api/apiClientContext";
 
 let newWS: any;
 
@@ -24,6 +25,7 @@ interface StartGameState {
 
 class StartGame extends Component<StartGameProps, StartGameState> {
     private _isMounted: boolean;
+    static contextType = ApiClientContext;
 
     constructor(props: StartGameProps) {
         super(props);
@@ -37,9 +39,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     async componentDidMount() {
         this._isMounted = true;
         this.refreshConnection();
-        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
-        const data = await res.text();
-        const game = JSON.parse(data);
+        const game = await this.context.getGame();
         if (this._isMounted) {
             this.setState({
                 players: game.players,

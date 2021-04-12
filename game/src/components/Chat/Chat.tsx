@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+//components
+import {ApiClientContext} from "../Api/apiClientContext";
 //utils
-import getRoutes from '../../utils/routes';
 //styles
 import './Chat.css';
 
@@ -30,6 +31,7 @@ interface Message {
 }
 
 class Chat extends Component<ChatProps, ChatState> {
+    static contextType = ApiClientContext;
     constructor(props: ChatProps) {
         super(props);
         this.state = {
@@ -58,17 +60,8 @@ class Chat extends Component<ChatProps, ChatState> {
     };
 
     wordIsGuessed = async (messageId?: string) => {
-        await this.clearCountdown();
+        await this.context.clearCountdown();
         await this.setWinner(messageId);
-    };
-
-    clearCountdown = async () => {
-        await fetch(getRoutes(localStorage.getItem('gameId')).clearCountdown, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            }
-        });
     };
 
     setWinner = async (messageId?: string) => {

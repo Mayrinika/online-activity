@@ -11,6 +11,7 @@ import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './Game.css';
 import websocket from "../../utils/websocket";
+import {ApiClientContext} from "../Api/apiClientContext";
 
 let newWS: any;
 
@@ -38,6 +39,7 @@ interface GameProps extends RouteComponentProps {
 }
 
 class Game extends Component<GameProps, GameState> {
+    static contextType = ApiClientContext;
     constructor(props: GameProps) {
         super(props);
         this.state = {
@@ -75,9 +77,7 @@ class Game extends Component<GameProps, GameState> {
     }
     getDataFromServer = async () => {
         this.refreshConnection();
-        const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
-        const data = await res.text();
-        const game = JSON.parse(data);
+        const game = await this.context.getGame();
         this.setState({
             imgURL: game.img,
             wordToGuess: game.wordToGuess,
