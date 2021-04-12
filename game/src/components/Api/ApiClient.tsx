@@ -69,14 +69,14 @@ class ApiClient extends Component<any, any> {
         const res = await fetch(getRoutes().leaderboard);
         const data = await res.text();
         const leaderboard = JSON.parse(data);
-        return  Object.entries(leaderboard as { [playerName: string]: number })
+        return Object.entries(leaderboard as { [playerName: string]: number })
             .sort((a, b) => b[1] - a[1]);
     };
 
     getSuggestWordsFromServer = async () => {
         const res = await fetch(getRoutes().suggestedWords);
         const data = await res.text();
-        return  JSON.parse(data);
+        return JSON.parse(data);
     };
 }
 
