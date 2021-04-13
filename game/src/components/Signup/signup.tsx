@@ -1,14 +1,20 @@
 import React, {Component} from "react";
 import {RouteComponentProps} from "react-router-dom";
+import crocoImg from "../../img/cocodrilo.png";
 //components
 //utils
 import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
 import checkLogin from "../../utils/checkLogin";
-
 //styles
+import {withStyles, WithStyles} from "@material-ui/core/styles";
+import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
 
-interface SignupProps extends RouteComponentProps {
+const styles = (theme: { content: any; }) => (
+    theme.content
+);
+
+interface SignupProps extends RouteComponentProps, WithStyles<typeof styles> {
     setAuthorized: () => void;
 }
 
@@ -84,34 +90,64 @@ class Signup extends Component<SignupProps, SignupState> {
     };
 
     render() {
+        const {classes} = this.props;
+        const {nameIsTaken, name, password} = this.state;
         return (
-            <form onSubmit={this.handleSignup}>
-                <label htmlFor="name">Введите ваше имя</label>
-                <input
-                    type="text"
-                    id="name"
-                    placeholder="Имя"
-                    name="name"
-                    value={this.state.name}
-                    onChange={this.handleNameChange}
-                    required={true}
-                    autoFocus
-                />
-                <label htmlFor="password">Введите ваш пароль</label>
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Пароль"
-                    name="password"
-                    value={this.state.password}
-                    onChange={this.handleChange}
-                    required={true}
-                />
-                {this.state.nameIsTaken && <p>Извините, имя {this.state.name} уже занято</p>}
-                <input type="submit"/>
-            </form>
+            <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
+                <Grid container spacing={2} justify="center">
+                    <Grid item xs={5}>
+                        <div className={classes.imgContainer}>
+                            <img className="Login-Img" src={crocoImg} alt="Крокодил"/>
+                        </div>
+                    </Grid>
+                    <Grid item xs={5} className={classes.loginFormContainer}>
+                        <Typography variant='h4' paragraph>
+                            Онлайн - активити
+                        </Typography>
+                        <form onSubmit={this.handleSignup} className={classes.innerContainer}
+                              style={{paddingBottom: 16}}>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="name"
+                                type="text"
+                                label="Введите ваше имя"
+                                name="name"
+                                autoFocus
+                                onChange={this.handleNameChange}
+                                value={name}
+                            />
+                            {nameIsTaken && <p>Извините, имя {name} уже занято</p>}
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="password"
+                                type="password"
+                                label="Введите пароль"
+                                name="password"
+                                onChange={this.handleChange}
+                                value={password}
+                            />
+                            <Button
+                                className={classes.button}
+                                variant="contained"
+                                color="primary"
+                                type="submit"
+                                size="large"
+                            >
+                                Зарегистрироваться
+                            </Button>
+                        </form>
+                    </Grid>
+                </Grid>
+            </Container>
         );
     }
 }
 
-export default Signup;
+export default (withStyles(styles)(Signup));
+;
