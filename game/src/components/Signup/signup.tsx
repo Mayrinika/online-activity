@@ -102,7 +102,7 @@ class Signup extends Component<SignupProps, SignupState> {
                     </Grid>
                     <Grid item xs={5} className={classes.loginFormContainer}>
                         <Typography variant='h4' paragraph>
-                            Онлайн - активити
+                            Регистрация
                         </Typography>
                         <form onSubmit={this.handleSignup} className={classes.innerContainer}
                               style={{paddingBottom: 16}}>
@@ -150,4 +150,3 @@ class Signup extends Component<SignupProps, SignupState> {
 }
 
 export default (withStyles(styles)(Signup));
-;
