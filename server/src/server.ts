@@ -88,30 +88,32 @@ app.use((err: any, req: any, res: any, next: any) => { //TODO разобрать
     res.status(status).send(message);
 });
 
-app.get('/app', (req: any, res: any) => {
+app.get('/app', (req, res) => {
     res.status(200).send(games);
 });
 
-app.get('/signup', (req: any, res: any) => {
+app.get('/signup', (req, res) => {
     const users = fs.readJsonSync('./src/utils/users.json');
     res.status(200).send(users);
 });
 
-app.post('/signup', async (req: any, res: any) => {
+app.post('/signup', async (req, res) => {
     const users = fs.readJsonSync('./src/utils/users.json');
     const {name, password} = req.body;
     const hash = await hashPassword(password);
     const user = {id: uuidv4(), name, password: hash};
     users.push(user);
     fs.outputJsonSync('./src/utils/users.json', users);
-    req.session.user = user;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    req.session.user = user; //TODO убрать игнор
     res.status(200).send(users);
 });
 
 app.get('/login', (req, res) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const {user} = req.session;
+    const {user} = req.session; //TODO убрать игнор
     if (!user) {
         res.send({loggedIn: false});
     } else {
@@ -119,7 +121,7 @@ app.get('/login', (req, res) => {
     }
 });
 
-app.post('/login', async (req: any, res: any) => {
+app.post('/login', async (req, res) => {
     const users = fs.readJsonSync('./src/utils/users.json');
     const {name, password} = req.body;
     const user = users.find((user:User) => user.name === name);
@@ -128,7 +130,9 @@ app.post('/login', async (req: any, res: any) => {
     } else {
         const valid = await bcrypt.compare(password, user.password);
         if (valid) {
-            req.session.user = user;
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            req.session.user = user; //TODO убрать игнор
             res.status(200).send('ок');
         } else {
             res.status(501).send('Некорректное имя пользователя или пароль');
@@ -136,16 +140,16 @@ app.post('/login', async (req: any, res: any) => {
     }
 });
 
-app.get('/suggestedWords', (req: any, res: any) => {
+app.get('/suggestedWords', (req, res) => {
     res.status(200).send(suggestedWords);
 });
 
-app.get('/leaderboard', (req: any, res: any) => {
+app.get('/leaderboard', (req, res) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
     res.status(200).send(leaderboard);
 });
 
-app.post('/leaderboard', (req: any, res: any) => {
+app.post('/leaderboard', (req, res) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
     for (const {playerName, score} of req.body) {
         if (playerName in leaderboard.players)
@@ -157,12 +161,12 @@ app.post('/leaderboard', (req: any, res: any) => {
     res.status(200).send(leaderboard);
 });
 
-app.get('/:gameId', (req: any, res: any) => {
+app.get('/:gameId', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     res.status(200).send(currentGame);
 });
 
-app.post('/:gameId', (req: any, res: any) => {
+app.post('/:gameId', (req, res) => {
     games.push({
         id: req.params.gameId,
         players: [],
@@ -180,7 +184,7 @@ app.post('/:gameId', (req: any, res: any) => {
     res.status(200).send(games);
 });
 
-app.post('/:gameId/addLine', (req: any, res: any) => {
+app.post('/:gameId/addLine', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         currentGame.lines.push(req.body.line);
@@ -190,7 +194,7 @@ app.post('/:gameId/addLine', (req: any, res: any) => {
     }
 });
 
-app.post('/:gameId/clearCountdown', (req: any, res: any) => {
+app.post('/:gameId/clearCountdown', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         clearTimeout(timerIds[currentGame.id]);
@@ -200,7 +204,7 @@ app.post('/:gameId/clearCountdown', (req: any, res: any) => {
     }
 });
 
-app.post('/:gameId/setTimeIsOver', (req: any, res: any) => {
+app.post('/:gameId/setTimeIsOver', (req, res) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         currentGame.isTimeOver = true;
