@@ -3,11 +3,10 @@ import cors from 'cors';
 import fs from 'fs-extra';
 import WebSocket from 'ws';
 import WebsocketMessage from './utils/websocket';
-import bcrypt from 'bcrypt';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
-import {v4 as uuidv4} from 'uuid';
+import {getAllUsers, signup, getUser, login} from './handles/user';
 
 const app = express();
 const port = process.env.PORT ||9000;
@@ -54,12 +53,6 @@ interface SuggestedWord {
     isInDictionary: boolean;
 }
 
-interface User {
-    id: string;
-    name: string;
-    password: string;
-}
-
 const games: GameType[] = [];
 const timerIds: any = {}; //TODO разобраться с типом TimerIds
 const suggestedWords: SuggestedWord[] = [];
@@ -92,53 +85,10 @@ app.get('/app', (req, res) => {
     res.status(200).send(games);
 });
 
-app.get('/signup', (req, res) => {
-    const users = fs.readJsonSync('./src/utils/users.json');
-    res.status(200).send(users);
-});
-
-app.post('/signup', async (req, res) => {
-    const users = fs.readJsonSync('./src/utils/users.json');
-    const {name, password} = req.body;
-    const hash = await hashPassword(password);
-    const user = {id: uuidv4(), name, password: hash};
-    users.push(user);
-    fs.outputJsonSync('./src/utils/users.json', users);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    req.session.user = user; //TODO убрать игнор
-    res.status(200).send(users);
-});
-
-app.get('/login', (req, res) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const {user} = req.session; //TODO убрать игнор
-    if (!user) {
-        res.send({loggedIn: false});
-    } else {
-        res.send({loggedIn: true, user: user});
-    }
-});
-
-app.post('/login', async (req, res) => {
-    const users = fs.readJsonSync('./src/utils/users.json');
-    const {name, password} = req.body;
-    const user = users.find((user:User) => user.name === name);
-    if (!user) {
-        res.status(501).send('Некорректное имя пользователя или пароль');
-    } else {
-        const valid = await bcrypt.compare(password, user.password);
-        if (valid) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            req.session.user = user; //TODO убрать игнор
-            res.status(200).send('ок');
-        } else {
-            res.status(501).send('Некорректное имя пользователя или пароль');
-        }
-    }
-});
+app.get('/signup', getAllUsers);
+app.post('/signup', signup);
+app.get('/login', getUser);
+app.post('/login', login);
 
 app.get('/suggestedWords', (req, res) => {
     res.status(200).send(suggestedWords);
@@ -392,10 +342,5 @@ function setTimerForGame(currentGame: GameType, gameId: string) {
         }, 1000, currentGame);
     }
 }
-
-const hashPassword = async (password: string): Promise<string> => {
-    const hash = await bcrypt.hash(password, 12);
-    return hash;
-};
 
 
