@@ -125,7 +125,6 @@ app.post('/login', async (req: any, res: any) => {
         const valid = await bcrypt.compare(password, user.password);
         if (valid) {
             req.session.user = user;
-            console.log(req.session.user);
             res.status(200).send('ок');
         } else {
             res.status(501).send('Некорректное имя пользователя или пароль');

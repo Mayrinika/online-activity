@@ -44,7 +44,6 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         const res = await fetch(getRoutes(localStorage.getItem('gameId')).gameId);
         const data = await res.text();
         const game = JSON.parse(data);
-        console.log(game);
         if (this._isMounted) {
             this.setState({
                 players: game.players,

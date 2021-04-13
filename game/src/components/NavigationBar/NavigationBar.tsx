@@ -62,6 +62,13 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                                 color="default"
                             >Зарегистрироваться</Button>
                         </Link>
+                        <Link to={getDomRoutes().main} className={classes.navLink}>
+                            <Button
+                                className={classes.navButton}
+                                variant="contained"
+                                color="default"
+                            >Выйти</Button>
+                        </Link>
                     </Toolbar>
                 </Container>
             </AppBar>
