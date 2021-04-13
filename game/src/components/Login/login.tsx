@@ -1,7 +1,11 @@
 import React, {Component} from "react";
 import {RouteComponentProps} from "react-router-dom";
+//components
+//utils
 import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
+import checkLogin from "../../utils/checkLogin";
+//styles
 
 interface LoginProps extends RouteComponentProps{
     setAuthorized: () => void;
@@ -24,7 +28,8 @@ class Login extends Component<LoginProps, LoginState> {
         }
         this._isMounted = false
     }
-    componentDidMount() {
+    async componentDidMount() {
+        checkLogin(this.props.setAuthorized)
         this._isMounted = true;
     }
     componentWillUnmount() {
@@ -50,6 +55,7 @@ class Login extends Component<LoginProps, LoginState> {
         }
     }
     login = async () => {
+        await fetch('/cookie-auth-protected-route',{ credentials: 'include' });
         const response = await fetch(getRoutes().login, {
             method: 'POST',
             headers: {

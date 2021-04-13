@@ -39,12 +39,17 @@ class App extends Component<{}, AppState> {
 
     async componentDidMount() {
         await this.getAllGames();
+        const res = await fetch(getRoutes().login);
+        const data = await res.text();
+        if (JSON.parse(data).loggedIn) {
+            this.setState({isAuthorized: true});
+        }
     }
     setAuthorized = () => {
         this.setState({isAuthorized: true});
     }
 
-    addPlayer = async (gameId: string, player: string) => {
+    addPlayer = async (gameId: string, player: string | null) => {
         ws = new WebSocket('ws://localhost:8080');
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {
@@ -79,7 +84,7 @@ class App extends Component<{}, AppState> {
         this.setState({possibleGames: JSON.parse(data)});
     }
 
-    joinGame = async (player: string, gameId: string) => {
+    joinGame = async (player: string | null, gameId: string) => {
         await this.getAllGames();
         if (this.state.possibleGames.some(game => game.id === gameId)) {
             await this.addPlayer(gameId, player);
@@ -100,20 +105,22 @@ class App extends Component<{}, AppState> {
                         <Signup {...props} setAuthorized={this.setAuthorized}/>
                     )}/>
                     <Route exact path={getDomRoutes().suggestWord} render={(props) => (
-                        <SuggestWord {...props} />
+                        <SuggestWord {...props} setAuthorized={this.setAuthorized}/>
                     )}/>
-                    <Route path={getDomRoutes().leaderboard} component={Leaderboard}/>
+                    <Route path={getDomRoutes().leaderboard} render={(props) => (
+                        <Leaderboard {...props} setAuthorized={this.setAuthorized}/>
+                    )}/>
                     <Route path={getDomRoutes(':gameId').game} render={(props) => (
-                        <Game {...props}/>
+                        <Game {...props} setAuthorized={this.setAuthorized}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').gameOver} render={(props) => (
-                        <GameOver {...props}/>
+                        <GameOver {...props} setAuthorized={this.setAuthorized}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').startGame} render={(props) => (
-                        <StartGame {...props}/>
+                        <StartGame {...props} setAuthorized={this.setAuthorized}/>
                     )}/>
                     <Route exact path={getDomRoutes().main} render={(props) => (
-                        <Main {...props} joinGame={this.joinGame} isAuthorized={this.state.isAuthorized}/>
+                        <Main {...props} joinGame={this.joinGame} isAuthorized={this.state.isAuthorized} setAuthorized={this.setAuthorized}/>
                     )}/>
                 </Switch>
             </div>

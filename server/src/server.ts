@@ -4,8 +4,10 @@ import fs from 'fs-extra';
 import WebSocket from 'ws';
 import WebsocketMessage from './utils/websocket';
 import bcrypt from 'bcrypt';
-import expressSession from 'express-session';
-import { v4 as uuidv4 } from 'uuid';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import {v4 as uuidv4} from 'uuid';
 
 const app = express();
 const port = process.env.PORT ||9000;
@@ -62,9 +64,24 @@ const timerIds: any = {}; //TODO разобраться с типом TimerIds
 const suggestedWords: SuggestedWord[] = [];
 const names: Names[] = [{id: 'etituiuru',name: 'admin', password: '123'}];
 
-app.use(cors());
+app.use(cors({
+    origin: ["https://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true
+}));
 app.use(express.json());
-app.use(expressSession({secret:'secret'}));
+app.use(session({
+    secret:'shpora-frontend2021',
+    name: "userId",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        maxAge: 24 * 60 * 60 * 1000,
+    }
+}));
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((err: any, req: any, res: any, next: any) => { //TODO разобраться с типом
     const {status = 500, message = 'Something went wrong'} = err;
@@ -75,15 +92,28 @@ app.get('/app', (req: any, res: any) => {
     res.status(200).send(games);
 });
 
-app.get('/names', (req: any, res: any) => {
+app.get('/signup', (req: any, res: any) => {
     res.status(200).send(names);
 });
 
-app.post('/names', async (req: any, res: any) => {
+app.post('/signup', async (req: any, res: any) => {
     const {name, password} = req.body;
     const hash = await hashPassword(password);
-    names.push({id: uuidv4(), name, password: hash});
+    const user = {id: uuidv4(), name, password: hash};
+    names.push(user);
+    req.session.user = user;
     res.status(200).send(names);
+});
+
+app.get('/login', (req, res) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const {user} = req.session;
+    if (!user) {
+        res.send({loggedIn: false});
+    } else {
+        res.send({loggedIn: true, user: user});
+    }
 });
 
 app.post('/login', async (req: any, res: any) => {
@@ -94,6 +124,8 @@ app.post('/login', async (req: any, res: any) => {
     } else {
         const valid = await bcrypt.compare(password, user.password);
         if (valid) {
+            req.session.user = user;
+            console.log(req.session.user);
             res.status(200).send('ок');
         } else {
             res.status(501).send('Некорректное имя пользователя или пароль');
@@ -107,7 +139,7 @@ app.get('/suggestedWords', (req: any, res: any) => {
 
 app.get('/leaderboard', (req: any, res: any) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    res.status(200).send(names);
+    res.status(200).send(leaderboard);
 });
 
 app.post('/leaderboard', (req: any, res: any) => {

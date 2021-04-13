@@ -6,6 +6,7 @@ import crocoImg from '../../img/cocodrilo.png';
 //utils
 import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
+import checkLogin from "../../utils/checkLogin";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
@@ -15,8 +16,9 @@ const styles = (theme: { content: any; }) => (
 );
 
 interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
-    joinGame: (player: string, gameId: string) => void;
+    joinGame: (player: string | null, gameId: string) => void;
     isAuthorized: boolean;
+    setAuthorized: () => void;
 }
 
 interface GameType {
@@ -31,7 +33,6 @@ interface GameType {
 }
 
 interface LoginState {
-    name: string;
     code: string;
     possibleGames: GameType[]
 }
@@ -40,10 +41,12 @@ class Main extends Component<LoginProps, LoginState> {
     constructor(props: LoginProps) {
         super(props);
         this.state = {
-            name: '',
             code: '',
             possibleGames: []
         };
+    }
+    componentDidMount() {
+        checkLogin(this.props.setAuthorized);
     }
 
     getAllGames = async () => {
@@ -60,7 +63,8 @@ class Main extends Component<LoginProps, LoginState> {
     };
 
     handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>) => {
-        const {name, code} = this.state;
+        const {code} = this.state;
+        const name = localStorage.getItem('playerName');
         evt.preventDefault();
         await this.getAllGames();
         if (code === '') {
@@ -68,7 +72,7 @@ class Main extends Component<LoginProps, LoginState> {
             await this.joinGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
-            if (currentGameId?.players.includes(name)) { //TODO добавить проверку
+            if (currentGameId?.players.includes(name as string)) { //TODO добавить проверку
                 alert(`name ${name} already exist`); //TODO использовать библиотеку TOAST вместо alarm
             } else {
                 await this.joinGame(name, code);
@@ -78,9 +82,8 @@ class Main extends Component<LoginProps, LoginState> {
         }
     };
 
-    joinGame = async (name: string, code: string) => {
+    joinGame = async (name: string | null, code: string) => {
         const {joinGame, history} = this.props;
-        localStorage.setItem('playerName', name);
         localStorage.setItem('gameId', code);
         await joinGame(name, code);
         history.push(getDomRoutes(code).startGame);

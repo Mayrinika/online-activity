@@ -1,7 +1,11 @@
 import React, {Component} from "react";
 import {RouteComponentProps} from "react-router-dom";
+//components
+//utils
 import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
+import checkLogin from "../../utils/checkLogin";
+//styles
 
 interface SignupProps extends RouteComponentProps{
     setAuthorized: () => void;
@@ -26,6 +30,7 @@ class Signup extends Component<SignupProps, SignupState> {
     }
     async componentDidMount() {
         await this.getAllNames();
+        checkLogin(this.props.setAuthorized);
     }
 
     handleSignup = async (evt: React.ChangeEvent<HTMLFormElement>) => {
@@ -39,13 +44,14 @@ class Signup extends Component<SignupProps, SignupState> {
     }
 
     getAllNames = async () => {
-        const res = await fetch(getRoutes().names);
+        const res = await fetch(getRoutes().signup);
         const data = await res.text();
         this.setState({possibleNames: JSON.parse(data).map((name: { name: string, password: string }) => name.name)});
     }
 
     addName = async () => {
-        await fetch(getRoutes().names, {
+        await fetch('/cookie-auth-protected-route',{ credentials: 'include' });
+        await fetch(getRoutes().signup, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'

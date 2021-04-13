@@ -13,7 +13,7 @@ export default function getRoutes(currentGameId?: string | null) {
         addLine: `/${currentGameId}/addLine`,
         leaderboard: `/leaderboard`,
         suggestedWords: '/suggestedWords',
-        names: '/names',
+        signup: '/signup',
         login: '/login'
     }
 }

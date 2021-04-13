@@ -7,12 +7,14 @@ import getDomRoutes from "../../utils/domRoutes";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
+import checkLogin from "../../utils/checkLogin";
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
 
 interface GameOverProps extends RouteComponentProps, WithStyles<typeof styles> {
+    setAuthorized: () => void;
 }
 
 interface LocalLeaderboardType {
@@ -60,6 +62,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
 
     componentDidMount() {
         this.getDataFromServer();
+        checkLogin(this.props.setAuthorized);
     }
 
     getDataFromServer = async () => {

@@ -4,11 +4,13 @@ import {v4 as uuidv4} from 'uuid';
 //components
 //utils
 import getRoutes from "../../utils/routes";
+import websocket from "../../utils/websocket";
+import checkLogin from "../../utils/checkLogin";
 //styles
 import './SuggestWord.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField, Box} from '@material-ui/core';
-import websocket from "../../utils/websocket";
+
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -32,7 +34,7 @@ interface SuggestWordState {
 }
 
 interface SuggestWordProps extends RouteComponentProps, WithStyles<typeof styles> {
-
+    setAuthorized: () => void;
 }
 
 class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
@@ -45,12 +47,13 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         this.setConnection();
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.getWordsFromServer();
         this.setConnection();
         ws.onmessage = (response: any) => {
             this.setState({words: JSON.parse(response.data)});
         };
+        checkLogin(this.props.setAuthorized);
     }
     componentWillUnmount() {
         ws.close();

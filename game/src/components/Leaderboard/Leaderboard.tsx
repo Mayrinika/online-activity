@@ -4,15 +4,18 @@ import { RouteComponentProps } from 'react-router-dom';
 //utils
 import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
+import checkLogin from "../../utils/checkLogin";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
+
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
 
 interface LeaderboardProps extends RouteComponentProps, WithStyles<typeof styles> {
+    setAuthorized: () => void;
 }
 
 interface LeaderboardState {
@@ -27,15 +30,16 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
         };
     }
 
-    componentDidMount() {
-        this.getDataFromServer();
+    async componentDidMount() {
+        await this.getDataFromServer();
+        checkLogin(this.props.setAuthorized);
     }
 
     getDataFromServer = async () => {
         await fetch(getRoutes().leaderboard)
             .then(res => res.json())
             .then(leaderboard => {
-                const sortedLeaderboard = Object.entries(leaderboard as { [playerName: string]: number })
+                const sortedLeaderboard = Object.entries(leaderboard.players as { [playerName: string]: number })
                     .sort((a, b) => b[1] - a[1]);
                 this.setState({
                     sortedLeaderboard
@@ -53,7 +57,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
                 <Typography variant='h5' paragraph>Лидерборд:</Typography>
-                {Object.entries(sortedLeaderboard).map(item => {
+                {Object.entries(sortedLeaderboard).map((item: any) => {
                     return (
                         <Typography variant='subtitle1' paragraph className={classes.playerContainer}
                                     key={item[0]}>
