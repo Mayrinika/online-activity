@@ -133,7 +133,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
     };
 
     startOver = () => {
-        this.props.history.push(getDomRoutes().login);
+        this.props.history.push(getDomRoutes().main);
     };
 
     goToLeaderboard = () => {
