@@ -53,7 +53,8 @@ interface SuggestedWord {
     isDeclined: boolean;
     isInDictionary: boolean;
 }
-interface Names {
+
+interface User {
     id: string;
     name: string;
     password: string;
@@ -62,7 +63,6 @@ interface Names {
 const games: GameType[] = [];
 const timerIds: any = {}; //TODO разобраться с типом TimerIds
 const suggestedWords: SuggestedWord[] = [];
-const names: Names[] = [{id: 'etituiuru',name: 'admin', password: '123'}];
 
 app.use(cors({
     origin: ["https://localhost:3000"],
@@ -93,16 +93,19 @@ app.get('/app', (req: any, res: any) => {
 });
 
 app.get('/signup', (req: any, res: any) => {
-    res.status(200).send(names);
+    const users = fs.readJsonSync('./src/utils/users.json');
+    res.status(200).send(users);
 });
 
 app.post('/signup', async (req: any, res: any) => {
+    const users = fs.readJsonSync('./src/utils/users.json');
     const {name, password} = req.body;
     const hash = await hashPassword(password);
     const user = {id: uuidv4(), name, password: hash};
-    names.push(user);
+    users.push(user);
+    fs.outputJsonSync('./src/utils/users.json', users);
     req.session.user = user;
-    res.status(200).send(names);
+    res.status(200).send(users);
 });
 
 app.get('/login', (req, res) => {
@@ -117,8 +120,9 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', async (req: any, res: any) => {
+    const users = fs.readJsonSync('./src/utils/users.json');
     const {name, password} = req.body;
-    const user = names.find(user => user.name === name);
+    const user = users.find((user:User) => user.name === name);
     if (!user) {
         res.status(501).send('Некорректное имя пользователя или пароль');
     } else {
