@@ -1,7 +1,1 @@
-[
-  {
-    "id": "c2f78b57-9130-4fa2-a81f-87d32e4e9b57",
-    "name": "maria",
-    "password": "$2b$12$Rt5pMxPNq5vc1SXcrgAUlendwHrtC4Q5JGgGqCAvnhJiux4tAygTK"
-  }
-]
+[{"id":"c2f78b57-9130-4fa2-a81f-87d32e4e9b57","name":"maria","password":"$2b$12$Rt5pMxPNq5vc1SXcrgAUlendwHrtC4Q5JGgGqCAvnhJiux4tAygTK"},{"id":"b3162416-2453-4311-bcff-b7ee0829e68d","name":"y","password":"$2b$12$/EppVMu4udsCRUMdhe4cNeev9tFfWlLXx9b24Yo5vNuq2Y6.XC.xO"}]

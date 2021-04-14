@@ -6,6 +6,7 @@ interface User {
     id: string;
     name: string;
     password: string;
+    avatar: string | ArrayBuffer | null;
 }
 
 export const getAllUsers = (req: any, res: any) => {
@@ -15,20 +16,16 @@ export const getAllUsers = (req: any, res: any) => {
 
 export const signup = async (req: any, res: any) => {
     const users = fs.readJsonSync('./src/utils/users.json');
-    const {name, password} = req.body;
+    const {name, password, avatar} = req.body;
     const hash = await hashPassword(password);
-    const user = {id: uuidv4(), name, password: hash};
+    const user = {id: uuidv4(), name, password: hash, avatar};
     users.push(user);
     fs.outputJsonSync('./src/utils/users.json', users);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    req.session.user = user; //TODO убрать игнор
+    req.session.user = user;
     res.status(200).send(users);
 };
 
 export const getUser = (req: any, res: any) => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     const {user} = req.session; //TODO убрать игнор
     if (!user) {
         res.send({loggedIn: false});
@@ -46,9 +43,7 @@ export const login = async (req: any, res: any) => {
     } else {
         const valid = await bcrypt.compare(password, user.password);
         if (valid) {
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            req.session.user = user; //TODO убрать игнор
+            req.session.user = user;
             res.status(200).send('ок');
         } else {
             res.status(501).send('Некорректное имя пользователя или пароль');

@@ -16,12 +16,17 @@ import {ApiContext} from "../Api/ApiProvider";
 
 let newWS: any;
 
+interface Player {
+    name: string,
+    avatar: string | ArrayBuffer | null;
+}
+
 interface GameState {
     wordToGuess: string;
-    painter: string;
+    painter: Player;
     isGameOver: boolean;
     imgURL: string;
-    players: string[];
+    players: Player[];
     chatMessages: Message[];
     time: number;
 }
@@ -29,6 +34,7 @@ interface GameState {
 interface Message {
     id: string;
     name: string;
+    avatar: string | ArrayBuffer | null;
     text: string;
     marks: {
         hot: boolean;
@@ -46,7 +52,7 @@ class Game extends Component<GameProps, GameState> {
         super(props);
         this.state = {
             wordToGuess: '',
-            painter: '',
+            painter: {name: '', avatar: null},
             isGameOver: false,
             imgURL: '',
             players: [],
@@ -133,13 +139,11 @@ class Game extends Component<GameProps, GameState> {
     render() {
         const { painter, wordToGuess, players, imgURL, chatMessages } = this.state;
         const playerName = localStorage.getItem('playerName');
-        const wordToDisplay = (playerName === painter) ?
+        const wordToDisplay = (playerName === painter.name) ?
             `Загаданное слово: ${wordToGuess}`
             : 'Отгадайте слово!';
-        const guessers = [...players];
-        guessers.splice(players.indexOf(painter), 1);
-        const isPainter = playerName === painter;
-
+        const guessers = players.filter(player => player.name !== painter.name);
+        const isPainter = playerName === painter.name;
         return (
             <div className='Game'>
                 <header>

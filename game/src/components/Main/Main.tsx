@@ -24,9 +24,9 @@ interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
 
 interface GameType {
     id: string;
-    players: string[];
+    players: Player[];
     wordToGuess: string;
-    painter: string;
+    painter: Player;
     img: string;
     chatMessages: string[];
     time: number;
@@ -36,6 +36,11 @@ interface GameType {
 interface LoginState {
     code: string;
     possibleGames: GameType[]
+}
+
+interface Player {
+    name: string,
+    avatar: string | ArrayBuffer | null;
 }
 
 class Main extends Component<LoginProps, LoginState> {
@@ -73,7 +78,7 @@ class Main extends Component<LoginProps, LoginState> {
             await this.joinGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
-            if (currentGameId?.players.includes(name as string)) { //TODO добавить проверку
+            if (currentGameId?.players.some(player => player.name === name)) { //TODO добавить проверку
                 alert(`name ${name} already exist`); //TODO использовать библиотеку TOAST вместо alarm
             } else {
                 await this.joinGame(name, code);

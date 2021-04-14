@@ -21,6 +21,7 @@ interface SignupProps extends RouteComponentProps, WithStyles<typeof styles> {
 interface SignupState {
     name: string;
     password: string;
+    avatar: string | ArrayBuffer | null;
     possibleNames: string[];
     nameIsTaken: boolean;
 }
@@ -32,6 +33,7 @@ class Signup extends Component<SignupProps, SignupState> {
             name: '',
             password: '',
             possibleNames: [],
+            avatar: null,
             nameIsTaken: false,
         };
     }
@@ -46,7 +48,7 @@ class Signup extends Component<SignupProps, SignupState> {
         if (!this.state.nameIsTaken) {
             await this.addName();
             localStorage.setItem('playerName', this.state.name);
-            this.setState({name: '', password: ''});
+            this.setState({name: '', password: '', avatar: null});
             await this.getAllNames();
             this.props.setAuthorized();
             this.props.history.push(getDomRoutes().main);
@@ -66,7 +68,7 @@ class Signup extends Component<SignupProps, SignupState> {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify({name: this.state.name, password: this.state.password})
+            body: JSON.stringify({name: this.state.name, password: this.state.password, avatar: this.state.avatar})
         });
     };
 
@@ -88,6 +90,27 @@ class Signup extends Component<SignupProps, SignupState> {
             this.setState({nameIsTaken: false});
         }
     };
+    handleLoadAvatar = (evt: any): void => {
+        const width = 50;
+        const height = 50;
+        let file = evt.target.files[0];
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            const img = new Image();
+            img.src = reader.result as string;
+            img.onload = () => {
+                const elem = document.createElement('canvas');
+                elem.width = width;
+                elem.height = height;
+                const ctx = elem.getContext('2d');
+                ctx?.drawImage(img, 0, 0, width, height);
+                let url = elem.toDataURL();
+                this.setState({avatar: url});
+            };
+            reader.onerror = error => console.log(error);
+        };
+    }
 
     render() {
         const {classes} = this.props;
@@ -132,12 +155,14 @@ class Signup extends Component<SignupProps, SignupState> {
                                 onChange={this.handleChange}
                                 value={password}
                             />
+                            <input type="file" onChange={this.handleLoadAvatar}/>
                             <Button
                                 className={classes.button}
                                 variant="contained"
                                 color="primary"
                                 type="submit"
                                 size="large"
+                                disabled={nameIsTaken && true}
                             >
                                 Зарегистрироваться
                             </Button>
