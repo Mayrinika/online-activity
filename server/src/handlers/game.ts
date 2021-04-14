@@ -3,11 +3,16 @@ import fs from "fs-extra";
 export const GAME_TIME: number = 1 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
 export const timerIds: any = {}; //TODO разобраться с типом TimerIds
 
+interface Player {
+    name: string,
+    avatar: string | ArrayBuffer | null;
+}
+
 interface GameType {
     id: string;
-    players: string[];
+    players: Player[];
     wordToGuess: string;
-    painter: string;
+    painter: Player;
     img: string;
     chatMessages: Message[];
     time: number;
@@ -21,6 +26,7 @@ interface GameType {
 interface Message {
     id: string;
     name: string;
+    avatar: string | ArrayBuffer | null;
     text: string;
     marks: {
         hot: boolean;
@@ -57,7 +63,7 @@ export const getLeaderboard = (req:any, res:any) => {
 
 export const updateLeaderboard = (req:any, res:any) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    for (const {playerName, score} of req.body) {
+    for (const {playerName, score, avatar} of req.body) {
         if (playerName in leaderboard.players)
             leaderboard.players[playerName] += score;
         else
@@ -77,7 +83,7 @@ export const addGame = (req:any, res:any) => {
         id: req.params.gameId,
         players: [],
         wordToGuess: '',
-        painter: '',
+        painter: {name:'', avatar: null},
         img: '',
         chatMessages: [],
         time: GAME_TIME,

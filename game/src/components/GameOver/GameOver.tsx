@@ -13,11 +13,17 @@ const styles = (theme: { content: any; }) => (
     theme.content
 );
 
+interface Player {
+    name: string,
+    avatar: string | ArrayBuffer | null;
+}
+
 interface GameOverProps extends RouteComponentProps, WithStyles<typeof styles> {
     setAuthorized: () => void;
 }
 
 interface LocalLeaderboardType {
+    avatar: string | ArrayBuffer | null;
     playerName: string;
     score: number;
 }
@@ -25,6 +31,7 @@ interface LocalLeaderboardType {
 interface Message {
     id: string;
     name: string;
+    avatar: string | ArrayBuffer | null;
     text: string;
     marks: {
         hot: boolean;
@@ -37,9 +44,9 @@ interface GameOverState {
     isWordGuessed: boolean;
     wordToGuess: string;
     winner: string;
-    painter: string;
+    painter: Player;
     chatMessages: Message[];
-    players: [];
+    players: Player[];
     localLeaderboard: LocalLeaderboardType[];
     time: number;
 }
@@ -52,7 +59,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
             isTimeOver: false,
             isWordGuessed: false,
             winner: '',
-            painter: '',
+            painter: {name: '', avatar: null},
             chatMessages: [],
             players: [],
             localLeaderboard: [],
@@ -89,18 +96,20 @@ class GameOver extends Component<GameOverProps, GameOverState> {
             return;
 
         results.push({
-            playerName: painter,
+            playerName: painter.name,
+            avatar: painter.avatar,
             score: this.state.time
         });
 
         for (const player of players) {
-            if (player === painter)
+            if (player.name === painter.name)
                 continue;
-            let currentScore = this.calculateScoresForHotMessages(player);
-            if (player === winner)
+            let currentScore = this.calculateScoresForHotMessages(player.name);
+            if (player.name === winner)
                 currentScore += 50;
             results.push({
-                playerName: player,
+                playerName: player.name,
+                avatar: player.avatar,
                 score: currentScore
             });
         }
@@ -162,6 +171,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                                         return (
                                             <Typography variant='subtitle1' paragraph className={classes.playerContainer}
                                                         key={item.playerName}>
+                                                {item.avatar && <img src={item.avatar as string} alt="avatar" />}
                                                 {item.playerName}: {item.score}
                                             </Typography>
                                         );

@@ -5,10 +5,15 @@ import getRoutes from '../../utils/routes';
 //styles
 import './Chat.css';
 
+interface Player {
+    name: string,
+    avatar: string | ArrayBuffer | null;
+}
+
 interface ChatProps {
     isPainter: boolean;
     wordToGuess: string;
-    painter: string;
+    painter: Player;
     sendMessage: (message: Message) => void;
     chatMessages: Message[];
     postMarks: (value: {id: string, marks: {hot: boolean, cold: boolean}}) => void;
@@ -22,6 +27,7 @@ interface ChatState {
 interface Message {
     id: string;
     name: string;
+    avatar: string | ArrayBuffer | null;
     text: string;
     marks: {
         hot: boolean;
@@ -50,7 +56,7 @@ class Chat extends Component<ChatProps, ChatState> {
             this.wordIsGuessed();
         }
         const generatedId = uuidv4();
-        this.props.sendMessage({'name': playerName, 'text': inputMessage, 'id':generatedId, 'marks': {'hot': false, 'cold': false}})
+        this.props.sendMessage({'name': playerName, avatar: null, 'text': inputMessage, 'id':generatedId, 'marks': {'hot': false, 'cold': false}})
     };
 
     enterMessage = (evt: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +133,7 @@ class Chat extends Component<ChatProps, ChatState> {
                 <div className='Chat-messages'>
                     {chatMessages.map((message: Message) => (
                         <div key={message.id}>
+                            {message.avatar && <img src={message.avatar as string} alt="avatar"/>}
                             <span className='Chat-message-name'>{message.name}: </span>{message.text}
                             {this.showButtons(message)}
                         </div>

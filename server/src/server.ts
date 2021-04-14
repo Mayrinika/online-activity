@@ -24,9 +24,15 @@ import {
 const app = express();
 const port = process.env.PORT || 9000;
 
+interface Player {
+    name: string,
+    avatar: string | ArrayBuffer | null;
+}
+
 interface Message {
     id: string;
     name: string;
+    avatar: string | ArrayBuffer | null;
     text: string;
     marks: {
         hot: boolean;
@@ -36,9 +42,9 @@ interface Message {
 
 interface GameType {
     id: string;
-    players: string[];
+    players: Player[];
     wordToGuess: string;
-    painter: string;
+    painter: Player;
     img: string;
     chatMessages: Message[];
     time: number;
@@ -47,6 +53,12 @@ interface GameType {
     isTimeOver: boolean;
     isGameOver: boolean;
     lines: any[]; //TODO разобраться с типом
+}
+interface User {
+    id: string;
+    name: string;
+    password: string;
+    avatar: string | ArrayBuffer | null;
 }
 
 app.use(cors({
@@ -150,7 +162,11 @@ wss.on('connection', (ws: any) => {
             }
             break;
         case WebsocketMessage.register:
-            addPlayer(currentGame, JSON.parse(message).player);
+            const users = fs.readJsonSync('./src/utils/users.json');
+            const user = users.find((user: User) => user.name === JSON.parse(message).player);
+
+            const avatar = user.avatar;
+            addPlayer(currentGame, JSON.parse(message).player, avatar);
             addNewWebSocketClient(gameId, ws);
             sendGameToClientsByGameId(gameId, currentGame);
             break;
@@ -164,7 +180,9 @@ wss.on('connection', (ws: any) => {
             setTimerForGame(currentGame, gameId);
             break;
         case WebsocketMessage.sendMessage:
-            currentGame.chatMessages.push(JSON.parse(message).message);
+            const newAvatar = currentGame.players.find(player => player.name === JSON.parse(message).message.name)?.avatar;
+            const newMessage = {...JSON.parse(message).message, avatar: newAvatar};
+            currentGame.chatMessages.push(newMessage);
             sendGameToClientsByGameId(gameId, currentGame);
             break;
         case WebsocketMessage.postMarks:
@@ -194,13 +212,13 @@ function getRandomWord(words: []): string {
     return words[randomIdx];
 }
 
-function getPainter(players: string[]): string {
+function getPainter(players: Player[]): Player {
     const randomIdx = Math.floor(Math.random() * players.length);
     return players[randomIdx];
 }
 
-function addPlayer(currentGame: GameType, player: string) {
-    currentGame.players.push(player);
+function addPlayer(currentGame: GameType, name: string, avatar: string) {
+    currentGame.players.push({name: name, avatar: avatar});
 }
 
 function sendSuggestedWordsToAllClients() {
@@ -254,7 +272,7 @@ function chooseWordToGuess(currentGame: GameType) {
 }
 
 function choosePainter(currentGame: GameType) {
-    if (currentGame.painter === '') {
+    if (currentGame.painter.name === '') {
         currentGame.painter = getPainter(currentGame.players);
     }
 }

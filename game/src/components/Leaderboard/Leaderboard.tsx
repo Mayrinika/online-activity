@@ -48,7 +48,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
     };
 
     startOver = () => {
-        this.props.history.push(getDomRoutes().login);
+        this.props.history.push(getDomRoutes().main);
     };
 
     render() {

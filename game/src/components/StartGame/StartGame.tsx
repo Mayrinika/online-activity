@@ -21,8 +21,13 @@ interface StartGameProps extends RouteComponentProps, WithStyles<typeof styles> 
     setAuthorized: () => void;
 }
 
+interface Player {
+    name: string,
+    avatar: string | ArrayBuffer | null;
+}
+
 interface StartGameState {
-    players: string[];
+    players: Player[];
 }
 
 class StartGame extends Component<StartGameProps, StartGameState> {
@@ -131,7 +136,10 @@ class StartGame extends Component<StartGameProps, StartGameState> {
                     <Box className={classes.innerContainer}>
                         <Typography variant='subtitle1'>
                             {players && players.map(player => {
-                                return <div key={player} className={classes.playerContainer}>{player}</div>;
+                                return <div key={player.name} className={classes.playerContainer}>
+                                    {player.avatar && <img src={player.avatar as string} alt="avatar"/>}
+                                    {player.name}
+                                </div>;
                             })}
                         </Typography>
                     </Box>
