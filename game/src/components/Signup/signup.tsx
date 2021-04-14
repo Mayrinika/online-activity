@@ -64,9 +64,9 @@ class Signup extends Component<SignupProps, SignupState> {
     };
 
     addName = async () => {
-        const {name, password} = this.state;
+        const {name, password, avatar} = this.state;
         await this.context.checkAuthorization();
-        await this.context.signup(name, password);
+        await this.context.signup(name, password, avatar);
     };
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {

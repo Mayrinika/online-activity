@@ -15,12 +15,13 @@ interface User {
     id: string;
     name: string;
     password: string;
+    avatar?: string | ArrayBuffer | null;
 }
 
 interface Api {
     addGame: () => Promise<void>;
     getUserLoginData: () => Promise<UserLoginData>;
-    signup: (name: string, password: string) => Promise<void>;
+    signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<void>;
     getAllUsers: () => Promise<User[]>;
     login: (name: string, password: string) => Promise<Response>;
     checkAuthorization: () => void;
@@ -122,13 +123,13 @@ class ApiProvider extends React.Component<{}, {}> {
         return JSON.parse(data);
     };
 
-    signup = async (name:string, password:string) => {
+    signup = async (name:string, password:string, avatar: string | ArrayBuffer | null) => {
         await fetch(getRoutes().signup, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-            body: JSON.stringify({name, password})
+            body: JSON.stringify({name, password, avatar})
         });
     }
 
