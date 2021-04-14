@@ -52,7 +52,7 @@ class ApiProvider extends React.Component<{}, State> {
         super(props);
 
         this.state = {
-            gameId: null,
+            gameId: localStorage.getItem('gameId'),
         };
     }
 
