@@ -20,6 +20,8 @@ interface User {
 interface Api {
     addGame: () => Promise<void>;
     getUserLoginData: () => Promise<UserLoginData>;
+    login: (name: string, password: string) => Promise<Response>;
+    cookie: () => void;
     changeGameId: (gameId: string) => void;
     getAllGames: () => Promise<GameType[]>;
     getGame: () => Promise<GameType>;
@@ -61,6 +63,8 @@ class ApiProvider extends React.Component<{}, {}> {
         const {
             addGame,
             getUserLoginData,
+            login,
+            cookie,
             changeGameId,
             getAllGames,
             getGame,
@@ -76,6 +80,8 @@ class ApiProvider extends React.Component<{}, {}> {
             <ApiContext.Provider value={{
                 addGame,
                 getUserLoginData,
+                login,
+                cookie,
                 changeGameId,
                 getAllGames,
                 getGame,
@@ -108,6 +114,21 @@ class ApiProvider extends React.Component<{}, {}> {
         const res = await fetch(getRoutes().login);
         const data = await res.text();
         return JSON.parse(data);
+    };
+
+    login = async (name: string, password: string) => {
+        const response = await fetch(getRoutes().login, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({name, password})
+        });
+        return response;
+    };
+
+    cookie = async () => {
+        await fetch('/cookie-auth-protected-route', {credentials: 'include'});
     }
 
     getAllGames = async () => {
