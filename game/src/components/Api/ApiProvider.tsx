@@ -6,11 +6,6 @@ interface LocalLeaderboardType {
     score: number;
 }
 
-
-interface State {
-    gameId: string | null;
-}
-
 interface Api {
     addGame: () => Promise<void>;
     changeGameId: (gameId: string) => void;
@@ -47,14 +42,8 @@ interface GameType {
 
 export const ApiContext = React.createContext<Api>({} as Api);
 
-class ApiProvider extends React.Component<{}, State> {
-    constructor(props: {}) {
-        super(props);
-
-        this.state = {
-            gameId: localStorage.getItem('gameId'),
-        };
-    }
+class ApiProvider extends React.Component<{}, {}> {
+    private _gameId: null | string = localStorage.getItem('gameId');
 
     render() {
         const {
@@ -89,13 +78,11 @@ class ApiProvider extends React.Component<{}, State> {
 
 
     changeGameId = (gameId: string) => {
-        this.setState({
-            gameId
-        });
+        this._gameId = gameId;
     };
 
     addGame = async () => {
-        await fetch(getRoutes(this.state.gameId).gameId, {
+        await fetch(getRoutes(this._gameId).gameId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -110,13 +97,13 @@ class ApiProvider extends React.Component<{}, State> {
     };
 
     getGame = async () => {
-        const res = await fetch(getRoutes(this.state.gameId).gameId);
+        const res = await fetch(getRoutes(this._gameId).gameId);
         const data = await res.text();
         return JSON.parse(data);
     };
 
     clearCountdown = async () => {
-        await fetch(getRoutes(this.state.gameId).clearCountdown, {
+        await fetch(getRoutes(this._gameId).clearCountdown, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
@@ -125,7 +112,7 @@ class ApiProvider extends React.Component<{}, State> {
     };
 
     sendLineToServer = async (line: any) => {
-        await fetch(getRoutes(this.state.gameId).addLine, {
+        await fetch(getRoutes(this._gameId).addLine, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
