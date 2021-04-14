@@ -2,7 +2,7 @@ import {RouteComponentProps} from "react-router-dom";
 import React, {Component} from "react";
 import {v4 as uuidv4} from 'uuid';
 //components
-import {ApiClientContext} from "../Api/apiClientContext";
+import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getRoutes from "../../utils/routes";
 //styles
@@ -37,7 +37,7 @@ interface SuggestWordProps extends RouteComponentProps, WithStyles<typeof styles
 }
 
 class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
-    static contextType = ApiClientContext;
+    static contextType = ApiContext;
     constructor(props: SuggestWordProps) {
         super(props);
         this.state = {

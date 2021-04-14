@@ -10,9 +10,7 @@ import themeFile from './utils/theme';
 //styles
 import './index.css';
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
-import ApiClient from "./components/Api/ApiClient";
-
-import {ApiClientContext} from './components/Api/apiClientContext';
+import ApiProvider from "./components/Api/ApiProvider";
 
 const theme = createMuiTheme(themeFile);
 
@@ -20,10 +18,10 @@ ReactDOM.render(
     <MuiThemeProvider theme={theme}>
         <React.StrictMode>
             <BrowserRouter>
-                <ApiClientContext.Provider value={new ApiClient(localStorage.getItem('gameId'))}>
+                <ApiProvider>
                     <NavigationBar/>
                     <App/>
-                </ApiClientContext.Provider>
+                </ApiProvider>
             </BrowserRouter>
         </React.StrictMode>,
     </MuiThemeProvider>,

@@ -3,7 +3,7 @@ import {RouteComponentProps} from 'react-router-dom';
 import {v4 as uuidv4} from 'uuid';
 import crocoImg from '../../img/cocodrilo.png';
 //components
-import {ApiClientContext} from "../Api/apiClientContext";
+import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 //styles
@@ -37,7 +37,7 @@ interface LoginState {
 }
 
 class Login extends Component<LoginProps, LoginState> {
-    static contextType = ApiClientContext;
+    static contextType = ApiContext;
     constructor(props: LoginProps) {
         super(props);
         this.state = {

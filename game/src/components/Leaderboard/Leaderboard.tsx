@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 //components
-import {ApiClientContext} from "../Api/apiClientContext";
+import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import getRoutes from "../../utils/routes";
@@ -22,7 +22,7 @@ interface LeaderboardState {
 }
 
 class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
-    static contextType = ApiClientContext;
+    static contextType = ApiContext;
     constructor(props: LeaderboardProps) {
         super(props);
         this.state = {

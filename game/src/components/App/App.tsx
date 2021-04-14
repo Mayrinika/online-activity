@@ -7,7 +7,7 @@ import Game from "../Game/Game";
 import GameOver from "../GameOver/GameOver";
 import Leaderboard from "../Leaderboard/Leaderboard";
 import SuggestWord from "../SuggestWord/SuggestWord";
-import {ApiClientContext} from '../Api/apiClientContext';
+import {ApiContext} from '../Api/ApiProvider';
 //utils
 import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
@@ -16,7 +16,8 @@ import websocket from "../../utils/websocket";
 import './App.css';
 
 class App extends Component<{}, {}> {
-    static contextType = ApiClientContext;
+    static contextType = ApiContext;
+
     constructor(props: {}) {
         super(props);
     }

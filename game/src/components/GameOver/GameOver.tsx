@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
 //components
-import {ApiClientContext} from "../Api/apiClientContext";
+import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
@@ -44,7 +44,7 @@ interface GameOverState {
 }
 
 class GameOver extends Component<GameOverProps, GameOverState> {
-    static contextType = ApiClientContext;
+    static contextType = ApiContext;
 
     constructor(props: GameOverProps) {
         super(props);

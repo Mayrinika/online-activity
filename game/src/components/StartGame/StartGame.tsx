@@ -8,7 +8,7 @@ import websocket from "../../utils/websocket";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
-import {ApiClientContext} from "../Api/apiClientContext";
+import {ApiContext} from "../Api/ApiProvider";
 
 let newWS: any;
 
@@ -25,7 +25,7 @@ interface StartGameState {
 
 class StartGame extends Component<StartGameProps, StartGameState> {
     private _isMounted: boolean;
-    static contextType = ApiClientContext;
+    static contextType = ApiContext;
 
     constructor(props: StartGameProps) {
         super(props);

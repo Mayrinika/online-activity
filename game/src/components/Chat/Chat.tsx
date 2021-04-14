@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 //components
-import {ApiClientContext} from "../Api/apiClientContext";
+import {ApiContext} from "../Api/ApiProvider";
 //utils
 //styles
 import './Chat.css';
@@ -31,7 +31,7 @@ interface Message {
 }
 
 class Chat extends Component<ChatProps, ChatState> {
-    static contextType = ApiClientContext;
+    static contextType = ApiContext;
     constructor(props: ChatProps) {
         super(props);
         this.state = {

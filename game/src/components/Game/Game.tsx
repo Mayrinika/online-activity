@@ -11,7 +11,7 @@ import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './Game.css';
 import websocket from "../../utils/websocket";
-import {ApiClientContext} from "../Api/apiClientContext";
+import {ApiContext} from "../Api/ApiProvider";
 
 let newWS: any;
 
@@ -39,7 +39,7 @@ interface GameProps extends RouteComponentProps {
 }
 
 class Game extends Component<GameProps, GameState> {
-    static contextType = ApiClientContext;
+    static contextType = ApiContext;
     constructor(props: GameProps) {
         super(props);
         this.state = {

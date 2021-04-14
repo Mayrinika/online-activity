@@ -2,7 +2,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import {Layer, Stage, Line} from "react-konva";
 //components
 import ColorPalette from "../ColorPalette/ColorPalette";
-import {ApiClientContext} from "../Api/apiClientContext";
+import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getRoutes from '../../utils/routes';
 //styles
@@ -19,7 +19,7 @@ const Canvas = (props: canvasProps) => {
     const [currentLine, setCurrentLine]: [any, any] = useState(null); //TODO поправить тип
     const [color, setColor] = useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = useState([550, 750]);
-    const context = useContext(ApiClientContext);
+    const context = useContext(ApiContext);
 
     //const isDrawing = React.useRef(false);
     const stageRef: any = React.useRef(null); //TODO поправить тип
