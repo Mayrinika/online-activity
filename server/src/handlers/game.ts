@@ -52,7 +52,7 @@ export const getSuggestedWords = (req:any, res:any) => {
 
 export const getLeaderboard = (req:any, res:any) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    res.status(200).send(leaderboard);
+    res.status(200).send(leaderboard.players);
 };
 
 export const updateLeaderboard = (req:any, res:any) => {
