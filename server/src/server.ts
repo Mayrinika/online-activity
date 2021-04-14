@@ -2,11 +2,27 @@ import express from 'express';
 import cors from 'cors';
 import fs from 'fs-extra';
 import WebSocket from 'ws';
-import WebsocketMessage from "./utils/websocket";
+import WebsocketMessage from './utils/websocket';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+//handlers
+import {games, suggestedWords, GAME_TIME, timerIds} from "./handlers/game";
+import {getAllUsers, signup, getUser, login} from './handlers/user';
+import {
+    getAllGames,
+    getSuggestedWords,
+    getLeaderboard,
+    updateLeaderboard,
+    getCurrentGame,
+    addGame,
+    addLine,
+    clearCountdown,
+    setTimeIsOver
+} from "./handlers/game";
 
 const app = express();
-const port = process.env.PORT ||9000;
-const GAME_TIME: number = 1 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
+const port = process.env.PORT || 9000;
 
 interface Message {
     id: string;
@@ -33,112 +49,49 @@ interface GameType {
     lines: any[]; //TODO разобраться с типом
 }
 
-// interface TimerIds { //TODO разобраться с типом TimerIds
-//     [index: number]: number;
-//
-//     [index: string]: number;
-// }
-
-interface SuggestedWord {
-    id: string;
-    word: string;
-    likes: string[];
-    dislikes: string[];
-    isApproved: boolean;
-    isDeclined: boolean;
-    isInDictionary: boolean;
-}
-
-const games: GameType[] = [];
-const timerIds: any = {}; //TODO разобраться с типом TimerIds
-const suggestedWords: SuggestedWord[] = [];
-
-app.use(cors());
+app.use(cors({
+    origin: ["https://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true
+}));
 app.use(express.json());
+app.use(session({
+    secret: 'shpora-frontend2021',
+    name: "userId",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        maxAge: 24 * 60 * 60 * 1000,
+    }
+}));
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.use((err: any, req: any, res: any, next: any) => { //TODO разобраться с типом
     const {status = 500, message = 'Something went wrong'} = err;
     res.status(status).send(message);
 });
 
-app.get('/app', (req: any, res: any) => {
-    res.status(200).send(games);
-});
+app.get('/app', getAllGames);
 
-app.get('/suggestedWords', (req: any, res: any) => {
-    res.status(200).send(suggestedWords);
-});
+//user routes
+app.get('/signup', getAllUsers);
+app.post('/signup', signup);
+app.get('/login', getUser);
+app.post('/login', login);
 
-app.get('/leaderboard', (req: any, res: any) => {
-    const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    res.status(200).send(leaderboard.players);
-});
+//game routes
+app.get('/suggestedWords', getSuggestedWords);
 
-app.post('/leaderboard', (req: any, res: any) => {
-    const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    for (const {playerName, score} of req.body) {
-        if (playerName in leaderboard.players)
-            leaderboard.players[playerName] += score;
-        else
-            leaderboard.players[playerName] = score;
-    }
-    fs.outputJsonSync('./src/utils/leaderboard.json', leaderboard);
-    res.status(200).send(leaderboard);
-});
+app.get('/leaderboard', getLeaderboard);
+app.post('/leaderboard', updateLeaderboard);
 
-app.get('/:gameId', (req: any, res: any) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    res.status(200).send(currentGame);
-});
-
-app.post('/:gameId', (req: any, res: any) => {
-    games.push({
-        id: req.params.gameId,
-        players: [],
-        wordToGuess: '',
-        painter: '',
-        img: '',
-        chatMessages: [],
-        time: GAME_TIME,
-        winner: '',
-        isWordGuessed: false,
-        isTimeOver: false,
-        isGameOver: false,
-        lines: [],
-    });
-    res.status(200).send(games);
-});
-
-app.post('/:gameId/addLine', (req: any, res: any) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    if (currentGame) {
-        currentGame.lines.push(req.body.line);
-        res.status(200).send(games);
-    } else {
-        res.status(500).send('Game not found');
-    }
-});
-
-app.post('/:gameId/clearCountdown', (req: any, res: any) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    if (currentGame) {
-        clearTimeout(timerIds[currentGame.id]);
-        res.status(200).send(games);
-    } else {
-        res.status(500).send('Game not found');
-    }
-});
-
-app.post('/:gameId/setTimeIsOver', (req: any, res: any) => {
-    const currentGame = games.find(game => game.id === req.params.gameId);
-    if (currentGame) {
-        currentGame.isTimeOver = true;
-        currentGame.isGameOver = true;
-        res.status(200).send(games);
-    } else {
-        res.status(500).send('Game not found');
-    }
-});
+app.get('/:gameId', getCurrentGame);
+app.post('/:gameId', addGame);
+app.post('/:gameId/addLine', addLine);
+app.post('/:gameId/clearCountdown', clearCountdown);
+app.post('/:gameId/setTimeIsOver', setTimeIsOver);
 
 app.listen(port, () => { //TODO (err) ?
     // if (err) {
@@ -255,6 +208,7 @@ function sendSuggestedWordsToAllClients() {
         client.send(JSON.stringify(suggestedWords));
     });
 }
+
 function addSuggestedWord(message: any, inDictionary: boolean): void {
     suggestedWords.push({
         word: JSON.parse(message).word,
@@ -266,15 +220,18 @@ function addSuggestedWord(message: any, inDictionary: boolean): void {
         isInDictionary: inDictionary,
     });
 }
+
 function addNewWordToDictionary(word: string) {
     const words = fs.readJsonSync('./src/utils/words.json');
-    const newWords: {words?: string[]} = {};
+    const newWords: { words?: string[] } = {};
     newWords.words = [...words.words, word];
     fs.outputJsonSync('./src/utils/words.json', newWords);
 }
-function deleteElementFromArray (array: any[], element: any) {
+
+function deleteElementFromArray(array: any[], element: any) {
     array.splice(array.indexOf(element), 1);
 }
+
 function addNewWebSocketClient(gameId: string, ws: any) {
     if (webSockets[gameId]) {
         webSockets[gameId].push(ws);
@@ -282,22 +239,26 @@ function addNewWebSocketClient(gameId: string, ws: any) {
         webSockets[gameId] = [ws];
     }
 }
+
 function sendGameToClientsByGameId(gameId: string, currentGame: GameType) {
     webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
         client.send(JSON.stringify(currentGame));
     });
 }
+
 function chooseWordToGuess(currentGame: GameType) {
     if (currentGame.wordToGuess === '') {
         const words = fs.readJsonSync('./src/utils/words.json').words;
         currentGame.wordToGuess = getRandomWord(words);
     }
 }
+
 function choosePainter(currentGame: GameType) {
     if (currentGame.painter === '') {
         currentGame.painter = getPainter(currentGame.players);
     }
 }
+
 function setTimerForGame(currentGame: GameType, gameId: string) {
     if (currentGame.time === GAME_TIME) {
         timerIds[currentGame.id] = setInterval((currentGame) => {
@@ -317,4 +278,5 @@ function setTimerForGame(currentGame: GameType, gameId: string) {
         }, 1000, currentGame);
     }
 }
+
 

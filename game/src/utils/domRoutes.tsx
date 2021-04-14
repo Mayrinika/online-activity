@@ -4,7 +4,9 @@ export default function getDomRoutes(currentGameId?: string | null) {
         game: `/${currentGameId}/game`,
         gameOver: `/${currentGameId}/game-over`,
         startGame: `/${currentGameId}`,
-        login: `/`,
-        suggestWord: '/suggestWord'
+        main: `/`,
+        suggestWord: '/suggestWord',
+        login: '/login',
+        signup: '/signup',
     };
 }

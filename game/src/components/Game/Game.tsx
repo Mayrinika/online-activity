@@ -8,6 +8,7 @@ import ListOfPlayers from '../ListOfPlayers/ListOfPlayers';
 //utils
 import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
+import checkLogin from "../../utils/checkLogin";
 //styles
 import './Game.css';
 import websocket from "../../utils/websocket";
@@ -36,6 +37,7 @@ interface Message {
 }
 
 interface GameProps extends RouteComponentProps {
+    setAuthorized: () => void;
 }
 
 class Game extends Component<GameProps, GameState> {
@@ -56,6 +58,7 @@ class Game extends Component<GameProps, GameState> {
 
     async componentDidMount() {
         await this.getDataFromServer();
+        checkLogin(this.props.setAuthorized);
         newWS.onmessage = (response: any) => {
             if (JSON.parse(response.data).id === localStorage.getItem('gameId')) {
                 this.setState({

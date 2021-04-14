@@ -3,8 +3,9 @@ import { RouteComponentProps } from 'react-router-dom';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
+import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
-import getRoutes from "../../utils/routes";
+import checkLogin from "../../utils/checkLogin";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
@@ -15,6 +16,7 @@ const styles = (theme: { content: any; }) => (
 );
 
 interface LeaderboardProps extends RouteComponentProps, WithStyles<typeof styles> {
+    setAuthorized: () => void;
 }
 
 interface LeaderboardState {
@@ -33,6 +35,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
     async componentDidMount() {
         const sortedLeaderboard = await this.context.getLeaderboardDataFromServer();
         this.setState({sortedLeaderboard});
+        checkLogin(this.props.setAuthorized);
     }
 
     startOver = () => {
@@ -45,7 +48,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
                 <Typography variant='h5' paragraph>Лидерборд:</Typography>
-                {Object.entries(sortedLeaderboard).map(item => {
+                {Object.entries(sortedLeaderboard).map((item: any) => {
                     return (
                         <Typography variant='subtitle1' paragraph className={classes.playerContainer}
                                     key={item[0]}>

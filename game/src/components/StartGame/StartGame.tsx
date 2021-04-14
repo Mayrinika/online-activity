@@ -5,6 +5,8 @@ import {RouteComponentProps} from 'react-router-dom';
 import getDomRoutes from "../../utils/domRoutes";
 import getRoutes from "../../utils/routes";
 import websocket from "../../utils/websocket";
+import checkLogin from "../../utils/checkLogin";
+
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
@@ -17,6 +19,7 @@ const styles = (theme: { content: any; }) => (
 );
 
 interface StartGameProps extends RouteComponentProps, WithStyles<typeof styles> {
+    setAuthorized: () => void;
 }
 
 interface StartGameState {
@@ -39,6 +42,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     async componentDidMount() {
         this._isMounted = true;
         this.refreshConnection();
+        checkLogin(this.props.setAuthorized);
         const game = await this.context.getGame();
         if (this._isMounted) {
             this.setState({
