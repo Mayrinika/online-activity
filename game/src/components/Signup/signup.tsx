@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {RouteComponentProps} from "react-router-dom";
 import crocoImg from "../../img/cocodrilo.png";
 //components
+import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
@@ -27,6 +28,8 @@ interface SignupState {
 }
 
 class Signup extends Component<SignupProps, SignupState> {
+    static contextType = ApiContext;
+
     constructor(props: SignupProps) {
         super(props);
         this.state = {
@@ -39,7 +42,7 @@ class Signup extends Component<SignupProps, SignupState> {
     }
 
     async componentDidMount() {
-        await this.getAllNames();
+        await this.getAllUsers();
         checkLogin(this.props.setAuthorized);
     }
 
@@ -49,27 +52,21 @@ class Signup extends Component<SignupProps, SignupState> {
             await this.addName();
             localStorage.setItem('playerName', this.state.name);
             this.setState({name: '', password: '', avatar: null});
-            await this.getAllNames();
+            await this.getAllUsers();
             this.props.setAuthorized();
             this.props.history.push(getDomRoutes().main);
         }
     };
 
-    getAllNames = async () => {
-        const res = await fetch(getRoutes().signup);
-        const data = await res.text();
-        this.setState({possibleNames: JSON.parse(data).map((name: { name: string, password: string }) => name.name)});
+    getAllUsers = async () => {
+        const allUsers = await this.context.getAllUsers();
+        this.setState({possibleNames: allUsers.map((name: { name: string, password: string }) => name.name)});
     };
 
     addName = async () => {
-        await fetch('/cookie-auth-protected-route', {credentials: 'include'});
-        await fetch(getRoutes().signup, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({name: this.state.name, password: this.state.password, avatar: this.state.avatar})
-        });
+        const {name, password} = this.state;
+        await this.context.checkAuthorization();
+        await this.context.signup(name, password);
     };
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {

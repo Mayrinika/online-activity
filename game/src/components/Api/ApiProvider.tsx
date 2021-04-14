@@ -20,6 +20,10 @@ interface User {
 interface Api {
     addGame: () => Promise<void>;
     getUserLoginData: () => Promise<UserLoginData>;
+    signup: (name: string, password: string) => Promise<void>;
+    getAllUsers: () => Promise<User[]>;
+    login: (name: string, password: string) => Promise<Response>;
+    checkAuthorization: () => void;
     changeGameId: (gameId: string) => void;
     getAllGames: () => Promise<GameType[]>;
     getGame: () => Promise<GameType>;
@@ -61,6 +65,10 @@ class ApiProvider extends React.Component<{}, {}> {
         const {
             addGame,
             getUserLoginData,
+            signup,
+            getAllUsers,
+            login,
+            checkAuthorization,
             changeGameId,
             getAllGames,
             getGame,
@@ -76,6 +84,10 @@ class ApiProvider extends React.Component<{}, {}> {
             <ApiContext.Provider value={{
                 addGame,
                 getUserLoginData,
+                signup,
+                getAllUsers,
+                login,
+                checkAuthorization,
                 changeGameId,
                 getAllGames,
                 getGame,
@@ -108,6 +120,37 @@ class ApiProvider extends React.Component<{}, {}> {
         const res = await fetch(getRoutes().login);
         const data = await res.text();
         return JSON.parse(data);
+    };
+
+    signup = async (name:string, password:string) => {
+        await fetch(getRoutes().signup, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({name, password})
+        });
+    }
+
+    getAllUsers = async () => {
+        const res = await fetch(getRoutes().signup);
+        const data = await res.text();
+        return JSON.parse(data);
+    }
+
+    login = async (name: string, password: string) => {
+        const response = await fetch(getRoutes().login, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify({name, password})
+        });
+        return response;
+    };
+
+    checkAuthorization = async () => {
+        await fetch('/cookie-auth-protected-route', {credentials: 'include'});
     }
 
     getAllGames = async () => {

@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {RouteComponentProps} from "react-router-dom";
 //components
+import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
@@ -25,6 +26,7 @@ interface LoginState {
 }
 
 class Login extends Component<LoginProps, LoginState> {
+    static contextType = ApiContext;
     private _isMounted: boolean;
 
     constructor(props: LoginProps) {
@@ -65,14 +67,9 @@ class Login extends Component<LoginProps, LoginState> {
         }
     };
     login = async () => {
-        await fetch('/cookie-auth-protected-route', {credentials: 'include'});
-        const response = await fetch(getRoutes().login, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-            body: JSON.stringify({name: this.state.name, password: this.state.password})
-        });
+        const {name, password} = this.state;
+        await this.context.checkAuthorization();
+        const response = await this.context.login(name, password);
         if (response.status === 501) {
             this.setState({isIncorrect: true});
         } else {
