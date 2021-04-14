@@ -30,6 +30,7 @@ interface AppState {
 }
 
 class App extends Component<{}, AppState> {
+    static contextType = ApiContext;
     constructor(props: {}) {
         super(props);
         this.state = {
@@ -39,10 +40,9 @@ class App extends Component<{}, AppState> {
     }
 
     async componentDidMount() {
-        await this.getAllGames();
-        const res = await fetch(getRoutes().login);
-        const data = await res.text();
-        if (JSON.parse(data).loggedIn) {
+        //await this.getAllGames();
+        const userLoginData = await this.context.getUserLoginData();
+        if (userLoginData.loggedIn) {
             this.setState({isAuthorized: true});
         }
     }
@@ -70,19 +70,9 @@ class App extends Component<{}, AppState> {
         send(JSON.stringify({'gameId':gameId,'messageType':websocket.register, 'player':player}));
     }
 
-    addGame = async (gameId: string) => {
-        await fetch(getRoutes(gameId).gameId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8'
-            },
-        });
-    }
-
     getAllGames = async () => {
-        const res = await fetch(getRoutes().app);
-        const data = await res.text();
-        this.setState({possibleGames: JSON.parse(data)});
+        const allGames = await this.context.getAllGames();
+        this.setState({possibleGames: allGames});
     }
 
     joinGame = async (player: string | null, gameId: string) => {
@@ -90,7 +80,7 @@ class App extends Component<{}, AppState> {
         if (this.state.possibleGames.some(game => game.id === gameId)) {
             await this.addPlayer(gameId, player);
         } else {
-            await this.addGame(gameId);
+            await this.context.addGame(gameId);
             await this.addPlayer(gameId, player);
         }
     }

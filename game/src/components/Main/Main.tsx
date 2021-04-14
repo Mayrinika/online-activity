@@ -106,18 +106,6 @@ class Main extends Component<LoginProps, LoginState> {
                             Онлайн - активити
                         </Typography>
                         <form onSubmit={this.handleSubmit} className={classes.innerContainer} style={{paddingBottom: 16}}>
-                            {/*<TextField*/}
-                            {/*    variant="outlined"*/}
-                            {/*    margin="normal"*/}
-                            {/*    required*/}
-                            {/*    fullWidth*/}
-                            {/*    id="name"*/}
-                            {/*    label="Введите имя"*/}
-                            {/*    name="name"*/}
-                            {/*    autoFocus*/}
-                            {/*    onChange={this.handleChange}*/}
-                            {/*    value={this.state.name}*/}
-                            {/*/>*/}
                             {!this.props.isAuthorized ?
                                 <p>Пожалуйста, войдите или зарегистрируйтесь</p>
                                 : <div>

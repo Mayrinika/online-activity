@@ -6,8 +6,20 @@ interface LocalLeaderboardType {
     score: number;
 }
 
+interface UserLoginData {
+    loggedIn: boolean;
+    user: User;
+}
+
+interface User {
+    id: string;
+    name: string;
+    password: string;
+}
+
 interface Api {
     addGame: () => Promise<void>;
+    getUserLoginData: () => Promise<UserLoginData>;
     changeGameId: (gameId: string) => void;
     getAllGames: () => Promise<GameType[]>;
     getGame: () => Promise<GameType>;
@@ -48,6 +60,7 @@ class ApiProvider extends React.Component<{}, {}> {
     render() {
         const {
             addGame,
+            getUserLoginData,
             changeGameId,
             getAllGames,
             getGame,
@@ -62,6 +75,7 @@ class ApiProvider extends React.Component<{}, {}> {
         return (
             <ApiContext.Provider value={{
                 addGame,
+                getUserLoginData,
                 changeGameId,
                 getAllGames,
                 getGame,
@@ -89,6 +103,12 @@ class ApiProvider extends React.Component<{}, {}> {
             },
         });
     };
+
+    getUserLoginData = async () => {
+        const res = await fetch(getRoutes().login);
+        const data = await res.text();
+        return JSON.parse(data);
+    }
 
     getAllGames = async () => {
         const res = await fetch(getRoutes().app);
