@@ -138,6 +138,7 @@ class Signup extends Component<SignupProps, SignupState> {
                                 color="primary"
                                 type="submit"
                                 size="large"
+                                disabled={nameIsTaken && true}
                             >
                                 Зарегистрироваться
                             </Button>
