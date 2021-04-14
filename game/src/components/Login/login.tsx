@@ -68,7 +68,7 @@ class Login extends Component<LoginProps, LoginState> {
     };
     login = async () => {
         const {name, password} = this.state;
-        await this.context.cookie;
+        await this.context.checkAuthorization();
         const response = await this.context.login(name, password);
         if (response.status === 501) {
             this.setState({isIncorrect: true});
