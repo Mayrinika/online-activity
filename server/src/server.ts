@@ -167,8 +167,7 @@ wss.on('connection', (ws: any) => {
         case WebsocketMessage.register:
             const users = fs.readJsonSync('./src/utils/users.json');
             const user = users.find((user: User) => user.name === JSON.parse(message).player);
-
-            const avatar = user.avatar;
+            const avatar = user? user.avatar : null;
             addPlayer(currentGame, JSON.parse(message).player, avatar);
             addNewWebSocketClient(gameId, ws);
             sendGameToClientsByGameId(gameId, currentGame);
@@ -294,7 +293,9 @@ function setTimerForGame(currentGame: GameType, gameId: string) {
             } else {
                 currentGame.isTimeOver = true;
                 currentGame.isGameOver = true;
-                clearInterval(timerIds[currentGame]);
+                clearInterval(timerIds[currentGame.id]);
+                addScoreForMarks(currentGame);
+                updateLeaderboard(currentGame.scores);
                 webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
                     client.send(JSON.stringify(currentGame));
                 });

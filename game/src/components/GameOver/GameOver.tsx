@@ -9,6 +9,7 @@ import getDomRoutes from "../../utils/domRoutes";
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
 import checkLogin from "../../utils/checkLogin";
+import {viVN} from "@material-ui/core/locale";
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -80,26 +81,27 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                     <Typography variant='h6' paragraph>Слово было: {wordToGuess}</Typography>
                 </div>
                 }
-                {(isWordGuessed && !isTimeOver) &&
                 <div>
+                    {(isWordGuessed && !isTimeOver) &&
                     <Typography variant='h6' paragraph>Игрок {winner} отгадал слово {wordToGuess}</Typography>
-                    <div className={classes.innerContainer}>
-                        {
-                            this.state.scores.length > 0 ?
-                                this.state.scores.map(item => {
-                                        return (
-                                            <Typography variant='subtitle1' paragraph className={classes.playerContainer}
-                                                        key={item.player.name}>
-                                                {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" />}
-                                                {item.player.name}: {item.score}
-                                            </Typography>
-                                        );
-                                    }
-                                ) : ''
-                        }
+                    }
+                    {scores.length > 0 &&
+                    <div>
+                        <Typography variant='h6' paragraph>Заработанные очки: </Typography>
+                        <div className={classes.innerContainer}>
+                            {scores.map(item => {
+                                return (
+                                    <Typography variant='subtitle1' paragraph className={classes.playerContainer}
+                                                key={item.player.name}>
+                                        {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" />}
+                                        {item.player.name}: {item.score}
+                                    </Typography>
+                                )})
+                            }
+                        </div>
                     </div>
+                    }
                 </div>
-                }
                 <Button
                     className={classes.button}
                     variant="contained"
