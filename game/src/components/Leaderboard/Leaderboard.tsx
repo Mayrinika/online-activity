@@ -20,7 +20,12 @@ interface LeaderboardProps extends RouteComponentProps, WithStyles<typeof styles
 }
 
 interface LeaderboardState {
-    sortedLeaderboard: [string, number][];
+    sortedLeaderboard: {player: Player, score: number}[];
+}
+
+interface Player {
+    name: string,
+    avatar: string | ArrayBuffer | null;
 }
 
 class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
@@ -48,11 +53,12 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
                 <Typography variant='h5' paragraph>Лидерборд:</Typography>
-                {Object.entries(sortedLeaderboard).map((item: any) => {
+                {sortedLeaderboard.map((item: { player: Player, score: number }) => {
                     return (
                         <Typography variant='subtitle1' paragraph className={classes.playerContainer}
-                                    key={item[0]}>
-                            {item[1][0]}: {item[1][1]}
+                                    key={item.player.name}>
+                            {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" />}
+                            {item.player.name}: {item.score}
                         </Typography>
                     );
                 })}

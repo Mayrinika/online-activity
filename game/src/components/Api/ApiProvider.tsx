@@ -1,5 +1,6 @@
 import getRoutes from "../../utils/routes";
 import React from "react";
+import {log} from "util";
 
 interface LocalLeaderboardType {
     playerName: string;
@@ -48,14 +49,28 @@ interface SuggestedWord {
 
 interface GameType {
     id: string;
-    players: string[];
+    players: Player[];
     wordToGuess: string;
-    painter: string;
+    painter: Player;
     img: string;
-    chatMessages: string[];
+    chatMessages: Message[];
     time: number;
     winner: string;
     lines: any[]; //TODO разобраться с типом
+}
+interface Message {
+    id: string;
+    name: string;
+    avatar: string | ArrayBuffer | null;
+    text: string;
+    marks: {
+        hot: boolean;
+        cold: boolean;
+    };
+}
+interface Player {
+    name: string,
+    avatar: string | ArrayBuffer | null;
 }
 
 export const ApiContext = React.createContext<Api>({} as Api);
@@ -200,8 +215,7 @@ class ApiProvider extends React.Component<{}, {}> {
         const res = await fetch(getRoutes().leaderboard);
         const data = await res.text();
         const leaderboard = JSON.parse(data);
-        return Object.entries(leaderboard as { [playerName: string]: number })
-            .sort((a, b) => b[1] - a[1]);
+        return leaderboard.sort((item1: {player: Player, score: number}, item2: {player: Player, score: number}) => item2.score - item1.score);
     };
 
     getSuggestWordsFromServer = async () => {

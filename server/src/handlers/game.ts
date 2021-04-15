@@ -17,6 +17,7 @@ interface GameType {
     chatMessages: Message[];
     time: number;
     winner: string;
+    scores: {player: Player, score: number}[];
     isWordGuessed: boolean;
     isTimeOver: boolean;
     isGameOver: boolean;
@@ -61,17 +62,17 @@ export const getLeaderboard = (req:any, res:any) => {
     res.status(200).send(leaderboard.players);
 };
 
-export const updateLeaderboard = (req:any, res:any) => {
-    const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    for (const {playerName, score, avatar} of req.body) {
-        if (playerName in leaderboard.players)
-            leaderboard.players[playerName] += score;
-        else
-            leaderboard.players[playerName] = score;
-    }
-    fs.outputJsonSync('./src/utils/leaderboard.json', leaderboard);
-    res.status(200).send(leaderboard);
-};
+// export const updateLeaderboard = (req:any, res:any) => {
+//     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
+//     for (const {playerName, score, avatar} of req.body) {
+//         if (playerName in leaderboard.players)
+//             leaderboard.players[playerName] += score;
+//         else
+//             leaderboard.players[playerName] = score;
+//     }
+//     fs.outputJsonSync('./src/utils/leaderboard.json', leaderboard);
+//     res.status(200).send(leaderboard);
+// };
 
 export const getCurrentGame = (req:any, res:any) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
@@ -88,6 +89,7 @@ export const addGame = (req:any, res:any) => {
         chatMessages: [],
         time: GAME_TIME,
         winner: '',
+        scores: [],
         isWordGuessed: false,
         isTimeOver: false,
         isGameOver: false,

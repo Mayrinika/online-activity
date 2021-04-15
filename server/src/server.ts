@@ -13,7 +13,7 @@ import {
     getAllGames,
     getSuggestedWords,
     getLeaderboard,
-    updateLeaderboard,
+    // updateLeaderboard,
     getCurrentGame,
     addGame,
     addLine,
@@ -53,6 +53,7 @@ interface GameType {
     isWordGuessed: boolean;
     isTimeOver: boolean;
     isGameOver: boolean;
+    scores: {player: Player, score: number}[];
     lines: any[]; //TODO разобраться с типом
 }
 interface User {
@@ -98,7 +99,7 @@ app.post('/login', login);
 app.get('/suggestedWords', getSuggestedWords);
 
 app.get('/leaderboard', getLeaderboard);
-app.post('/leaderboard', updateLeaderboard);
+// app.post('/leaderboard', updateLeaderboard);
 
 app.get('/:gameId', getCurrentGame);
 app.post('/:gameId', addGame);
@@ -197,9 +198,12 @@ wss.on('connection', (ws: any) => {
             break;
         case WebsocketMessage.setWinner:
             currentGame.winner = JSON.parse(message).winner;
+            const winner = currentGame.players.find(player => player.name === JSON.parse(message).winner);
             currentGame.isWordGuessed = true;
             currentGame.isGameOver = true;
+            addLocalScore(currentGame, winner);
             sendGameToClientsByGameId(gameId, currentGame);
+            updateLeaderboard(currentGame.scores);
             break;
         case WebsocketMessage.sendImg:
             currentGame.img = JSON.parse(message).img;
@@ -297,6 +301,46 @@ function setTimerForGame(currentGame: GameType, gameId: string) {
             }
         }, 1000, currentGame);
     }
+}
+
+function addLocalScore(currentGame: GameType, winner: Player | undefined) {
+    if (currentGame.scores.length === 0) {
+        currentGame.scores.push({player: currentGame.painter, score: currentGame.time});
+        if (winner !== undefined) {
+            currentGame.scores.push({player: winner, score: 50});
+        }
+        addScoreForMarks(currentGame);
+    }
+}
+function addScoreForMarks(currentGame: GameType) {
+    currentGame.chatMessages.map(message => {
+        if (message.marks.hot) {
+            const player = currentGame.scores.find(score => score.player.name === message.name);
+            if (player) {
+                if (player.score + 2 < 50) {
+                    player.score += 2;
+                }
+            } else {
+                const foundPlayer = currentGame.players.find(player => player.name === message.name);
+                const avatar = foundPlayer? foundPlayer.avatar : null;
+                currentGame.scores.push({player: {name: message.name, avatar}, score: 2});
+            }
+        }
+    });
+}
+
+function updateLeaderboard(localScores: {player: Player, score: number}[]) {
+    const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
+    const newLeaderboard:{ players: {player: Player, score: number}[] } = {players: [...leaderboard.players]};
+    for (const {player, score} of localScores) {
+        const playerFound = newLeaderboard.players.find((playerGlobal) => playerGlobal.player.name === player.name);
+        if (playerFound) {
+            playerFound.score += score;
+        } else {
+            newLeaderboard.players.push({player, score});
+        }
+    }
+    fs.outputJsonSync('./src/utils/leaderboard.json', newLeaderboard);
 }
 
 

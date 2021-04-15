@@ -23,50 +23,24 @@ interface GameOverProps extends RouteComponentProps, WithStyles<typeof styles> {
     setAuthorized: () => void;
 }
 
-interface LocalLeaderboardType {
-    avatar: string | ArrayBuffer | null;
-    playerName: string;
-    score: number;
-}
-
-interface Message {
-    id: string;
-    name: string;
-    avatar: string | ArrayBuffer | null;
-    text: string;
-    marks: {
-        hot: boolean;
-        cold: boolean;
-    };
-}
-
 interface GameOverState {
-    isTimeOver: boolean;
-    isWordGuessed: boolean;
-    wordToGuess: string;
-    winner: string;
-    painter: Player;
-    chatMessages: Message[];
-    players: Player[];
-    localLeaderboard: LocalLeaderboardType[];
-    time: number;
+    scores: {player: Player, score: number}[],
+    isWordGuessed: boolean,
+    isTimeOver: boolean,
+    winner: string,
+    wordToGuess: string
 }
 
 class GameOver extends Component<GameOverProps, GameOverState> {
     static contextType = ApiContext;
-
     constructor(props: GameOverProps) {
         super(props);
         this.state = {
-            wordToGuess: '',
-            isTimeOver: false,
+            scores: [],
             isWordGuessed: false,
+            isTimeOver: false,
             winner: '',
-            painter: {name: '', avatar: null},
-            chatMessages: [],
-            players: [],
-            localLeaderboard: [],
-            time: 0
+            wordToGuess: '',
         };
     }
 
@@ -78,59 +52,12 @@ class GameOver extends Component<GameOverProps, GameOverState> {
     getDataFromServer = async () => {
         const game = await this.context.getGame();
         this.setState({
-            wordToGuess: game.wordToGuess,
-            isTimeOver: game.isTimeOver,
+            scores: game.scores,
             isWordGuessed: game.isWordGuessed,
+            isTimeOver: game.isTimeOver,
             winner: game.winner,
-            painter: game.painter,
-            chatMessages: game.chatMessages,
-            players: game.players,
-            time: game.time
-        }, this.calculateScores);
-    };
-
-    calculateScores = () => {
-        const results: LocalLeaderboardType[] = [];
-        const {isTimeOver, players, painter, winner} = this.state;
-
-        if (isTimeOver)
-            return;
-
-        results.push({
-            playerName: painter.name,
-            avatar: painter.avatar,
-            score: this.state.time
+            wordToGuess: game.wordToGuess,
         });
-
-        for (const player of players) {
-            if (player.name === painter.name)
-                continue;
-            let currentScore = this.calculateScoresForHotMessages(player.name);
-            if (player.name === winner)
-                currentScore += 50;
-            results.push({
-                playerName: player.name,
-                avatar: player.avatar,
-                score: currentScore
-            });
-        }
-        results.sort((a, b) => b.score - a.score);
-        this.setState({
-            localLeaderboard: results
-        });
-
-        this.context.pushScoreToLeaderboard(results);
-    };
-
-    calculateScoresForHotMessages = (player: string) => {
-        let currentScore = 0;
-        this.state.chatMessages.map(message => {
-            if (message.name === player && message.marks.hot) {
-                currentScore += 2;
-            }
-            return currentScore;
-        });
-        return Math.min(currentScore, 50);
     };
 
     startOver = () => {
@@ -142,7 +69,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
     };
 
     render() {
-        const {isTimeOver, isWordGuessed, winner, wordToGuess} = this.state;
+        const {scores, isWordGuessed, isTimeOver, winner, wordToGuess} = this.state;
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
@@ -158,13 +85,13 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                     <Typography variant='h6' paragraph>Игрок {winner} отгадал слово {wordToGuess}</Typography>
                     <div className={classes.innerContainer}>
                         {
-                            this.state.localLeaderboard.length > 0 ?
-                                this.state.localLeaderboard.map(item => {
+                            this.state.scores.length > 0 ?
+                                this.state.scores.map(item => {
                                         return (
                                             <Typography variant='subtitle1' paragraph className={classes.playerContainer}
-                                                        key={item.playerName}>
-                                                {item.avatar && <img src={item.avatar as string} alt="avatar" />}
-                                                {item.playerName}: {item.score}
+                                                        key={item.player.name}>
+                                                {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" />}
+                                                {item.player.name}: {item.score}
                                             </Typography>
                                         );
                                     }
