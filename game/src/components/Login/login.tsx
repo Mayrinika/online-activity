@@ -94,7 +94,7 @@ class Login extends Component<LoginProps, LoginState> {
                         </Typography>
                         <form onSubmit={this.handleLogin} className={classes.innerContainer}
                               style={{paddingBottom: 16}}>
-                            {isIncorrect && <p>Неправильный логин или пароль, попробуйте еще раз</p>}
+                            {/*{isIncorrect && <p>Неправильный логин или пароль, попробуйте еще раз</p>}*/}
                             <TextField
                                 variant="outlined"
                                 margin="normal"
