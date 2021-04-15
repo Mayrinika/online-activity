@@ -6,6 +6,7 @@ export default function getRoutes(currentGameId?: string | null) {
         addMark:`/${currentGameId}/addMark`,
         addPlayer: `/${currentGameId}/addPlayer`,
         addImg: `/${currentGameId}/addImg`,
+        deleteLine: `/${currentGameId}/deleteLine`,
         addWordAndPainter: `/${currentGameId}/addWordAndPainter`,
         clearCountdown: `/${currentGameId}/clearCountdown`,
         setWinner: `/${currentGameId}/setWinner`,
@@ -14,6 +15,6 @@ export default function getRoutes(currentGameId?: string | null) {
         leaderboard: `/leaderboard`,
         suggestedWords: '/suggestedWords',
         signup: '/signup',
-        login: '/login'
+        login: '/login',
     }
 }

@@ -4,7 +4,6 @@ import {Layer, Stage, Line} from "react-konva";
 import ColorPalette from "../ColorPalette/ColorPalette";
 import {ApiContext} from "../Api/ApiProvider";
 //utils
-import getRoutes from '../../utils/routes';
 //styles
 import './Canvas.css';
 
@@ -65,7 +64,7 @@ const Canvas = (props: canvasProps) => {
                 {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
             ]);
             isDrawing = false;
-            await context.sendLineToServer(currentLine);
+            context.sendLineToServer(currentLine);
             let uri = stageRef.current.toDataURL();
             addImage(uri);
         }
@@ -96,18 +95,19 @@ const Canvas = (props: canvasProps) => {
         setColor(color);
     };
 
-    // const undoLastDrawing = (e: any) => { //TODO поправить тип //TODO решить будем ли отменять последнюю линию с сервера с помощью пост запроса. Минусы: если при нажатии ctrZ будет задержка, художник может еще пару раз нажать и отменит больше линий чем нужно
-    //     if (e.keyCode === 90 && e.ctrlKey) {
-    //         let newLines = [...lines];
-    //         newLines.pop();
-    //         setLines(newLines);
-    //     }
-    // }
+    const undoLastDrawing = (e: any) => { //TODO поправить тип
+        if (e.keyCode === 90 && e.ctrlKey) {
+            let newLines = [...lines];
+            newLines.pop();
+            setLines(newLines);
+        }
+        let uri = stageRef.current.toDataURL();
+        addImage(uri);
+        context.deleteLine();
+    }
 
     return (
-        //onKeyDown={undoLastDrawing} TODO добавить в следующую строчку если будем отменять последнее действие с сервера
-
-        <div className={"Canvas " + tool} tabIndex={0}>
+        <div className={"Canvas " + tool} tabIndex={0} onKeyDown={undoLastDrawing}>
             <div className="Canvas-ControlPanel">
                 <ColorPalette currentColor={color} onChangeColor={changeColor}/>
                 <select

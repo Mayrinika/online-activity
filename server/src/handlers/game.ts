@@ -106,6 +106,16 @@ export const addLine = (req:any, res:any) => {
     }
 };
 
+export const deleteLine = (req: any, res: any) => {
+    const currentGame = games.find(game => game.id === req.params.gameId);
+    if (currentGame) {
+        currentGame.lines.pop();
+        res.status(200).send(games);
+    } else {
+        res.status(500).send('Game not found');
+    }
+};
+
 export const clearCountdown = (req:any, res:any) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {

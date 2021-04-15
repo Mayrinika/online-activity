@@ -33,6 +33,7 @@ interface Api {
     pushScoreToLeaderboard: (localLeaderboard: LocalLeaderboardType[]) => void;
     getLeaderboardDataFromServer: () => Promise<[userId: string, score: number][]>;
     getSuggestWordsFromServer: () => Promise<SuggestedWord[]>;
+    deleteLine: () => void;
 }
 
 interface SuggestedWord {
@@ -78,6 +79,7 @@ class ApiProvider extends React.Component<{}, {}> {
             pushScoreToLeaderboard,
             getLeaderboardDataFromServer,
             getSuggestWordsFromServer,
+            deleteLine,
             props: {children}
         } = this;
 
@@ -97,6 +99,7 @@ class ApiProvider extends React.Component<{}, {}> {
                 pushScoreToLeaderboard,
                 getLeaderboardDataFromServer,
                 getSuggestWordsFromServer,
+                deleteLine,
             }}>
                 {children}
             </ApiContext.Provider>
@@ -206,6 +209,12 @@ class ApiProvider extends React.Component<{}, {}> {
         const data = await res.text();
         return JSON.parse(data);
     };
+    deleteLine = () => {
+        fetch(getRoutes(this._gameId).deleteLine, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'}
+        });
+    }
 }
 
 export default ApiProvider;

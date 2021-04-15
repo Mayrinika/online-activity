@@ -170,5 +170,4 @@ class Signup extends Component<SignupProps, SignupState> {
         );
     }
 }
-
 export default (withStyles(styles)(Signup));

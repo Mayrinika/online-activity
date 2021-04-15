@@ -17,6 +17,7 @@ import {
     getCurrentGame,
     addGame,
     addLine,
+    deleteLine,
     clearCountdown,
     setTimeIsOver
 } from "./handlers/game";
@@ -102,6 +103,7 @@ app.post('/leaderboard', updateLeaderboard);
 app.get('/:gameId', getCurrentGame);
 app.post('/:gameId', addGame);
 app.post('/:gameId/addLine', addLine);
+app.post('/:gameId/deleteLine', deleteLine);
 app.post('/:gameId/clearCountdown', clearCountdown);
 app.post('/:gameId/setTimeIsOver', setTimeIsOver);
 
