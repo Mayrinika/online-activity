@@ -140,8 +140,9 @@ class Signup extends Component<SignupProps, SignupState> {
                                 autoFocus
                                 onChange={this.handleNameChange}
                                 value={name}
+                                error={nameIsTaken}
+                                helperText={nameIsTaken ? `Извините, имя ${name} уже занято` : ''}
                             />
-                            {nameIsTaken && <p>Извините, имя {name} уже занято</p>}
                             <TextField
                                 variant="outlined"
                                 margin="normal"
