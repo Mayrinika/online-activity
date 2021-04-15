@@ -107,6 +107,8 @@ class Login extends Component<LoginProps, LoginState> {
                                 autoFocus
                                 onChange={this.handleChange}
                                 value={name}
+                                error={isIncorrect}
+                                helperText={isIncorrect ? 'Неверный логин или пароль' : ''}
                             />
                             <TextField
                                 variant="outlined"
@@ -119,6 +121,8 @@ class Login extends Component<LoginProps, LoginState> {
                                 name="password"
                                 onChange={this.handleChange}
                                 value={password}
+                                error={isIncorrect}
+                                helperText={isIncorrect ? 'Неверный логин или пароль' : ''}
                             />
                             <Button
                                 className={classes.button}
