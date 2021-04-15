@@ -4,12 +4,11 @@ import crocoImg from "../../img/cocodrilo.png";
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
-import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
 import checkLogin from "../../utils/checkLogin";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
+import {Button, Container, Grid, Typography, TextField, CircularProgress} from '@material-ui/core';
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -25,6 +24,7 @@ interface SignupState {
     avatar: string | ArrayBuffer | null;
     possibleNames: string[];
     nameIsTaken: boolean;
+    avatarIsLoading: boolean;
 }
 
 class Signup extends Component<SignupProps, SignupState> {
@@ -38,6 +38,7 @@ class Signup extends Component<SignupProps, SignupState> {
             possibleNames: [],
             avatar: null,
             nameIsTaken: false,
+            avatarIsLoading: false,
         };
     }
 
@@ -88,6 +89,7 @@ class Signup extends Component<SignupProps, SignupState> {
         }
     };
     handleLoadAvatar = (evt: any): void => {
+        this.setState({avatarIsLoading: true});
         const width = 50;
         const height = 50;
         let file = evt.target.files[0];
@@ -103,7 +105,7 @@ class Signup extends Component<SignupProps, SignupState> {
                 const ctx = elem.getContext('2d');
                 ctx?.drawImage(img, 0, 0, width, height);
                 let url = elem.toDataURL();
-                this.setState({avatar: url});
+                this.setState({avatar: url, avatarIsLoading: false});
             };
             reader.onerror = error => console.log(error);
         };
@@ -111,7 +113,7 @@ class Signup extends Component<SignupProps, SignupState> {
 
     render() {
         const {classes} = this.props;
-        const {nameIsTaken, name, password} = this.state;
+        const {nameIsTaken, name, password, avatarIsLoading} = this.state;
         return (
             <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
                 <Grid container spacing={2} justify="center">
@@ -159,9 +161,9 @@ class Signup extends Component<SignupProps, SignupState> {
                                 color="primary"
                                 type="submit"
                                 size="large"
-                                disabled={nameIsTaken && true}
+                                disabled={(nameIsTaken || avatarIsLoading) && true}
                             >
-                                Зарегистрироваться
+                                {avatarIsLoading? <CircularProgress /> : 'Зарегистрироваться'}
                             </Button>
                         </form>
                     </Grid>
