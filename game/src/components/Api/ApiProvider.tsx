@@ -5,9 +5,9 @@ import React from "react";
 interface Api {
     addGame: () => Promise<void>;
     getUserLoginData: () => Promise<UserLoginData>;
-    signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<void>;
+    signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<User>;
     getAllUsers: () => Promise<User[]>;
-    login: (name: string, password: string) => Promise<Response>;
+    login: (name: string, password: string) => Promise<User>;
     checkAuthorization: () => void;
     changeGameId: (gameId: string) => void;
     getAllGames: () => Promise<GameType[]>;
