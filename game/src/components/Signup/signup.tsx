@@ -23,7 +23,7 @@ interface SignupState {
     password: string;
     avatar: string | ArrayBuffer | null;
     possibleNames: string[];
-    nameIsTaken: boolean;
+    isNameExist: boolean;
     avatarIsLoading: boolean;
 }
 
@@ -37,7 +37,7 @@ class Signup extends Component<SignupProps, SignupState> {
             password: '',
             possibleNames: [],
             avatar: null,
-            nameIsTaken: false,
+            isNameExist: false,
             avatarIsLoading: false,
         };
     }
@@ -48,14 +48,18 @@ class Signup extends Component<SignupProps, SignupState> {
     }
 
     handleSignup = async (evt: React.ChangeEvent<HTMLFormElement>) => {
+        const {possibleNames, name} = this.state;
+        const {setAuthorized, history} = this.props;
         evt.preventDefault();
-        if (!this.state.nameIsTaken) {
+        if (possibleNames.includes(name)) {
+            this.setState({isNameExist: true});
+        } else {
             await this.addName();
-            localStorage.setItem('playerName', this.state.name);
+            localStorage.setItem('playerName', name);
             this.setState({name: '', password: '', avatar: null});
             await this.getAllUsers();
-            this.props.setAuthorized();
-            this.props.history.push(getDomRoutes().main);
+            setAuthorized();
+            history.push(getDomRoutes().main);
         }
     };
 
@@ -80,14 +84,11 @@ class Signup extends Component<SignupProps, SignupState> {
     handleNameChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
             ...state,
+            isNameExist: false,
             [evt.target.name]: evt.target.value
         }));
-        if (this.state.possibleNames.includes(evt.target.value)) {
-            this.setState({nameIsTaken: true});
-        } else {
-            this.setState({nameIsTaken: false});
-        }
     };
+
     handleLoadAvatar = (evt: any): void => {
         this.setState({avatarIsLoading: true});
         const width = 50;
@@ -109,11 +110,11 @@ class Signup extends Component<SignupProps, SignupState> {
             };
             reader.onerror = error => console.log(error);
         };
-    }
+    };
 
     render() {
         const {classes} = this.props;
-        const {nameIsTaken, name, password, avatarIsLoading} = this.state;
+        const {isNameExist, name, password, avatarIsLoading} = this.state;
         return (
             <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
                 <Grid container spacing={2} justify="center">
@@ -140,8 +141,8 @@ class Signup extends Component<SignupProps, SignupState> {
                                 autoFocus
                                 onChange={this.handleNameChange}
                                 value={name}
-                                error={nameIsTaken}
-                                helperText={nameIsTaken ? `Извините, имя ${name} уже занято` : ''}
+                                error={isNameExist}
+                                helperText={isNameExist ? `Извините, имя ${name} уже занято` : ''}
                             />
                             <TextField
                                 variant="outlined"
@@ -162,9 +163,9 @@ class Signup extends Component<SignupProps, SignupState> {
                                 color="primary"
                                 type="submit"
                                 size="large"
-                                disabled={(nameIsTaken || avatarIsLoading) && true}
+                                disabled={(isNameExist || avatarIsLoading) && true}
                             >
-                                {avatarIsLoading? <CircularProgress /> : 'Зарегистрироваться'}
+                                {avatarIsLoading ? <CircularProgress/> : 'Зарегистрироваться'}
                             </Button>
                         </form>
                     </Grid>
@@ -173,4 +174,5 @@ class Signup extends Component<SignupProps, SignupState> {
         );
     }
 }
+
 export default (withStyles(styles)(Signup));
