@@ -10,19 +10,14 @@ import Leaderboard from "../Leaderboard/Leaderboard";
 import SuggestWord from "../SuggestWord/SuggestWord";
 import {ApiContext} from '../Api/ApiProvider';
 //utils
-import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
 import websocket from "../../utils/websocket";
+import {GameType} from '../../utils/Types/types'
 //styles
 import './App.css';
 import Signup from "../Signup/signup";
 
-let ws: any;
-
-interface GameType {
-    id: string;
-    players: string[];
-}
+let ws: WebSocket;
 
 interface AppState {
     possibleGames: GameType[];
@@ -40,7 +35,6 @@ class App extends Component<{}, AppState> {
     }
 
     async componentDidMount() {
-        //await this.getAllGames();
         const userLoginData = await this.context.getUserLoginData();
         if (userLoginData.loggedIn) {
             this.setState({isAuthorized: true});

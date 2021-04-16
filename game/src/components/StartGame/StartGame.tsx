@@ -3,16 +3,15 @@ import {RouteComponentProps} from 'react-router-dom';
 //components
 //utils
 import getDomRoutes from "../../utils/domRoutes";
-import getRoutes from "../../utils/routes";
 import websocket from "../../utils/websocket";
 import checkLogin from "../../utils/checkLogin";
-
+import {Player} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
 import {ApiContext} from "../Api/ApiProvider";
 
-let newWS: any;
+let newWS: WebSocket;
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -20,11 +19,6 @@ const styles = (theme: { content: any; }) => (
 
 interface StartGameProps extends RouteComponentProps, WithStyles<typeof styles> {
     setAuthorized: () => void;
-}
-
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
 }
 
 interface StartGameState {

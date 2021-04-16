@@ -70,7 +70,6 @@ const Canvas = (props: canvasProps) => {
         }
         isDrawing = false;
         setCurrentLine(null);
-        //downloadURI(uri, 'stage.png');
     };
 
     const handleMouseUp = async (e: any) => { //TODO поправить тип
@@ -80,16 +79,6 @@ const Canvas = (props: canvasProps) => {
     const handleMouseLeave = async (e: any) => { //TODO поправить тип
         await stopDrawing(e);
     };
-
-    //TODO удалить потом. Нужно только для визуализации
-    // const downloadURI = (uri: string, name: string) => {
-    //     let link = document.createElement('a');
-    //     link.download = name;
-    //     link.href = uri;
-    //     document.body.appendChild(link);
-    //     link.click();
-    //     document.body.removeChild(link);
-    // }
 
     const changeColor = (color: string) => {
         setColor(color);

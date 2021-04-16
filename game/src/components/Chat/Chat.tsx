@@ -3,13 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
+import {Player, Message} from "../../utils/Types/types";
 //styles
 import './Chat.css';
 
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
-}
 
 interface ChatProps {
     isPainter: boolean;
@@ -23,17 +20,6 @@ interface ChatProps {
 
 interface ChatState {
     inputMessage: string;
-}
-
-interface Message {
-    id: string;
-    name: string;
-    avatar: string | ArrayBuffer | null;
-    text: string;
-    marks: {
-        hot: boolean;
-        cold: boolean;
-    };
 }
 
 class Chat extends Component<ChatProps, ChatState> {

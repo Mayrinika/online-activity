@@ -3,22 +3,16 @@ import {RouteComponentProps} from 'react-router-dom';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
-import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
+import {Player} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
 import checkLogin from "../../utils/checkLogin";
-import {viVN} from "@material-ui/core/locale";
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
-
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
-}
 
 interface GameOverProps extends RouteComponentProps, WithStyles<typeof styles> {
     setAuthorized: () => void;

@@ -2,11 +2,8 @@ import React, {Component} from 'react';
 import {v4 as uuidv4} from 'uuid';
 //styles
 import './ListOfPlayers.css'
-
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
-}
+//utils
+import {Player} from "../../utils/Types/types";
 
 interface ListOfPlayersProps {
     players: Player[];

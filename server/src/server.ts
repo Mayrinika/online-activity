@@ -108,7 +108,6 @@ app.post('/login', login);
 app.get('/suggestedWords', getSuggestedWords);
 
 app.get('/leaderboard', getLeaderboard);
-// app.post('/leaderboard', updateLeaderboard);
 
 app.get('/:gameId', getCurrentGame);
 app.post('/:gameId', addGame);

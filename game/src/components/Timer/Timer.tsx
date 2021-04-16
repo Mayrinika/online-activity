@@ -1,8 +1,4 @@
-import React, {useEffect} from 'react';
-//components
-//utils
-import getRoutes from "../../utils/routes";
-//styles
+import React from 'react';
 import './Timer.css';
 
 function Timer(props: {time: number}) {

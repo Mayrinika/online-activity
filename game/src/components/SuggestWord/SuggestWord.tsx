@@ -4,30 +4,20 @@ import {v4 as uuidv4} from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
-import getRoutes from "../../utils/routes";
 import websocket from "../../utils/websocket";
 import checkLogin from "../../utils/checkLogin";
+import {SuggestedWord} from "../../utils/Types/types";
 //styles
 import './SuggestWord.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, Grid, Typography, TextField, Box} from '@material-ui/core';
+import {Button, Container, TextField, Box} from '@material-ui/core';
 
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
 
-let ws: any;
-
-interface SuggestedWord {
-    id: string;
-    word: string;
-    likes: string[];
-    dislikes: string[];
-    isApproved: boolean;
-    isDeclined: boolean;
-    isInDictionary: boolean;
-}
+let ws: WebSocket;
 
 interface SuggestWordState {
     enteredWord: string;
@@ -63,22 +53,6 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
 
     setConnection = () => {
         ws = new WebSocket('ws://localhost:8080');
-        // const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-        //     waitForConnection(function () {
-        //         return ws.send(message);
-        //     }, 100);
-        // };
-        //
-        // const waitForConnection = function (callback: () => void, interval: number) {
-        //     if (ws.readyState === 1) {
-        //         callback();
-        //     } else {
-        //         setTimeout(function () {
-        //             waitForConnection(callback, interval);
-        //         }, interval);
-        //     }
-        // };
-        // send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
     };
 
     sendWord = (evt: React.ChangeEvent<HTMLFormElement>) => {

@@ -6,20 +6,15 @@ import Canvas from '../Canvas/Canvas';
 import Chat from '../Chat/Chat';
 import ListOfPlayers from '../ListOfPlayers/ListOfPlayers';
 //utils
-import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
 import checkLogin from "../../utils/checkLogin";
+import {Player, Message} from "../../utils/Types/types";
 //styles
 import './Game.css';
 import websocket from "../../utils/websocket";
 import {ApiContext} from "../Api/ApiProvider";
 
 let newWS: any;
-
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
-}
 
 interface GameState {
     wordToGuess: string;
@@ -29,17 +24,6 @@ interface GameState {
     players: Player[];
     chatMessages: Message[];
     time: number;
-}
-
-interface Message {
-    id: string;
-    name: string;
-    avatar: string | ArrayBuffer | null;
-    text: string;
-    marks: {
-        hot: boolean;
-        cold: boolean;
-    };
 }
 
 interface GameProps extends RouteComponentProps {

@@ -3,9 +3,9 @@ import { RouteComponentProps } from 'react-router-dom';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
-import getRoutes from '../../utils/routes';
 import getDomRoutes from "../../utils/domRoutes";
 import checkLogin from "../../utils/checkLogin";
+import {Player} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
@@ -23,10 +23,6 @@ interface LeaderboardState {
     sortedLeaderboard: {player: Player, score: number}[];
 }
 
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
-}
 
 class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
     static contextType = ApiContext;

@@ -5,9 +5,9 @@ import crocoImg from '../../img/cocodrilo.png';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
-import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
 import checkLogin from "../../utils/checkLogin";
+import {GameType} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
@@ -22,25 +22,9 @@ interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
     setAuthorized: () => void;
 }
 
-interface GameType {
-    id: string;
-    players: Player[];
-    wordToGuess: string;
-    painter: Player;
-    img: string;
-    chatMessages: string[];
-    time: number;
-    winner: string;
-}
-
 interface LoginState {
     code: string;
     possibleGames: GameType[]
-}
-
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
 }
 
 class Main extends Component<LoginProps, LoginState> {

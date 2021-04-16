@@ -1,23 +1,6 @@
 import getRoutes from "../../utils/routes";
+import {UserLoginData, User, SuggestedWord, GameType, Player} from "../../utils/Types/types"
 import React from "react";
-import {log} from "util";
-
-interface LocalLeaderboardType {
-    playerName: string;
-    score: number;
-}
-
-interface UserLoginData {
-    loggedIn: boolean;
-    user: User;
-}
-
-interface User {
-    id: string;
-    name: string;
-    password: string;
-    avatar?: string | ArrayBuffer | null;
-}
 
 interface Api {
     addGame: () => Promise<void>;
@@ -31,53 +14,15 @@ interface Api {
     getGame: () => Promise<GameType>;
     clearCountdown: () => void;
     sendLineToServer: (line: string) => void;
-    pushScoreToLeaderboard: (localLeaderboard: LocalLeaderboardType[]) => void;
     getLeaderboardDataFromServer: () => Promise<[userId: string, score: number][]>;
     getSuggestWordsFromServer: () => Promise<SuggestedWord[]>;
     deleteLine: () => void;
-}
-
-interface SuggestedWord {
-    id: string;
-    word: string;
-    likes: string[];
-    dislikes: string[];
-    isApproved: boolean;
-    isDeclined: boolean;
-    isInDictionary: boolean;
-}
-
-interface GameType {
-    id: string;
-    players: Player[];
-    wordToGuess: string;
-    painter: Player;
-    img: string;
-    chatMessages: Message[];
-    time: number;
-    winner: string;
-    lines: any[]; //TODO разобраться с типом
-}
-interface Message {
-    id: string;
-    name: string;
-    avatar: string | ArrayBuffer | null;
-    text: string;
-    marks: {
-        hot: boolean;
-        cold: boolean;
-    };
-}
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
 }
 
 export const ApiContext = React.createContext<Api>({} as Api);
 
 class ApiProvider extends React.Component<{}, {}> {
     private _gameId: null | string = localStorage.getItem('gameId');
-
     render() {
         const {
             addGame,
@@ -91,7 +36,6 @@ class ApiProvider extends React.Component<{}, {}> {
             getGame,
             clearCountdown,
             sendLineToServer,
-            pushScoreToLeaderboard,
             getLeaderboardDataFromServer,
             getSuggestWordsFromServer,
             deleteLine,
@@ -111,7 +55,6 @@ class ApiProvider extends React.Component<{}, {}> {
                 getGame,
                 clearCountdown,
                 sendLineToServer,
-                pushScoreToLeaderboard,
                 getLeaderboardDataFromServer,
                 getSuggestWordsFromServer,
                 deleteLine,
@@ -203,14 +146,6 @@ class ApiProvider extends React.Component<{}, {}> {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({line})
-        });
-    };
-
-    pushScoreToLeaderboard = (localLeaderboard: LocalLeaderboardType[]) => {
-        fetch(getRoutes().leaderboard, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(localLeaderboard)
         });
     };
 
