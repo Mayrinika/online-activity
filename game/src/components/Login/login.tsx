@@ -94,7 +94,7 @@ class Login extends Component<LoginProps, LoginState> {
                         </Typography>
                         <form onSubmit={this.handleLogin} className={classes.innerContainer}
                               style={{paddingBottom: 16}}>
-                            {isIncorrect && <p>Неправильный логин или пароль, попробуйте еще раз</p>}
+                            {/*{isIncorrect && <p>Неправильный логин или пароль, попробуйте еще раз</p>}*/}
                             <TextField
                                 variant="outlined"
                                 margin="normal"
@@ -107,6 +107,8 @@ class Login extends Component<LoginProps, LoginState> {
                                 autoFocus
                                 onChange={this.handleChange}
                                 value={name}
+                                error={isIncorrect}
+                                helperText={isIncorrect ? 'Неверный логин или пароль' : ''}
                             />
                             <TextField
                                 variant="outlined"
@@ -119,6 +121,8 @@ class Login extends Component<LoginProps, LoginState> {
                                 name="password"
                                 onChange={this.handleChange}
                                 value={password}
+                                error={isIncorrect}
+                                helperText={isIncorrect ? 'Неверный логин или пароль' : ''}
                             />
                             <Button
                                 className={classes.button}
