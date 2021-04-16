@@ -22,7 +22,7 @@ export const signup = async (req: any, res: any) => {
     users.push(user);
     fs.outputJsonSync('./src/utils/users.json', users);
     req.session.user = user;
-    res.status(200).send(users);
+    res.status(200).send(user);
 };
 
 export const getUser = (req: any, res: any) => {
@@ -39,14 +39,14 @@ export const login = async (req: any, res: any) => {
     const {name, password} = req.body;
     const user = users.find((user: User) => user.name === name);
     if (!user) {
-        res.status(501).send('Некорректное имя пользователя или пароль');
+        res.send({error: true});
     } else {
         const valid = await bcrypt.compare(password, user.password);
         if (valid) {
             req.session.user = user;
-            res.status(200).send('ок');
+            res.status(200).send(user);
         } else {
-            res.status(501).send('Некорректное имя пользователя или пароль');
+            res.send({error: true});
         }
     }
 };

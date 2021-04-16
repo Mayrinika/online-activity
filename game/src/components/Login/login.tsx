@@ -3,7 +3,6 @@ import {RouteComponentProps} from "react-router-dom";
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
-import getRoutes from "../../utils/routes";
 import getDomRoutes from "../../utils/domRoutes";
 import checkLogin from "../../utils/checkLogin";
 //styles
@@ -69,8 +68,8 @@ class Login extends Component<LoginProps, LoginState> {
     login = async () => {
         const {name, password} = this.state;
         await this.context.checkAuthorization();
-        const response = await this.context.login(name, password);
-        if (response.status === 501) {
+        const user = await this.context.login(name, password);
+        if (user.error) {
             this.setState({isIncorrect: true});
         } else {
             this.setState({isIncorrect: false});
@@ -94,7 +93,6 @@ class Login extends Component<LoginProps, LoginState> {
                         </Typography>
                         <form onSubmit={this.handleLogin} className={classes.innerContainer}
                               style={{paddingBottom: 16}}>
-                            {/*{isIncorrect && <p>Неправильный логин или пароль, попробуйте еще раз</p>}*/}
                             <TextField
                                 variant="outlined"
                                 margin="normal"

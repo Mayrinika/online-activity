@@ -142,13 +142,15 @@ class ApiProvider extends React.Component<{}, {}> {
     };
 
     signup = async (name:string, password:string, avatar: string | ArrayBuffer | null) => {
-        await fetch(getRoutes().signup, {
+        const response = await fetch(getRoutes().signup, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({name, password, avatar})
         });
+        const user = await response.json();
+        return user;
     }
 
     getAllUsers = async () => {
@@ -165,7 +167,8 @@ class ApiProvider extends React.Component<{}, {}> {
             },
             body: JSON.stringify({name, password})
         });
-        return response;
+        const user = await response.json();
+        return user;
     };
 
     checkAuthorization = async () => {
