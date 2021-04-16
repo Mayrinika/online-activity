@@ -24,19 +24,23 @@ interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
 
 interface LoginState {
     code: string;
-    possibleGames: GameType[]
+    possibleGames: GameType[];
+    isCodeIncorrect: boolean;
 }
 
 class Main extends Component<LoginProps, LoginState> {
     static contextType = ApiContext;
+
     constructor(props: LoginProps) {
         super(props);
         this.state = {
             code: '',
-            possibleGames: []
+            possibleGames: [],
+            isCodeIncorrect: false
         };
     }
-    componentDidMount() {
+
+    async componentDidMount() {
         checkLogin(this.props.setAuthorized);
     }
 
@@ -45,9 +49,10 @@ class Main extends Component<LoginProps, LoginState> {
         this.setState({possibleGames: allGames});
     };
 
-    handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
+    handleChange = async (evt: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
         this.setState((state) => ({
             ...state,
+            isCodeIncorrect: false,
             [evt.target.name]: evt.target.value
         }));
     };
@@ -68,7 +73,7 @@ class Main extends Component<LoginProps, LoginState> {
                 await this.joinGame(name, code);
             }
         } else {
-            alert('no such play'); //TODO использовать библиотеку TOAST вместо alarm
+            this.setState({isCodeIncorrect: true});
         }
     };
 
@@ -82,6 +87,7 @@ class Main extends Component<LoginProps, LoginState> {
 
     render() {
         const {classes} = this.props;
+        const {isCodeIncorrect, code} =this.state;
         return (
             <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
                 <Grid container spacing={2} justify="center">
@@ -94,7 +100,8 @@ class Main extends Component<LoginProps, LoginState> {
                         <Typography variant='h4' paragraph>
                             Онлайн - активити
                         </Typography>
-                        <form onSubmit={this.handleSubmit} className={classes.innerContainer} style={{paddingBottom: 16}}>
+                        <form onSubmit={this.handleSubmit} className={classes.innerContainer}
+                              style={{paddingBottom: 16}}>
                             {!this.props.isAuthorized ?
                                 <p>Пожалуйста, войдите или зарегистрируйтесь</p>
                                 : <div>
@@ -107,7 +114,9 @@ class Main extends Component<LoginProps, LoginState> {
                                         label="У меня есть код приглашения"
                                         name="code"
                                         onChange={this.handleChange}
-                                        value={this.state.code}
+                                        value={code}
+                                        error={isCodeIncorrect}
+                                        helperText={isCodeIncorrect ? 'Неверный код' : ''}
                                     />
                                     <Button
                                         className={classes.button}
