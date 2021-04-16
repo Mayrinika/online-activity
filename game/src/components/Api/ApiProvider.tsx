@@ -1,69 +1,24 @@
 import getRoutes from "../../utils/routes";
-import {UserLoginData, User, SuggestedWord, GameType, Player} from "../../utils/Types/types"
+import {Api, User, Player} from "../../utils/Types/types"
 import React from "react";
-
-interface Api {
-    addGame: () => Promise<void>;
-    getUserLoginData: () => Promise<UserLoginData>;
-    signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<User>;
-    getAllUsers: () => Promise<User[]>;
-    login: (name: string, password: string) => Promise<User>;
-    checkAuthorization: () => void;
-    changeGameId: (gameId: string) => void;
-    getAllGames: () => Promise<GameType[]>;
-    getGame: () => Promise<GameType>;
-    clearCountdown: () => void;
-    sendLineToServer: (line: string) => void;
-    getLeaderboardDataFromServer: () => Promise<[userId: string, score: number][]>;
-    getSuggestWordsFromServer: () => Promise<SuggestedWord[]>;
-    deleteLine: () => void;
-}
 
 export const ApiContext = React.createContext<Api>({} as Api);
 
 class ApiProvider extends React.Component<{}, {}> {
-    private _gameId: null | string = localStorage.getItem('gameId');
-    render() {
-        const {
-            addGame,
-            getUserLoginData,
-            signup,
-            getAllUsers,
-            login,
-            checkAuthorization,
-            changeGameId,
-            getAllGames,
-            getGame,
-            clearCountdown,
-            sendLineToServer,
-            getLeaderboardDataFromServer,
-            getSuggestWordsFromServer,
-            deleteLine,
-            props: {children}
-        } = this;
+    private apiMethods: Api = new ApiMethods();
 
+    render() {
         return (
-            <ApiContext.Provider value={{
-                addGame,
-                getUserLoginData,
-                signup,
-                getAllUsers,
-                login,
-                checkAuthorization,
-                changeGameId,
-                getAllGames,
-                getGame,
-                clearCountdown,
-                sendLineToServer,
-                getLeaderboardDataFromServer,
-                getSuggestWordsFromServer,
-                deleteLine,
-            }}>
-                {children}
+            <ApiContext.Provider value={this.apiMethods}>
+                {this.props.children}
             </ApiContext.Provider>
         );
     }
+}
 
+class ApiMethods implements Api {
+    private _gameId: null | string = localStorage.getItem('gameId');
+    user: User | undefined = undefined;
 
     changeGameId = (gameId: string) => {
         this._gameId = gameId;
@@ -93,6 +48,7 @@ class ApiProvider extends React.Component<{}, {}> {
             body: JSON.stringify({name, password, avatar})
         });
         const user = await response.json();
+        this.user = user;
         return user;
     }
 
@@ -111,6 +67,7 @@ class ApiProvider extends React.Component<{}, {}> {
             body: JSON.stringify({name, password})
         });
         const user = await response.json();
+        this.user = user;
         return user;
     };
 
@@ -161,6 +118,7 @@ class ApiProvider extends React.Component<{}, {}> {
         const data = await res.text();
         return JSON.parse(data);
     };
+
     deleteLine = () => {
         fetch(getRoutes(this._gameId).deleteLine, {
             method: 'POST',

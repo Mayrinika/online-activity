@@ -1,3 +1,20 @@
+export interface Api {
+    addGame: () => Promise<void>;
+    getUserLoginData: () => Promise<UserLoginData>;
+    signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<User>;
+    getAllUsers: () => Promise<User[]>;
+    login: (name: string, password: string) => Promise<User>;
+    checkAuthorization: () => void;
+    changeGameId: (gameId: string) => void;
+    getAllGames: () => Promise<GameType[]>;
+    getGame: () => Promise<GameType>;
+    clearCountdown: () => void;
+    sendLineToServer: (line: string) => void;
+    getLeaderboardDataFromServer: () => Promise<[userId: string, score: number][]>;
+    getSuggestWordsFromServer: () => Promise<SuggestedWord[]>;
+    deleteLine: () => void;
+}
+
 export interface UserLoginData {
     loggedIn: boolean;
     user: User;
