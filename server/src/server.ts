@@ -20,57 +20,11 @@ import {
     clearCountdown,
     setTimeIsOver
 } from "./handlers/game";
+//utils
+import {Player, Message, GameType, User, SuggestedWord} from "./utils/types";
 
 const app = express();
 const port = process.env.PORT || 9000;
-
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
-}
-
-interface Message {
-    id: string;
-    name: string;
-    avatar: string | ArrayBuffer | null;
-    text: string;
-    marks: {
-        hot: boolean;
-        cold: boolean;
-    };
-}
-
-interface GameType {
-    id: string;
-    players: Player[];
-    wordToGuess: string;
-    painter: Player;
-    img: string;
-    chatMessages: Message[];
-    time: number;
-    winner: string;
-    isWordGuessed: boolean;
-    isTimeOver: boolean;
-    isGameOver: boolean;
-    scores: {player: Player, score: number}[];
-    lines: any[]; //TODO разобраться с типом
-}
-interface User {
-    id: string;
-    name: string;
-    password: string;
-    avatar: string | ArrayBuffer | null;
-}
-
-interface SuggestedWord {
-    id: string;
-    word: string;
-    likes: string[];
-    dislikes: string[];
-    isApproved: boolean;
-    isDeclined: boolean;
-    isInDictionary: boolean;
-}
 
 app.use(cors({
     origin: ["https://localhost:3000"],
@@ -103,7 +57,6 @@ app.get('/signup', getAllUsers);
 app.post('/signup', signup);
 app.get('/login', getUser);
 app.post('/login', login);
-
 //game routes
 app.get('/suggestedWords', getSuggestedWords);
 
@@ -131,7 +84,7 @@ wss.on('connection', (ws) => {
         const {messageType, parsedMessage, gameId, currentGame, suggestedWord, author} = parse(message as string);
         switch (messageType) {
         case WebsocketMessage.sendSuggestedWordToServer:
-            sendSuggestedWordToServer(parsedMessage, message);
+            sendSuggestedWordToServer(parsedMessage);
             break;
         case WebsocketMessage.likeWord:
             likeWord(suggestedWord, author);
@@ -174,14 +127,14 @@ function parse(message: string) {
     return {messageType, parsedMessage, gameId, currentGame, suggestedWord, author};
 }
 
-function sendSuggestedWordToServer(parsedMessage: {word: string}, message: string | Buffer | ArrayBuffer | Buffer[]) {
+function sendSuggestedWordToServer(parsedMessage: {word: string, id: string}) {
     const dictionary = fs.readJsonSync('./src/utils/words.json');
     if (dictionary.words.includes(parsedMessage.word)) {
-        addSuggestedWord(message, true);
+        addSuggestedWord(parsedMessage, true);
         sendSuggestedWordsToAllClients();
         deleteElementFromArray(suggestedWords, parsedMessage.word);
     } else {
-        addSuggestedWord(message, false);
+        addSuggestedWord(parsedMessage, false);
         sendSuggestedWordsToAllClients();
     }
 }
@@ -287,10 +240,10 @@ function sendSuggestedWordsToAllClients() {
     });
 }
 
-function addSuggestedWord(message: any, inDictionary: boolean): void {
+function addSuggestedWord(parsedMessage: { word: string, id: string }, inDictionary: boolean): void {
     suggestedWords.push({
-        word: JSON.parse(message).word,
-        id: JSON.parse(message).id,
+        word: parsedMessage.word,
+        id: parsedMessage.id,
         likes: [],
         dislikes: [],
         isApproved: false,

@@ -1,49 +1,8 @@
 import fs from "fs-extra";
+import {GameType, SuggestedWord} from "../utils/types";
 
 export const GAME_TIME: number = 1 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
 export const timerIds: any = {}; //TODO разобраться с типом TimerIds
-
-interface Player {
-    name: string,
-    avatar: string | ArrayBuffer | null;
-}
-
-interface GameType {
-    id: string;
-    players: Player[];
-    wordToGuess: string;
-    painter: Player;
-    img: string;
-    chatMessages: Message[];
-    time: number;
-    winner: string;
-    scores: {player: Player, score: number}[];
-    isWordGuessed: boolean;
-    isTimeOver: boolean;
-    isGameOver: boolean;
-    lines: any[]; //TODO разобраться с типом
-}
-
-interface Message {
-    id: string;
-    name: string;
-    avatar: string | ArrayBuffer | null;
-    text: string;
-    marks: {
-        hot: boolean;
-        cold: boolean;
-    };
-}
-
-interface SuggestedWord {
-    id: string;
-    word: string;
-    likes: string[];
-    dislikes: string[];
-    isApproved: boolean;
-    isDeclined: boolean;
-    isInDictionary: boolean;
-}
 
 export const suggestedWords: SuggestedWord[] = [];
 
@@ -61,18 +20,6 @@ export const getLeaderboard = (req:any, res:any) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
     res.status(200).send(leaderboard.players);
 };
-
-// export const updateLeaderboard = (req:any, res:any) => {
-//     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-//     for (const {playerName, score, avatar} of req.body) {
-//         if (playerName in leaderboard.players)
-//             leaderboard.players[playerName] += score;
-//         else
-//             leaderboard.players[playerName] = score;
-//     }
-//     fs.outputJsonSync('./src/utils/leaderboard.json', leaderboard);
-//     res.status(200).send(leaderboard);
-// };
 
 export const getCurrentGame = (req:any, res:any) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
