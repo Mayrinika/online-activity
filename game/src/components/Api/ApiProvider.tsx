@@ -1,5 +1,5 @@
 import getRoutes from "../../utils/routes";
-import {Api, User, Player} from "../../utils/Types/types"
+import {Api, User, Player, UserLoginData, GameType, SuggestedWord} from "../../utils/Types/types";
 import React from "react";
 
 export const ApiContext = React.createContext<Api>({} as Api);
@@ -20,110 +20,142 @@ class ApiMethods implements Api {
     private _gameId: null | string = localStorage.getItem('gameId');
     user: User | undefined = undefined;
 
-    changeGameId = (gameId: string) => {
+    changeGameId = (gameId: string): void => {
         this._gameId = gameId;
     };
 
-    addGame = async () => {
+    addGame = async (): Promise<void> => {
         await fetch(getRoutes(this._gameId).gameId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-        });
+        })
+            .catch(err => this.checkStatus(err));
     };
 
-    getUserLoginData = async () => {
-        const res = await fetch(getRoutes().login);
-        const data = await res.text();
-        return JSON.parse(data);
+    getUserLoginData = async (): Promise<UserLoginData> => {
+        return await fetch(getRoutes().login)
+            .then(res => res.json())
+            .catch(err => this.checkStatus(err));
     };
 
-    signup = async (name:string, password:string, avatar: string | ArrayBuffer | null) => {
-        const response = await fetch(getRoutes().signup, {
+    signup = async (name: string, password: string, avatar: string | ArrayBuffer | null): Promise<User | undefined> => {
+        await fetch(getRoutes().signup, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({name, password, avatar})
-        });
-        const user = await response.json();
-        this.user = user;
-        return user;
-    }
+        })
+            .then(res => res.json())
+            .then(user => {
+                this.user = user;
+                if (this.user === undefined)
+                    throw new Error('Failed to get user');
+            })
+            .catch(err => this.checkStatus(err));
+        return this.user;
+    };
 
-    getAllUsers = async () => {
-        const res = await fetch(getRoutes().signup);
-        const data = await res.text();
-        return JSON.parse(data);
-    }
+    getAllUsers = async (): Promise<User[]> => {
+        return await fetch(getRoutes().signup)
+            .then(res => res.json())
+            .catch(err => this.checkStatus(err));
+    };
 
-    login = async (name: string, password: string) => {
-        const response = await fetch(getRoutes().login, {
+    login = async (name: string, password: string): Promise<User | undefined> => {
+        await fetch(getRoutes().login, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({name, password})
-        });
-        const user = await response.json();
-        this.user = user;
-        return user;
+        })
+            .then(res => res.json())
+            .then(user => {
+                this.user = user;
+                if (this.user === undefined)
+                    throw new Error('Failed to get user');
+            })
+            .catch(err => this.checkStatus(err));
+        return this.user;
     };
 
-    checkAuthorization = async () => {
-        await fetch('/cookie-auth-protected-route', {credentials: 'include'});
-    }
-
-    getAllGames = async () => {
-        const res = await fetch(getRoutes().app);
-        const data = await res.text();
-        return JSON.parse(data);
+    checkAuthorization = async (): Promise<void> => {
+        await fetch('/cookie-auth-protected-route', {credentials: 'include'})
+            .catch(err => this.checkStatus(err));
     };
 
-    getGame = async () => {
-        const res = await fetch(getRoutes(this._gameId).gameId);
-        const data = await res.text();
-        return JSON.parse(data);
+    getAllGames = async (): Promise<GameType[]> => {
+        return await fetch(getRoutes().app)
+            .then(res => res.json())
+            .catch(err => this.checkStatus(err));
     };
 
-    clearCountdown = async () => {
+    getGame = async (): Promise<GameType> => {
+        return await fetch(getRoutes(this._gameId).gameId)
+            .then(res => res.json())
+            .catch(err => this.checkStatus(err));
+    };
+
+    clearCountdown = async (): Promise<void> => {
         await fetch(getRoutes(this._gameId).clearCountdown, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             }
-        });
+        })
+            .catch(err => this.checkStatus(err));
     };
 
-    sendLineToServer = async (line: any) => {
+    sendLineToServer = async (line: any): Promise<void> => {
         await fetch(getRoutes(this._gameId).addLine, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({line})
-        });
+        })
+            .catch(err => this.checkStatus(err));
     };
 
-    getLeaderboardDataFromServer = async () => {
-        const res = await fetch(getRoutes().leaderboard);
-        const data = await res.text();
-        const leaderboard = JSON.parse(data);
-        return leaderboard.sort((item1: {player: Player, score: number}, item2: {player: Player, score: number}) => item2.score - item1.score);
+    getLeaderboardDataFromServer = async (): Promise<[userId: string, score: number][]> => {
+        const leaderboard = await fetch(getRoutes().leaderboard)
+            .then(res => res.json())
+            .catch(err => this.checkStatus(err));
+        return leaderboard.sort((item1: { player: Player, score: number }, item2: { player: Player, score: number }) =>
+            item2.score - item1.score);
     };
 
-    getSuggestWordsFromServer = async () => {
-        const res = await fetch(getRoutes().suggestedWords);
-        const data = await res.text();
-        return JSON.parse(data);
+    getSuggestWordsFromServer = async (): Promise<SuggestedWord[]> => {
+        return await fetch(getRoutes().suggestedWords)
+            .then(res => res.json())
+            .catch(err => this.checkStatus(err));
     };
 
-    deleteLine = () => {
-        fetch(getRoutes(this._gameId).deleteLine, {
+    deleteLine = async (): Promise<void> => {
+        await fetch(getRoutes(this._gameId).deleteLine, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'}
-        });
+        })
+            .catch(err => this.checkStatus(err));
+    };
+
+    private async checkStatus(response: Response): Promise<void> {
+        if (!(response.status >= 200 && response.status < 300)) {
+            const errorText = await response.text();
+            let serverResponse;
+            try {
+                serverResponse = JSON.parse(errorText);
+            } catch (e) {
+                serverResponse = undefined;
+            }
+            if (serverResponse !== undefined) {
+                throw new Error(serverResponse.Message || serverResponse.message || serverResponse.Error);
+            }
+            throw new Error(errorText);
+        }
     }
 }
 

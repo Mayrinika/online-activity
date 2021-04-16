@@ -1,18 +1,18 @@
 export interface Api {
+    changeGameId: (gameId: string) => void;
     addGame: () => Promise<void>;
     getUserLoginData: () => Promise<UserLoginData>;
-    signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<User>;
+    signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<User | undefined>;
     getAllUsers: () => Promise<User[]>;
-    login: (name: string, password: string) => Promise<User>;
-    checkAuthorization: () => void;
-    changeGameId: (gameId: string) => void;
+    login: (name: string, password: string) => Promise<User | undefined>;
+    checkAuthorization: () => Promise<void>;
     getAllGames: () => Promise<GameType[]>;
     getGame: () => Promise<GameType>;
-    clearCountdown: () => void;
-    sendLineToServer: (line: string) => void;
+    clearCountdown: () => Promise<void>;
+    sendLineToServer: (line: string) => Promise<void>;
     getLeaderboardDataFromServer: () => Promise<[userId: string, score: number][]>;
     getSuggestWordsFromServer: () => Promise<SuggestedWord[]>;
-    deleteLine: () => void;
+    deleteLine: () => Promise<void>;
 }
 
 export interface UserLoginData {
