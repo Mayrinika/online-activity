@@ -50,6 +50,7 @@ class Login extends Component<LoginProps, LoginState> {
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
             ...state,
+            isIncorrect: false,
             [evt.target.name]: evt.target.value
         }));
     };
