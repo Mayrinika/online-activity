@@ -136,9 +136,8 @@ class ApiMethods implements Api {
     getLeaderboardDataFromServer = async (): Promise<[userId: string, score: number][]> => {
         const res = await fetch(getRoutes().leaderboard);
         const data = await res.text();
-        const leaderboard = JSON.parse(data);
-        return leaderboard.sort((item1: {player: Player, score: number}, item2: {player: Player, score: number}) => item2.score - item1.score);
-
+        return  JSON.parse(data);
+       
         // const leaderboard = await fetch(getRoutes().leaderboard)
         //     .then(res => res.json())
         //     .catch(err => this.checkStatus(err));

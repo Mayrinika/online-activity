@@ -349,6 +349,8 @@ function updateLeaderboard(localScores: {player: Player, score: number}[]) {
             newLeaderboard.players.push({player, score});
         }
     }
+    newLeaderboard.players.sort((item1: {player: Player, score: number}, item2: {player: Player, score: number}) =>
+        item2.score - item1.score);
     fs.outputJsonSync('./src/utils/leaderboard.json', newLeaderboard);
 }
 
