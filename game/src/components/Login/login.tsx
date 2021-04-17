@@ -4,18 +4,16 @@ import {RouteComponentProps} from "react-router-dom";
 import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
-import checkLogin from "../../utils/checkLogin";
 //styles
+import crocoImg from "../../img/cocodrilo.png";
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
-import crocoImg from "../../img/cocodrilo.png";
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
 
 interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
-    setAuthorized: () => void;
 }
 
 interface LoginState {
@@ -39,7 +37,6 @@ class Login extends Component<LoginProps, LoginState> {
     }
 
     async componentDidMount() {
-        checkLogin(this.props.setAuthorized);
         this._isMounted = true;
     }
 
@@ -59,7 +56,6 @@ class Login extends Component<LoginProps, LoginState> {
         await this.login();
         if (!this.state.isIncorrect) {
             localStorage.setItem('playerName', this.state.name);
-            this.props.setAuthorized();
             this.props.history.push(getDomRoutes().main);
         }
         if (this._isMounted) {

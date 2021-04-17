@@ -3,6 +3,7 @@ import {Switch, Route} from 'react-router-dom';
 //components
 import Main from '../Main/Main';
 import Login from "../Login/login";
+import Signup from "../Signup/signup";
 import StartGame from "../StartGame/StartGame";
 import Game from "../Game/Game";
 import GameOver from "../GameOver/GameOver";
@@ -12,36 +13,24 @@ import {ApiContext} from '../Api/ApiProvider';
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import websocket from "../../utils/websocket";
-import {GameType} from '../../utils/Types/types'
+import {GameType} from '../../utils/Types/types';
 //styles
 import './App.css';
-import Signup from "../Signup/signup";
 
 let ws: WebSocket;
 
 interface AppState {
     possibleGames: GameType[];
-    isAuthorized: boolean;
 }
 
 class App extends Component<{}, AppState> {
     static contextType = ApiContext;
+
     constructor(props: {}) {
         super(props);
         this.state = {
             possibleGames: [],
-            isAuthorized: false,
-        }
-    }
-
-    async componentDidMount() {
-        const userLoginData = await this.context.getUserLoginData();
-        if (userLoginData.loggedIn) {
-            this.setState({isAuthorized: true});
-        }
-    }
-    setAuthorized = () => {
-        this.setState({isAuthorized: true});
+        };
     }
 
     addPlayer = async (gameId: string, player: string | null) => {
@@ -61,13 +50,13 @@ class App extends Component<{}, AppState> {
                 }, interval);
             }
         };
-        send(JSON.stringify({'gameId':gameId,'messageType':websocket.register, 'player':player}));
-    }
+        send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
+    };
 
     getAllGames = async () => {
         const allGames = await this.context.getAllGames();
         this.setState({possibleGames: allGames});
-    }
+    };
 
     joinGame = async (player: string | null, gameId: string) => {
         await this.getAllGames();
@@ -77,35 +66,35 @@ class App extends Component<{}, AppState> {
             await this.context.addGame(gameId);
             await this.addPlayer(gameId, player);
         }
-    }
+    };
 
     render() {
         return (
             <div className="App">
                 <Switch>
                     <Route exact path={getDomRoutes().login} render={(props) => (
-                        <Login {...props} setAuthorized={this.setAuthorized}/>
+                        <Login {...props} />
                     )}/>
                     <Route exact path={getDomRoutes().signup} render={(props) => (
-                        <Signup {...props} setAuthorized={this.setAuthorized}/>
+                        <Signup {...props} />
                     )}/>
                     <Route exact path={getDomRoutes().suggestWord} render={(props) => (
-                        <SuggestWord {...props} setAuthorized={this.setAuthorized}/>
+                        <SuggestWord {...props} />
                     )}/>
                     <Route path={getDomRoutes().leaderboard} render={(props) => (
-                        <Leaderboard {...props} setAuthorized={this.setAuthorized}/>
+                        <Leaderboard {...props} />
                     )}/>
                     <Route path={getDomRoutes(':gameId').game} render={(props) => (
-                        <Game {...props} setAuthorized={this.setAuthorized}/>
+                        <Game {...props} />
                     )}/>
                     <Route path={getDomRoutes(':gameId').gameOver} render={(props) => (
-                        <GameOver {...props} setAuthorized={this.setAuthorized}/>
+                        <GameOver {...props} />
                     )}/>
                     <Route path={getDomRoutes(':gameId').startGame} render={(props) => (
-                        <StartGame {...props} setAuthorized={this.setAuthorized}/>
+                        <StartGame {...props} />
                     )}/>
                     <Route exact path={getDomRoutes().main} render={(props) => (
-                        <Main {...props} joinGame={this.joinGame} isAuthorized={this.state.isAuthorized} setAuthorized={this.setAuthorized}/>
+                        <Main {...props} joinGame={this.joinGame}/>
                     )}/>
                 </Switch>
             </div>

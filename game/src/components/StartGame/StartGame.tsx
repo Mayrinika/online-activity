@@ -1,15 +1,14 @@
 import React, {Component} from "react";
 import {RouteComponentProps} from 'react-router-dom';
 //components
+import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import websocket from "../../utils/websocket";
-import checkLogin from "../../utils/checkLogin";
 import {Player} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
-import {ApiContext} from "../Api/ApiProvider";
 
 let newWS: WebSocket;
 
@@ -18,7 +17,6 @@ const styles = (theme: { content: any; }) => (
 );
 
 interface StartGameProps extends RouteComponentProps, WithStyles<typeof styles> {
-    setAuthorized: () => void;
 }
 
 interface StartGameState {
@@ -41,7 +39,6 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     async componentDidMount() {
         this._isMounted = true;
         this.refreshConnection();
-        checkLogin(this.props.setAuthorized);
         const game = await this.context.getGame();
         if (this._isMounted) {
             this.setState({
@@ -86,7 +83,10 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     };
 
     addWordAndPainter = async () => {
-        newWS.send(JSON.stringify({'messageType': websocket.addWordAndPainter, 'gameId': localStorage.getItem('gameId')}));
+        newWS.send(JSON.stringify({
+            'messageType': websocket.addWordAndPainter,
+            'gameId': localStorage.getItem('gameId')
+        }));
     };
 
     copyGameId = () => {
@@ -98,7 +98,8 @@ class StartGame extends Component<StartGameProps, StartGameState> {
             document.execCommand("copy");
         } else {
             navigator.clipboard.writeText(inputValue)
-                .then(() => {})
+                .then(() => {
+                })
                 .catch(err => {
                     console.log('Something went wrong', err);
                 });
@@ -110,43 +111,46 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
-                <Box>
-                    <Box style={{marginBottom: 32}}>
-                        <Typography variant='h4' paragraph>
-                            Пригласи друзей!
-                        </Typography>
-                        <Box>
-                            <TextField id='gameId' variant="outlined" size='small'
-                                       style={{backgroundColor: '#F3F3F3'}} value={localStorage.getItem('gameId')}/>
-                            <Button id='readButton' variant="contained" size='medium' color='secondary'
-                                    style={{marginLeft: 8}}
-                                    onClick={this.copyGameId}>Copy
-                            </Button>
+                {!this.context.user ?
+                    <p>Пожалуйста, войдите или зарегистрируйтесь</p>
+                    : <Box>
+                        <Box style={{marginBottom: 32}}>
+                            <Typography variant='h4' paragraph>
+                                Пригласи друзей!
+                            </Typography>
+                            <Box>
+                                <TextField id='gameId' variant="outlined" size='small'
+                                           style={{backgroundColor: '#F3F3F3'}} value={localStorage.getItem('gameId')}/>
+                                <Button id='readButton' variant="contained" size='medium' color='secondary'
+                                        style={{marginLeft: 8}}
+                                        onClick={this.copyGameId}>Copy
+                                </Button>
+                            </Box>
                         </Box>
-                    </Box>
-                    <Typography variant='h5' paragraph>
-                        Все игроки в сборе?
-                    </Typography>
-                    <Box className={classes.innerContainer}>
-                        <Typography variant='subtitle1'>
-                            {players && players.map(player => {
-                                return <div key={player.name} className={classes.playerContainer}>
-                                    {player.avatar && <img src={player.avatar as string} alt="avatar"/>}
-                                    {player.name}
-                                </div>;
-                            })}
+                        <Typography variant='h5' paragraph>
+                            Все игроки в сборе?
                         </Typography>
+                        <Box className={classes.innerContainer}>
+                            <Typography variant='subtitle1'>
+                                {players && players.map(player => {
+                                    return <div key={player.name} className={classes.playerContainer}>
+                                        {player.avatar && <img src={player.avatar as string} alt="avatar"/>}
+                                        {player.name}
+                                    </div>;
+                                })}
+                            </Typography>
+                        </Box>
+                        <Button
+                            className={classes.button}
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            onClick={this.startGame}
+                        >
+                            Да! Начать игру!
+                        </Button>
                     </Box>
-                    <Button
-                        className={classes.button}
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        onClick={this.startGame}
-                    >
-                        Да! Начать игру!
-                    </Button>
-                </Box>
+                }
             </Container>
         );
     }

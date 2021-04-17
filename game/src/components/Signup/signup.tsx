@@ -1,12 +1,11 @@
 import React, {Component} from "react";
 import {RouteComponentProps} from "react-router-dom";
-import crocoImg from "../../img/cocodrilo.png";
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
-import checkLogin from "../../utils/checkLogin";
 //styles
+import crocoImg from "../../img/cocodrilo.png";
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField, CircularProgress} from '@material-ui/core';
 
@@ -15,7 +14,6 @@ const styles = (theme: { content: any; }) => (
 );
 
 interface SignupProps extends RouteComponentProps, WithStyles<typeof styles> {
-    setAuthorized: () => void;
 }
 
 interface SignupState {
@@ -44,12 +42,10 @@ class Signup extends Component<SignupProps, SignupState> {
 
     async componentDidMount() {
         await this.getAllUsers();
-        checkLogin(this.props.setAuthorized);
     }
 
     handleSignup = async (evt: React.ChangeEvent<HTMLFormElement>) => {
         const {possibleNames, name} = this.state;
-        const {setAuthorized, history} = this.props;
         evt.preventDefault();
         if (possibleNames.includes(name)) {
             this.setState({isNameExist: true});
@@ -58,8 +54,7 @@ class Signup extends Component<SignupProps, SignupState> {
             localStorage.setItem('playerName', name);
             this.setState({name: '', password: '', avatar: null});
             await this.getAllUsers();
-            setAuthorized();
-            history.push(getDomRoutes().main);
+            this.props.history.push(getDomRoutes().main);
         }
     };
 

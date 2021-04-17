@@ -1,14 +1,13 @@
 import React, {Component} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
 import {v4 as uuidv4} from 'uuid';
-import crocoImg from '../../img/cocodrilo.png';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
-import checkLogin from "../../utils/checkLogin";
 import {GameType} from "../../utils/Types/types";
 //styles
+import crocoImg from '../../img/cocodrilo.png';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
 
@@ -18,8 +17,6 @@ const styles = (theme: { content: any; }) => (
 
 interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
     joinGame: (player: string | null, gameId: string) => void;
-    isAuthorized: boolean;
-    setAuthorized: () => void;
 }
 
 interface LoginState {
@@ -40,10 +37,6 @@ class Main extends Component<LoginProps, LoginState> {
             isCodeIncorrect: false,
             isNameExist: false
         };
-    }
-
-    async componentDidMount() {
-        checkLogin(this.props.setAuthorized);
     }
 
     getAllGames = async () => {
@@ -89,7 +82,7 @@ class Main extends Component<LoginProps, LoginState> {
     };
 
     render() {
-        const {classes, isAuthorized} = this.props;
+        const {classes} = this.props;
         const {isCodeIncorrect, code, isNameExist} = this.state;
         return (
             <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
@@ -105,7 +98,7 @@ class Main extends Component<LoginProps, LoginState> {
                         </Typography>
                         <form onSubmit={this.handleSubmit} className={classes.innerContainer}
                               style={{paddingBottom: 16}}>
-                            {!isAuthorized ?
+                            {!this.context.user ?
                                 <p>Пожалуйста, войдите или зарегистрируйтесь</p>
                                 : <div>
                                     {isNameExist ?

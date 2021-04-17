@@ -6,9 +6,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import getDomRoutes from "../../utils/domRoutes";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, Grid, Typography, TextField, AppBar, Toolbar} from '@material-ui/core';
-import checkLogin from "../../utils/checkLogin";
-import {User} from "../../utils/Types/types";
+import {Button, Container, AppBar, Toolbar} from '@material-ui/core';
 
 const styles = (theme: { content: any; }) => (
     theme.content

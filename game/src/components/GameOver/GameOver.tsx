@@ -7,19 +7,17 @@ import getDomRoutes from "../../utils/domRoutes";
 import {Player} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, Typography} from '@material-ui/core';
-import checkLogin from "../../utils/checkLogin";
+import {Button, Container, Typography, Box} from '@material-ui/core';
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
 
 interface GameOverProps extends RouteComponentProps, WithStyles<typeof styles> {
-    setAuthorized: () => void;
 }
 
 interface GameOverState {
-    scores: {player: Player, score: number}[],
+    scores: { player: Player, score: number }[],
     isWordGuessed: boolean,
     isTimeOver: boolean,
     winner: string,
@@ -28,6 +26,7 @@ interface GameOverState {
 
 class GameOver extends Component<GameOverProps, GameOverState> {
     static contextType = ApiContext;
+
     constructor(props: GameOverProps) {
         super(props);
         this.state = {
@@ -41,7 +40,6 @@ class GameOver extends Component<GameOverProps, GameOverState> {
 
     componentDidMount() {
         this.getDataFromServer();
-        checkLogin(this.props.setAuthorized);
     }
 
     getDataFromServer = async () => {
@@ -68,48 +66,55 @@ class GameOver extends Component<GameOverProps, GameOverState> {
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
-                <Typography variant='h5' paragraph>Игра окончена!</Typography>
-                {isTimeOver &&
-                <div>
-                    <Typography variant='h6' paragraph>Время вышло!</Typography>
-                    <Typography variant='h6' paragraph>Слово было: {wordToGuess}</Typography>
-                </div>
-                }
-                <div>
-                    {(isWordGuessed && !isTimeOver) &&
-                    <Typography variant='h6' paragraph>Игрок {winner} отгадал слово {wordToGuess}</Typography>
-                    }
-                    {scores.length > 0 &&
-                    <div>
-                        <Typography variant='h6' paragraph>Заработанные очки: </Typography>
-                        <div className={classes.innerContainer}>
-                            {scores.map(item => {
-                                return (
-                                    <Typography variant='subtitle1' paragraph className={classes.playerContainer}
-                                                key={item.player.name}>
-                                        {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" />}
-                                        {item.player.name}: {item.score}
-                                    </Typography>
-                                )})
+                {!this.context.user ?
+                    <p>Пожалуйста, войдите или зарегистрируйтесь</p>
+                    : <Box>
+                        <Typography variant='h5' paragraph>Игра окончена!</Typography>
+                        {isTimeOver &&
+                        <div>
+                            <Typography variant='h6' paragraph>Время вышло!</Typography>
+                            <Typography variant='h6' paragraph>Слово было: {wordToGuess}</Typography>
+                        </div>
+                        }
+                        <div>
+                            {(isWordGuessed && !isTimeOver) &&
+                            <Typography variant='h6' paragraph>Игрок {winner} отгадал слово {wordToGuess}</Typography>
+                            }
+                            {scores.length > 0 &&
+                            <div>
+                                <Typography variant='h6' paragraph>Заработанные очки: </Typography>
+                                <div className={classes.innerContainer}>
+                                    {scores.map(item => {
+                                        return (
+                                            <Typography variant='subtitle1' paragraph
+                                                        className={classes.playerContainer}
+                                                        key={item.player.name}>
+                                                {item.player.avatar &&
+                                                <img src={item.player.avatar as string} alt="avatar"/>}
+                                                {item.player.name}: {item.score}
+                                            </Typography>
+                                        );
+                                    })
+                                    }
+                                </div>
+                            </div>
                             }
                         </div>
-                    </div>
-                    }
-                </div>
-                <Button
-                    className={classes.button}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    onClick={this.startOver}
-                >Начать заново</Button>
-                <Button
-                    className={classes.button}
-                    variant="contained"
-                    color="secondary"
-                    size="large"
-                    onClick={this.goToLeaderboard}
-                >Лидерборд</Button>
+                        <Button
+                            className={classes.button}
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            onClick={this.startOver}
+                        >Начать заново</Button>
+                        <Button
+                            className={classes.button}
+                            variant="contained"
+                            color="secondary"
+                            size="large"
+                            onClick={this.goToLeaderboard}
+                        >Лидерборд</Button>
+                    </Box>}
             </Container>
         );
     }

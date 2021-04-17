@@ -1,31 +1,28 @@
-import React, { Component } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import React, {Component} from 'react';
+import {RouteComponentProps} from 'react-router-dom';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
-import checkLogin from "../../utils/checkLogin";
 import {Player} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
-
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
 
 interface LeaderboardProps extends RouteComponentProps, WithStyles<typeof styles> {
-    setAuthorized: () => void;
 }
 
 interface LeaderboardState {
-    sortedLeaderboard: {player: Player, score: number}[];
+    sortedLeaderboard: { player: Player, score: number }[];
 }
-
 
 class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
     static contextType = ApiContext;
+
     constructor(props: LeaderboardProps) {
         super(props);
         this.state = {
@@ -36,7 +33,6 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
     async componentDidMount() {
         const sortedLeaderboard = await this.context.getLeaderboardDataFromServer();
         this.setState({sortedLeaderboard});
-        checkLogin(this.props.setAuthorized);
     }
 
     startOver = () => {
@@ -44,7 +40,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
     };
 
     render() {
-        const { sortedLeaderboard } = this.state;
+        const {sortedLeaderboard} = this.state;
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
@@ -53,7 +49,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
                     return (
                         <Typography variant='subtitle1' paragraph className={classes.playerContainer}
                                     key={item.player.name}>
-                            {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" />}
+                            {item.player.avatar && <img src={item.player.avatar as string} alt="avatar"/>}
                             {item.player.name}: {item.score}
                         </Typography>
                     );
