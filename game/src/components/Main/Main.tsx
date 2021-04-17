@@ -26,6 +26,7 @@ interface LoginState {
     code: string;
     possibleGames: GameType[];
     isCodeIncorrect: boolean;
+    isNameExist: boolean;
 }
 
 class Main extends Component<LoginProps, LoginState> {
@@ -36,7 +37,8 @@ class Main extends Component<LoginProps, LoginState> {
         this.state = {
             code: '',
             possibleGames: [],
-            isCodeIncorrect: false
+            isCodeIncorrect: false,
+            isNameExist: false
         };
     }
 
@@ -53,6 +55,7 @@ class Main extends Component<LoginProps, LoginState> {
         this.setState((state) => ({
             ...state,
             isCodeIncorrect: false,
+            isNameExist: false,
             [evt.target.name]: evt.target.value
         }));
     };
@@ -67,8 +70,8 @@ class Main extends Component<LoginProps, LoginState> {
             await this.joinGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
-            if (currentGameId?.players.some(player => player.name === name)) { //TODO добавить проверку
-                alert(`name ${name} already exist`); //TODO такое произойдет, если один игрок зайдет с разных браузеров
+            if (currentGameId!.players.some(player => player.name === name)) {
+                this.setState({isNameExist: true});
             } else {
                 await this.joinGame(name, code);
             }
@@ -86,8 +89,8 @@ class Main extends Component<LoginProps, LoginState> {
     };
 
     render() {
-        const {classes} = this.props;
-        const {isCodeIncorrect, code} =this.state;
+        const {classes, isAuthorized} = this.props;
+        const {isCodeIncorrect, code, isNameExist} = this.state;
         return (
             <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
                 <Grid container spacing={2} justify="center">
@@ -102,10 +105,12 @@ class Main extends Component<LoginProps, LoginState> {
                         </Typography>
                         <form onSubmit={this.handleSubmit} className={classes.innerContainer}
                               style={{paddingBottom: 16}}>
-                            {!this.props.isAuthorized ?
+                            {!isAuthorized ?
                                 <p>Пожалуйста, войдите или зарегистрируйтесь</p>
                                 : <div>
-                                    <p>Добро пожаловать, {localStorage.getItem('playerName')}</p>
+                                    {isNameExist ?
+                                        <p>{localStorage.getItem('playerName')}, не стоит жульничать!</p>
+                                        : <p>Добро пожаловать, {localStorage.getItem('playerName')}</p>}
                                     <TextField
                                         variant="outlined"
                                         margin="normal"
