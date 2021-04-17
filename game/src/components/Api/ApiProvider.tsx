@@ -30,61 +30,91 @@ class ApiMethods implements Api {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
-        });
+        })
+            .then(res => this.checkStatus(res))
+            .catch(err => console.log('Something went wrong:', err));
     };
 
     getUserLoginData = async (): Promise<UserLoginData> => {
-        const res = await fetch(getRoutes().login);
-        const data = await res.text();
-        return JSON.parse(data);
+        return await fetch(getRoutes().login)
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
     };
 
-    signup = async (name: string, password: string, avatar: string | ArrayBuffer | null): Promise<User | undefined> => {
-        const response = await fetch(getRoutes().signup, {
+    signup = async (name: string, password: string, avatar: string | ArrayBuffer | null): Promise<User> => {
+        const user = await fetch(getRoutes().signup, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({name, password, avatar})
-        });
-        const user = await response.json();
+        })
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
         this.user = user;
         return user;
     };
 
     getAllUsers = async (): Promise<User[]> => {
-        const res = await fetch(getRoutes().signup);
-        const data = await res.text();
-        return JSON.parse(data);
+        return await fetch(getRoutes().signup)
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
     };
 
-    login = async (name: string, password: string): Promise<User | undefined> => {
-        const response = await fetch(getRoutes().login, {
+    login = async (name: string, password: string): Promise<User> => {
+        const user = await fetch(getRoutes().login, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({name, password})
-        });
-        const user = await response.json();
+        })
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
         this.user = user;
         return user;
     };
 
     checkAuthorization = async (): Promise<void> => {
-        await fetch('/cookie-auth-protected-route', {credentials: 'include'});
+        await fetch('/cookie-auth-protected-route', {credentials: 'include'})
+            .then(res => this.checkStatus(res))
+            .catch(err => console.log('Something went wrong:', err));
     };
 
     getAllGames = async (): Promise<GameType[]> => {
-        const res = await fetch(getRoutes().app);
-        const data = await res.text();
-        return JSON.parse(data);
+        return await fetch(getRoutes().app)
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
     };
 
     getGame = async (): Promise<GameType> => {
-        const res = await fetch(getRoutes(this._gameId).gameId);
-        const data = await res.text();
-        return JSON.parse(data);
+        return await fetch(getRoutes(this._gameId).gameId)
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
     };
 
     clearCountdown = async (): Promise<void> => {
@@ -93,7 +123,9 @@ class ApiMethods implements Api {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8'
             }
-        });
+        })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
     };
 
     sendLineToServer = async (line: any): Promise<void> => {
@@ -103,27 +135,55 @@ class ApiMethods implements Api {
                 'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify({line})
-        });
+        })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
     };
 
     getLeaderboardDataFromServer = async (): Promise<[userId: string, score: number][]> => {
-        const res = await fetch(getRoutes().leaderboard);
-        const data = await res.text();
-        return JSON.parse(data);
+        return await fetch(getRoutes().leaderboard)
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
     };
 
     getSuggestWordsFromServer = async (): Promise<SuggestedWord[]> => {
-        const res = await fetch(getRoutes().suggestedWords);
-        const data = await res.text();
-        return JSON.parse(data);
+        return await fetch(getRoutes().suggestedWords)
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
     };
 
     deleteLine = async (): Promise<void> => {
         await fetch(getRoutes(this._gameId).deleteLine, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'}
-        });
+        })
+            .then(res => res.json())
+            .catch(err => console.log('Something went wrong:', err));
     };
+
+    private async checkStatus(response: Response): Promise<void> {
+        if (!(response.status >= 200 && response.status < 300)) {
+            const errorText = await response.text();
+            let serverResponse;
+            try {
+                serverResponse = JSON.parse(errorText);
+            } catch (e) {
+                serverResponse = undefined;
+            }
+            if (serverResponse !== undefined) {
+                throw new Error(serverResponse.Message || serverResponse.message || serverResponse.Error);
+            }
+            throw new Error(errorText);
+        }
+    }
 }
 
 export default ApiProvider;

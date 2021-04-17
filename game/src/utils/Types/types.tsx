@@ -2,9 +2,9 @@ export interface Api {
     changeGameId: (gameId: string) => void;
     addGame: () => Promise<void>;
     getUserLoginData: () => Promise<UserLoginData>;
-    signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<User | undefined>;
+    signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<User>;
     getAllUsers: () => Promise<User[]>;
-    login: (name: string, password: string) => Promise<User | undefined>;
+    login: (name: string, password: string) => Promise<User>;
     checkAuthorization: () => Promise<void>;
     getAllGames: () => Promise<GameType[]>;
     getGame: () => Promise<GameType>;
