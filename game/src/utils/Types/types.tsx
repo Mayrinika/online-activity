@@ -1,4 +1,5 @@
 export interface Api {
+    user?: User;
     changeGameId: (gameId: string) => void;
     addGame: () => Promise<void>;
     getUserLoginData: () => Promise<UserLoginData>;
@@ -19,12 +20,14 @@ export interface UserLoginData {
     loggedIn: boolean;
     user: User;
 }
+
 export interface User {
     id: string;
     name: string;
     password: string;
     avatar?: string | ArrayBuffer | null;
 }
+
 export interface SuggestedWord {
     id: string;
     word: string;
@@ -34,6 +37,7 @@ export interface SuggestedWord {
     isDeclined: boolean;
     isInDictionary: boolean;
 }
+
 export interface GameType {
     id: string;
     players: Player[];
@@ -47,8 +51,9 @@ export interface GameType {
     time: number;
     winner: string;
     lines: Line[];
-    scores: {player: Player, score: number}[]
+    scores: { player: Player, score: number }[]
 }
+
 export interface Message {
     id: string;
     name: string;
@@ -59,15 +64,18 @@ export interface Message {
         cold: boolean;
     };
 }
+
 export interface Player {
     name: string,
     avatar: string | ArrayBuffer | null;
 }
+
 export interface Line {
     tool: string;
     points: number[];
     color: string;
 }
+
 export interface Message {
     id: string;
     name: string;

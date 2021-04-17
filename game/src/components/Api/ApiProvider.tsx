@@ -4,12 +4,32 @@ import React from "react";
 
 export const ApiContext = React.createContext<Api>({} as Api);
 
-class ApiProvider extends React.Component<{}, {}> {
-    private apiMethods: Api = new ApiMethods();
+interface ApiProviderState {
+    user: User | undefined;
+}
+
+class ApiProvider extends React.Component<{}, ApiProviderState> {
+    private readonly apiMethods: Api;
+
+    constructor(props: {}) {
+        super(props);
+        this.apiMethods = new ApiMethods(this.setUser);
+        this.state = {
+            user: undefined
+        };
+    }
+
+    private setUser = (user: User) => {
+        this.setState({user});
+    };
+
+    componentDidMount() {
+        this.apiMethods.getUserLoginData();
+    }
 
     render() {
         return (
-            <ApiContext.Provider value={this.apiMethods}>
+            <ApiContext.Provider value={{...this.apiMethods, user: this.state.user}}>
                 {this.props.children}
             </ApiContext.Provider>
         );
@@ -18,7 +38,11 @@ class ApiProvider extends React.Component<{}, {}> {
 
 class ApiMethods implements Api {
     private _gameId: null | string = localStorage.getItem('gameId');
-    user: User | undefined = undefined;
+    private readonly setUser: (user: User) => void;
+
+    constructor(setUser: (user: User) => void) {
+        this.setUser = setUser;
+    }
 
     changeGameId = (gameId: string): void => {
         this._gameId = gameId;
@@ -36,13 +60,16 @@ class ApiMethods implements Api {
     };
 
     getUserLoginData = async (): Promise<UserLoginData> => {
-        return await fetch(getRoutes().login)
+        const result = await fetch(getRoutes().login)
             .then(res => {
                 this.checkStatus(res);
                 return res;
             })
             .then(res => res.json())
             .catch(err => console.log('Something went wrong:', err));
+        if (result.loggedIn)
+            this.setUser(result.user);
+        return result;
     };
 
     signup = async (name: string, password: string, avatar: string | ArrayBuffer | null): Promise<User> => {
@@ -59,7 +86,7 @@ class ApiMethods implements Api {
             })
             .then(res => res.json())
             .catch(err => console.log('Something went wrong:', err));
-        this.user = user;
+        this.setUser(user);
         return user;
     };
 
@@ -87,7 +114,8 @@ class ApiMethods implements Api {
             })
             .then(res => res.json())
             .catch(err => console.log('Something went wrong:', err));
-        this.user = user;
+        //this.user = user;
+        this.setUser(user);
         return user;
     };
 
