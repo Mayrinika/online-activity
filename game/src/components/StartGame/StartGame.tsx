@@ -111,46 +111,43 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
-                {!this.context.user ?
-                    <p>Пожалуйста, войдите или зарегистрируйтесь</p>
-                    : <Box>
-                        <Box style={{marginBottom: 32}}>
-                            <Typography variant='h4' paragraph>
-                                Пригласи друзей!
-                            </Typography>
-                            <Box>
-                                <TextField id='gameId' variant="outlined" size='small'
-                                           style={{backgroundColor: '#F3F3F3'}} value={localStorage.getItem('gameId')}/>
-                                <Button id='readButton' variant="contained" size='medium' color='secondary'
-                                        style={{marginLeft: 8}}
-                                        onClick={this.copyGameId}>Copy
-                                </Button>
-                            </Box>
-                        </Box>
-                        <Typography variant='h5' paragraph>
-                            Все игроки в сборе?
+                <Box>
+                    <Box style={{marginBottom: 32}}>
+                        <Typography variant='h4' paragraph>
+                            Пригласи друзей!
                         </Typography>
-                        <Box className={classes.innerContainer}>
-                            <Typography variant='subtitle1'>
-                                {players && players.map(player => {
-                                    return <div key={player.name} className={classes.playerContainer}>
-                                        {player.avatar && <img src={player.avatar as string} alt="avatar"/>}
-                                        {player.name}
-                                    </div>;
-                                })}
-                            </Typography>
+                        <Box>
+                            <TextField id='gameId' variant="outlined" size='small'
+                                       style={{backgroundColor: '#F3F3F3'}} value={localStorage.getItem('gameId')}/>
+                            <Button id='readButton' variant="contained" size='medium' color='secondary'
+                                    style={{marginLeft: 8}}
+                                    onClick={this.copyGameId}>Copy
+                            </Button>
                         </Box>
-                        <Button
-                            className={classes.button}
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            onClick={this.startGame}
-                        >
-                            Да! Начать игру!
-                        </Button>
                     </Box>
-                }
+                    <Typography variant='h5' paragraph>
+                        Все игроки в сборе?
+                    </Typography>
+                    <Box className={classes.innerContainer}>
+                        <Typography variant='subtitle1'>
+                            {players && players.map(player => {
+                                return <div key={player.name} className={classes.playerContainer}>
+                                    {player.avatar && <img src={player.avatar as string} alt="avatar"/>}
+                                    {player.name}
+                                </div>;
+                            })}
+                        </Typography>
+                    </Box>
+                    <Button
+                        className={classes.button}
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        onClick={this.startGame}
+                    >
+                        Да! Начать игру!
+                    </Button>
+                </Box>
             </Container>
         );
     }

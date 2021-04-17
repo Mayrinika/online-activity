@@ -108,53 +108,50 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
-                {!this.context.user ?
-                    <p>Пожалуйста, войдите или зарегистрируйтесь</p>
-                    : <Box>
-                        <form onSubmit={this.sendWord} className={classes.innerContainer}>
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="wordInput"
-                                label="Введите слово"
-                                name="word"
-                                autoFocus
-                                onChange={this.enterWord}
-                                value={enteredWord}
-                            />
-                            <Button
-                                className={classes.button}
-                                variant="contained"
-                                color="primary"
-                                type="submit"
-                                size="large"
-                            >
-                                Предложить
-                            </Button>
-                        </form>
-                        <Box>
-                            {this.state.words.filter(word => !word.isInDictionary && !word.isApproved && !word.isDeclined).map((word) => (
-                                <div key={word.id} className="SuggestWord-word">
-                                    {word.word}
-                                    <div className="SuggestWord-buttons">
-                                        <button
-                                            className={`"SuggestedWord-button SuggestWord-button-plus" ${word.likes.includes(localStorage.getItem('playerName') || 'Аноним') ? "active" : ""}`}
-                                            onClick={() => this.likeWord(word.id)}>+
-                                        </button>
-                                        <button
-                                            className={`"SuggestedWord-button SuggestWord-button-plus" ${word.dislikes.includes(localStorage.getItem('playerName') || 'Аноним') ? "active" : ""}`}
-                                            onClick={() => this.dislikeWord(word.id)}>-
-                                        </button>
-                                        <div>{word.likes.length - word.dislikes.length}</div>
-                                    </div>
+                <Box>
+                    <form onSubmit={this.sendWord} className={classes.innerContainer}>
+                        <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="wordInput"
+                            label="Введите слово"
+                            name="word"
+                            autoFocus
+                            onChange={this.enterWord}
+                            value={enteredWord}
+                        />
+                        <Button
+                            className={classes.button}
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                            size="large"
+                        >
+                            Предложить
+                        </Button>
+                    </form>
+                    <Box>
+                        {this.state.words.filter(word => !word.isInDictionary && !word.isApproved && !word.isDeclined).map((word) => (
+                            <div key={word.id} className="SuggestWord-word">
+                                {word.word}
+                                <div className="SuggestWord-buttons">
+                                    <button
+                                        className={`"SuggestedWord-button SuggestWord-button-plus" ${word.likes.includes(localStorage.getItem('playerName') || 'Аноним') ? "active" : ""}`}
+                                        onClick={() => this.likeWord(word.id)}>+
+                                    </button>
+                                    <button
+                                        className={`"SuggestedWord-button SuggestWord-button-plus" ${word.dislikes.includes(localStorage.getItem('playerName') || 'Аноним') ? "active" : ""}`}
+                                        onClick={() => this.dislikeWord(word.id)}>-
+                                    </button>
+                                    <div>{word.likes.length - word.dislikes.length}</div>
                                 </div>
-                            ))}
-                            <p>{wordStatusHasChanged}</p>
-                        </Box>
+                            </div>
+                        ))}
+                        <p>{wordStatusHasChanged}</p>
                     </Box>
-                }
+                </Box>
             </Container>
         );
     }

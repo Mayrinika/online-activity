@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Switch, Route} from 'react-router-dom';
+import {Switch, Route, Redirect} from 'react-router-dom';
 //components
 import Main from '../Main/Main';
 import Login from "../Login/login";
@@ -12,7 +12,6 @@ import SuggestWord from "../SuggestWord/SuggestWord";
 import {ApiContext} from '../Api/ApiProvider';
 //utils
 import getDomRoutes from "../../utils/domRoutes";
-import {GameType} from '../../utils/Types/types';
 //styles
 import './App.css';
 
@@ -20,6 +19,8 @@ class App extends Component<{}, {}> {
     static contextType = ApiContext;
 
     render() {
+        const {user} = this.context;
+        const main = getDomRoutes().main;
         return (
             <div className="App">
                 <Switch>
@@ -30,19 +31,19 @@ class App extends Component<{}, {}> {
                         <Signup {...props} />
                     )}/>
                     <Route exact path={getDomRoutes().suggestWord} render={(props) => (
-                        <SuggestWord {...props} />
+                        user ? <SuggestWord {...props} /> : <Redirect to={main}/>
                     )}/>
                     <Route path={getDomRoutes().leaderboard} render={(props) => (
                         <Leaderboard {...props} />
                     )}/>
                     <Route path={getDomRoutes(':gameId').game} render={(props) => (
-                        <Game {...props} />
+                        user ? <Game {...props} /> : <Redirect to={main}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').gameOver} render={(props) => (
-                        <GameOver {...props} />
+                        user ? <GameOver {...props} /> : <Redirect to={main}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').startGame} render={(props) => (
-                        <StartGame {...props} />
+                        user ? <StartGame {...props} /> : <Redirect to={main}/>
                     )}/>
                     <Route exact path={getDomRoutes().main} render={(props) => (
                         <Main {...props} />

@@ -66,55 +66,53 @@ class GameOver extends Component<GameOverProps, GameOverState> {
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
-                {!this.context.user ?
-                    <p>Пожалуйста, войдите или зарегистрируйтесь</p>
-                    : <Box>
-                        <Typography variant='h5' paragraph>Игра окончена!</Typography>
-                        {isTimeOver &&
+                <Box>
+                    <Typography variant='h5' paragraph>Игра окончена!</Typography>
+                    {isTimeOver &&
+                    <div>
+                        <Typography variant='h6' paragraph>Время вышло!</Typography>
+                        <Typography variant='h6' paragraph>Слово было: {wordToGuess}</Typography>
+                    </div>
+                    }
+                    <div>
+                        {(isWordGuessed && !isTimeOver) &&
+                        <Typography variant='h6' paragraph>Игрок {winner} отгадал слово {wordToGuess}</Typography>
+                        }
+                        {scores.length > 0 &&
                         <div>
-                            <Typography variant='h6' paragraph>Время вышло!</Typography>
-                            <Typography variant='h6' paragraph>Слово было: {wordToGuess}</Typography>
+                            <Typography variant='h6' paragraph>Заработанные очки: </Typography>
+                            <div className={classes.innerContainer}>
+                                {scores.map(item => {
+                                    return (
+                                        <Typography variant='subtitle1' paragraph
+                                                    className={classes.playerContainer}
+                                                    key={item.player.name}>
+                                            {item.player.avatar &&
+                                            <img src={item.player.avatar as string} alt="avatar"/>}
+                                            {item.player.name}: {item.score}
+                                        </Typography>
+                                    );
+                                })
+                                }
+                            </div>
                         </div>
                         }
-                        <div>
-                            {(isWordGuessed && !isTimeOver) &&
-                            <Typography variant='h6' paragraph>Игрок {winner} отгадал слово {wordToGuess}</Typography>
-                            }
-                            {scores.length > 0 &&
-                            <div>
-                                <Typography variant='h6' paragraph>Заработанные очки: </Typography>
-                                <div className={classes.innerContainer}>
-                                    {scores.map(item => {
-                                        return (
-                                            <Typography variant='subtitle1' paragraph
-                                                        className={classes.playerContainer}
-                                                        key={item.player.name}>
-                                                {item.player.avatar &&
-                                                <img src={item.player.avatar as string} alt="avatar"/>}
-                                                {item.player.name}: {item.score}
-                                            </Typography>
-                                        );
-                                    })
-                                    }
-                                </div>
-                            </div>
-                            }
-                        </div>
-                        <Button
-                            className={classes.button}
-                            variant="contained"
-                            color="primary"
-                            size="large"
-                            onClick={this.startOver}
-                        >Начать заново</Button>
-                        <Button
-                            className={classes.button}
-                            variant="contained"
-                            color="secondary"
-                            size="large"
-                            onClick={this.goToLeaderboard}
-                        >Лидерборд</Button>
-                    </Box>}
+                    </div>
+                    <Button
+                        className={classes.button}
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        onClick={this.startOver}
+                    >Начать заново</Button>
+                    <Button
+                        className={classes.button}
+                        variant="contained"
+                        color="secondary"
+                        size="large"
+                        onClick={this.goToLeaderboard}
+                    >Лидерборд</Button>
+                </Box>
             </Container>
         );
     }

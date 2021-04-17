@@ -145,35 +145,31 @@ class Game extends Component<GameProps, GameState> {
         const guessers = players.filter(player => player.name !== painter.name);
         const isPainter = playerName === painter.name;
         return (
-            <>{!this.context.user ?
-                <p>Пожалуйста, войдите или зарегистрируйтесь</p>
-                : <div className='Game'>
-                    <header>
-                        <div className='Game-Word'>{wordToDisplay}</div>
-                        <Timer time={this.state.time}/>
-                    </header>
-                    <main>
-                        {isPainter ?
-                            <Canvas sendImg={this.sendImg}/>
-                            : imgURL !== '' ?
-                                <img src={imgURL} alt='img from server'/>
-                                : <div className='Game emptyDiv'/>}
-                        <aside>
-                            <ListOfPlayers players={guessers} painter={painter}/>
-                            <Chat
-                                isPainter={isPainter}
-                                wordToGuess={wordToGuess}
-                                painter={painter}
-                                sendMessage={this.sendMessage}
-                                chatMessages={chatMessages}
-                                postMarks={this.postMarks}
-                                setWinner={this.setWinner}
-                            />
-                        </aside>
-                    </main>
-                </div>
-            }
-            </>
+            <div className='Game'>
+                <header>
+                    <div className='Game-Word'>{wordToDisplay}</div>
+                    <Timer time={this.state.time}/>
+                </header>
+                <main>
+                    {isPainter ?
+                        <Canvas sendImg={this.sendImg}/>
+                        : imgURL !== '' ?
+                            <img src={imgURL} alt='img from server'/>
+                            : <div className='Game emptyDiv'/>}
+                    <aside>
+                        <ListOfPlayers players={guessers} painter={painter}/>
+                        <Chat
+                            isPainter={isPainter}
+                            wordToGuess={wordToGuess}
+                            painter={painter}
+                            sendMessage={this.sendMessage}
+                            chatMessages={chatMessages}
+                            postMarks={this.postMarks}
+                            setWinner={this.setWinner}
+                        />
+                    </aside>
+                </main>
+            </div>
         );
     }
 }
