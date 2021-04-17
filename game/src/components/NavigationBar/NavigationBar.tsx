@@ -19,21 +19,53 @@ interface NavigationBarProps extends WithStyles<typeof styles> {
 }
 
 interface NavigationBarState {
-    isAuthorized: boolean;
 }
 
 class NavigationBar extends React.Component<NavigationBarProps, NavigationBarState> {
     //static contextType = ApiContext;
 
-    constructor(props: NavigationBarProps) {
-        super(props);
-        this.state = {
-            isAuthorized: false,
-        };
-    }
+    renderForAuthorizedUser = () => {
+        const {classes} = this.props;
+        return (
+            <>
+                <Link to={getDomRoutes().suggestWord} className={classes.navLink}>
+                    <Button
+                        className={classes.navButton}
+                        variant="contained"
+                        color="secondary"
+                    >Предложить слово</Button>
+                </Link>
+                <Link to={getDomRoutes().main} className={classes.navLink}>
+                    <Button
+                        className={classes.navButton}
+                        variant="contained"
+                        color="default"
+                    >Выйти</Button>
+                </Link>
+            </>
+        );
+    };
 
-    setAuthorized = () => {
-        this.setState({isAuthorized: true});
+    renderForUnauthorizedUser = () => {
+        const {classes} = this.props;
+        return (
+            <>
+                <Link to={getDomRoutes().login} className={classes.navLink}>
+                    <Button
+                        className={classes.navButton}
+                        variant="contained"
+                        color="default"
+                    >Войти</Button>
+                </Link>
+                <Link to={getDomRoutes().signup} className={classes.navLink}>
+                    <Button
+                        className={classes.navButton}
+                        variant="contained"
+                        color="default"
+                    >Зарегистрироваться</Button>
+                </Link>
+            </>
+        );
     };
 
     render() {
@@ -57,38 +89,8 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                                 color="secondary"
                             >Лидерборд</Button>
                         </Link>
-                        {user &&
-                        <Link to={getDomRoutes().suggestWord} className={classes.navLink}>
-                            <Button
-                                className={classes.navButton}
-                                variant="contained"
-                                color="secondary"
-                            >Предложить слово</Button>
-                        </Link>}
-                        {!user &&
-                        <Link to={getDomRoutes().login} className={classes.navLink}>
-                            <Button
-                                className={classes.navButton}
-                                variant="contained"
-                                color="default"
-                            >Войти</Button>
-                        </Link>}
-                        {!user &&
-                        <Link to={getDomRoutes().signup} className={classes.navLink}>
-                            <Button
-                                className={classes.navButton}
-                                variant="contained"
-                                color="default"
-                            >Зарегистрироваться</Button>
-                        </Link>}
-                        {user &&
-                        <Link to={getDomRoutes().main} className={classes.navLink}>
-                            <Button
-                                className={classes.navButton}
-                                variant="contained"
-                                color="default"
-                            >Выйти</Button>
-                        </Link>}
+                        {user && this.renderForAuthorizedUser()}
+                        {!user && this.renderForUnauthorizedUser()}
                     </Toolbar>
                 </Container>
             </AppBar>);
