@@ -25,7 +25,7 @@ export const signup = async (req: any, res: any) => {
     res.status(200).send(user);
 };
 
-export const getUser = (req: any, res: any) => {
+export const getUserLoginData = (req: any, res: any) => {
     const {user} = req.session; //TODO убрать игнор
     if (!user) {
         res.send({loggedIn: false});
