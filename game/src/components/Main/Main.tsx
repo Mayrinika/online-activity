@@ -6,6 +6,7 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import {GameType} from "../../utils/Types/types";
+import websocket from "../../utils/websocket";
 //styles
 import crocoImg from '../../img/cocodrilo.png';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
@@ -14,9 +15,10 @@ import {Button, Container, Grid, Typography, TextField} from '@material-ui/core'
 const styles = (theme: { content: any; }) => (
     theme.content
 );
+let ws: WebSocket;
 
 interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
-    joinGame: (player: string | null, gameId: string) => void;
+    //joinGame: (player: string | null, gameId: string) => void;
 }
 
 interface LoginState {
@@ -39,6 +41,36 @@ class Main extends Component<LoginProps, LoginState> {
         };
     }
 
+    addPlayer = async (gameId: string, player: string | null) => {
+        ws = new WebSocket('ws://localhost:8080');
+        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
+            waitForConnection(function () {
+                return ws.send(message);
+            }, 100);
+        };
+
+        const waitForConnection = function (callback: () => void, interval: number) {
+            if (ws.readyState === 1) {
+                callback();
+            } else {
+                setTimeout(function () {
+                    waitForConnection(callback, interval);
+                }, interval);
+            }
+        };
+        send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
+    };
+
+    joinGame = async (player: string | null, gameId: string) => {
+        await this.getAllGames();
+        if (this.state.possibleGames.some(game => game.id === gameId)) {
+            await this.addPlayer(gameId, player);
+        } else {
+            await this.context.addGame(gameId);
+            await this.addPlayer(gameId, player);
+        }
+    };
+
     getAllGames = async () => {
         const allGames = await this.context.getAllGames();
         this.setState({possibleGames: allGames});
@@ -60,25 +92,24 @@ class Main extends Component<LoginProps, LoginState> {
         await this.getAllGames();
         if (code === '') {
             const newCode = uuidv4();
-            await this.joinGame(name, newCode);
+            await this.startGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
             if (currentGameId!.players.some(player => player.name === name)) {
                 this.setState({isNameExist: true});
             } else {
-                await this.joinGame(name, code);
+                await this.startGame(name, code);
             }
         } else {
             this.setState({isCodeIncorrect: true});
         }
     };
 
-    joinGame = async (name: string | null, code: string) => {
-        const {joinGame, history} = this.props;
+    startGame = async (name: string | null, code: string) => {
         localStorage.setItem('gameId', code);
         this.context.changeGameId(code);
-        await joinGame(name, code);
-        history.push(getDomRoutes(code).startGame);
+        await this.joinGame(name, code);
+        this.props.history.push(getDomRoutes(code).startGame);
     };
 
     render() {
