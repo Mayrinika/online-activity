@@ -68,7 +68,7 @@ class Main extends Component<LoginProps, LoginState> {
         } else if (this.state.possibleGames.some(game => game.id === code)) {
             const currentGameId = this.state.possibleGames.find(game => game.id === code);
             if (currentGameId?.players.some(player => player.name === name)) { //TODO добавить проверку
-                alert(`name ${name} already exist`); //TODO использовать библиотеку TOAST вместо alarm
+                alert(`name ${name} already exist`); //TODO такое произойдет, если один игрок зайдет с разных браузеров
             } else {
                 await this.joinGame(name, code);
             }

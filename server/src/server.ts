@@ -302,8 +302,8 @@ function setTimerForGame(currentGame: GameType, gameId: string) {
                 currentGame.isTimeOver = true;
                 currentGame.isGameOver = true;
                 clearInterval(timerIds[currentGame.id]);
-                addScoreForMarks(currentGame);
-                updateLeaderboard(currentGame.scores);
+                //addScoreForMarks(currentGame);
+                //updateLeaderboard(currentGame.scores);
                 webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
                     client.send(JSON.stringify(currentGame));
                 });
