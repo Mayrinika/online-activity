@@ -15,14 +15,13 @@ const styles = (theme: { content: any; }) => (
 );
 
 interface NavigationBarProps extends WithStyles<typeof styles> {
-    user?: User;
 }
 
 interface NavigationBarState {
 }
 
 class NavigationBar extends React.Component<NavigationBarProps, NavigationBarState> {
-    //static contextType = ApiContext;
+    static contextType = ApiContext;
 
     renderForAuthorizedUser = () => {
         const {classes} = this.props;
@@ -69,8 +68,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
     };
 
     render() {
-        const {classes, user} = this.props;
-        console.log(user);
+        const {classes} = this.props;
         return (
             <AppBar className={classes.navBarContainer}>
                 <Container>
@@ -89,8 +87,8 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                                 color="secondary"
                             >Лидерборд</Button>
                         </Link>
-                        {user && this.renderForAuthorizedUser()}
-                        {!user && this.renderForUnauthorizedUser()}
+                        {this.context.user && this.renderForAuthorizedUser()}
+                        {!this.context.user && this.renderForUnauthorizedUser()}
                     </Toolbar>
                 </Container>
             </AppBar>);

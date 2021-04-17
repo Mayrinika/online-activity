@@ -23,6 +23,10 @@ class ApiProvider extends React.Component<{}, ApiProviderState> {
         this.setState({user});
     };
 
+    componentDidMount() {
+        this.apiMethods.getUserLoginData();
+    }
+
     render() {
         return (
             <ApiContext.Provider value={{...this.apiMethods, user: this.state.user}}>
@@ -56,13 +60,16 @@ class ApiMethods implements Api {
     };
 
     getUserLoginData = async (): Promise<UserLoginData> => {
-        return await fetch(getRoutes().login)
+        const result = await fetch(getRoutes().login)
             .then(res => {
                 this.checkStatus(res);
                 return res;
             })
             .then(res => res.json())
             .catch(err => console.log('Something went wrong:', err));
+        if (result.loggedIn)
+            this.setUser(result.user);
+        return result;
     };
 
     signup = async (name: string, password: string, avatar: string | ArrayBuffer | null): Promise<User> => {
@@ -79,7 +86,6 @@ class ApiMethods implements Api {
             })
             .then(res => res.json())
             .catch(err => console.log('Something went wrong:', err));
-        //this.user = user;
         this.setUser(user);
         return user;
     };

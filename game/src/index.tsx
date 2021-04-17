@@ -10,7 +10,7 @@ import themeFile from './utils/theme';
 //styles
 import './index.css';
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
-import ApiProvider, {ApiContext} from "./components/Api/ApiProvider";
+import ApiProvider from "./components/Api/ApiProvider";
 
 const theme = createMuiTheme(themeFile);
 
@@ -19,9 +19,7 @@ ReactDOM.render(
         <React.StrictMode>
             <BrowserRouter>
                 <ApiProvider>
-                    <ApiContext.Consumer>
-                        {(value => <NavigationBar user={value.user}/>)}
-                    </ApiContext.Consumer>
+                    <NavigationBar/>
                     <App/>
                 </ApiProvider>
             </BrowserRouter>
