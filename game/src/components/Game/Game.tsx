@@ -68,7 +68,7 @@ class Game extends Component<GameProps, GameState> {
         newWS.close();
     }
 
-    getDataFromServer = async () => {
+    getDataFromServer = async (): Promise<void> => {
         this.refreshConnection();
         const game = await this.context.getGame();
         this.setState({
@@ -81,7 +81,7 @@ class Game extends Component<GameProps, GameState> {
             time: game.time,
         });
     };
-    refreshConnection = () => {
+    refreshConnection = () => { //TODO return type
         newWS = new WebSocket('ws://localhost:8080');
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {
@@ -101,34 +101,34 @@ class Game extends Component<GameProps, GameState> {
         send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
     };
 
-    gameOver = () => {
+    gameOver = (): void => {
         const {history} = this.props;
         history.push(getDomRoutes(localStorage.getItem('gameId')).gameOver);
         newWS.close();
     };
 
-    sendMessage = (message: Message) => {
+    sendMessage = (message: Message): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.sendMessage,
             'gameId': localStorage.getItem('gameId'),
             'message': message
         }));
     };
-    postMarks = (value: { id: string, marks: { hot: boolean, cold: boolean } }) => {
+    postMarks = (value: { id: string, marks: { hot: boolean, cold: boolean } }): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.postMarks,
             'gameId': localStorage.getItem('gameId'),
             'value': value
         }));
     };
-    setWinner = (winner: string | null) => {
+    setWinner = (winner: string | null): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.setWinner,
             'gameId': localStorage.getItem('gameId'),
             'winner': winner
         }));
     };
-    sendImg = (img: string) => {
+    sendImg = (img: string): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.sendImg,
             'gameId': localStorage.getItem('gameId'),

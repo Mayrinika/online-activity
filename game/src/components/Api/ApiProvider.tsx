@@ -1,5 +1,5 @@
 import getRoutes from "../../utils/routes";
-import {Api, User, Player, UserLoginData, GameType, SuggestedWord} from "../../utils/Types/types";
+import {Api, User, UserLoginData, GameType, SuggestedWord} from "../../utils/Types/types";
 import React from "react";
 
 export const ApiContext = React.createContext<Api>({} as Api);
@@ -19,7 +19,7 @@ class ApiProvider extends React.Component<{}, ApiProviderState> {
         };
     }
 
-    private setUser = (user?: User) => {
+    private setUser = (user?: User): void => {
         this.setState({user});
     };
 
@@ -114,7 +114,6 @@ class ApiMethods implements Api {
             })
             .then(res => res.json())
             .catch(err => console.log('Something went wrong:', err));
-        //this.user = user;
         this.setUser(user);
         return user;
     };

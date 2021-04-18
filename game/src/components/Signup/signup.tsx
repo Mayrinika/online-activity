@@ -44,7 +44,7 @@ class Signup extends Component<SignupProps, SignupState> {
         await this.getAllUsers();
     }
 
-    handleSignup = async (evt: React.ChangeEvent<HTMLFormElement>) => {
+    handleSignup = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         const {possibleNames, name} = this.state;
         evt.preventDefault();
         if (possibleNames.includes(name)) {
@@ -58,12 +58,12 @@ class Signup extends Component<SignupProps, SignupState> {
         }
     };
 
-    getAllUsers = async () => {
+    getAllUsers = async (): Promise<void> => {
         const allUsers = await this.context.getAllUsers();
         this.setState({possibleNames: allUsers.map((name: { name: string, password: string }) => name.name)});
     };
 
-    addName = async () => {
+    addName = async (): Promise<void> => {
         const {name, password, avatar} = this.state;
         await this.context.checkAuthorization();
         await this.context.signup(name, password, avatar);

@@ -35,7 +35,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
         this.setState({sortedLeaderboard});
     }
 
-    startOver = () => {
+    startOver = (): void => {
         this.props.history.push(getDomRoutes().main);
     };
 

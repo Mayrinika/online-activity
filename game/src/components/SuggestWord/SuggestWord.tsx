@@ -49,11 +49,11 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         ws.close();
     }
 
-    setConnection = () => {
+    setConnection = (): void => {
         ws = new WebSocket('ws://localhost:8080');
     };
 
-    sendWord = (evt: React.ChangeEvent<HTMLFormElement>) => {
+    sendWord = (evt: React.ChangeEvent<HTMLFormElement>): void => {
         evt.preventDefault();
         ws.send(JSON.stringify({
             'messageType': websocket.sendSuggestedWordToServer,
@@ -62,21 +62,21 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         }));
         this.setState({enteredWord: ''});
     };
-    enterWord = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    enterWord = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({...this.state, enteredWord: evt.target.value});
     };
-    getWordsFromServer = async () => {
+    getWordsFromServer = async (): Promise<void> => {
         const words = await this.context.getSuggestWordsFromServer();
         this.setState({words});
     };
-    likeWord = (wordId: string) => {
+    likeWord = (wordId: string): void => {
         ws.send(JSON.stringify({
             'messageType': websocket.likeWord,
             'wordId': wordId,
             'author': localStorage.getItem('playerName')
         }));
     };
-    dislikeWord = (wordId: string) => {
+    dislikeWord = (wordId: string): void => {
         ws.send(JSON.stringify({
             'messageType': websocket.dislikeWord,
             'wordId': wordId,

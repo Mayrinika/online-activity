@@ -28,18 +28,18 @@ const Canvas = (props: canvasProps) => {
         getLinesFromServer();
     }, []);
 
-    const getLinesFromServer = async () => {
+    const getLinesFromServer = async (): Promise<void> => {
         const game = await context.getGame();
         setLines(game.lines);
     };
 
-    const handleMouseDown = (e: any) => { //TODO поправить тип
+    const handleMouseDown = (e: any): void => { //TODO поправить тип
         isDrawing = true;
         const pos = e.target.getStage().getPointerPosition();
         setCurrentLine({tool, points: [pos.x, pos.y], color});
     };
 
-    const handleMouseMove = (e: any) => { //TODO поправить тип
+    const handleMouseMove = (e: any): void => { //TODO поправить тип
         // no drawing - skipping
         if (!isDrawing) {
             return;
@@ -51,11 +51,11 @@ const Canvas = (props: canvasProps) => {
         });
     };
 
-    const addImage = async (img: string) => {
+    const addImage = async (img: string): Promise<void> => {
         props.sendImg(img);
     };
 
-    const stopDrawing = async (e: any) => { //TODO поправить тип
+    const stopDrawing = async (e: any): Promise<void> => { //TODO поправить тип
         const pos = e.target.getStage().getPointerPosition();
         if (isDrawing) {
             setCurrentLine({...currentLine, points: [...currentLine.points, pos.x, pos.y]});
@@ -72,19 +72,19 @@ const Canvas = (props: canvasProps) => {
         setCurrentLine(null);
     };
 
-    const handleMouseUp = async (e: any) => { //TODO поправить тип
+    const handleMouseUp = async (e: any): Promise<void> => { //TODO поправить тип
         await stopDrawing(e);
     };
 
-    const handleMouseLeave = async (e: any) => { //TODO поправить тип
+    const handleMouseLeave = async (e: any): Promise<void> => { //TODO поправить тип
         await stopDrawing(e);
     };
 
-    const changeColor = (color: string) => {
+    const changeColor = (color: string): void => {
         setColor(color);
     };
 
-    const undoLastDrawing = (e: any) => { //TODO поправить тип
+    const undoLastDrawing = (e: any): void => { //TODO поправить тип
         if (e.keyCode === 90 && e.ctrlKey) {
             let newLines = [...lines];
             newLines.pop();

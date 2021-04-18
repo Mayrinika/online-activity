@@ -57,7 +57,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         newWS.close();
     }
 
-    refreshConnection = () => {
+    refreshConnection = () => { //TODO return type
         newWS = new WebSocket('ws://localhost:8080');
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {
@@ -77,19 +77,19 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
     };
 
-    startGame = async () => {
+    startGame = async (): Promise<void> => {
         await this.addWordAndPainter();
         this.props.history.push(getDomRoutes(localStorage.getItem('gameId')).game);
     };
 
-    addWordAndPainter = async () => {
+    addWordAndPainter = async (): Promise<void> => {
         newWS.send(JSON.stringify({
             'messageType': websocket.addWordAndPainter,
             'gameId': localStorage.getItem('gameId')
         }));
     };
 
-    copyGameId = () => {
+    copyGameId = (): void => {
         const inputEl = document.querySelector('#gameId') as HTMLInputElement;
         const inputValue = inputEl!.value.trim();
 

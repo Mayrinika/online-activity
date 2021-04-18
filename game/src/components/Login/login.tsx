@@ -51,7 +51,7 @@ class Login extends Component<LoginProps, LoginState> {
             [evt.target.name]: evt.target.value
         }));
     };
-    handleLogin = async (evt: React.ChangeEvent<HTMLFormElement>) => {
+    handleLogin = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         evt.preventDefault();
         await this.login();
         if (!this.state.isIncorrect) {
@@ -62,7 +62,7 @@ class Login extends Component<LoginProps, LoginState> {
             this.setState({name: '', password: ''});
         }
     };
-    login = async () => {
+    login = async (): Promise<void> => {
         const {name, password} = this.state;
         await this.context.checkAuthorization();
         const user = await this.context.login(name, password);

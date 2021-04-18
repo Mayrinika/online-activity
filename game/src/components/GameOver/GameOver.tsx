@@ -42,7 +42,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
         this.getDataFromServer();
     }
 
-    getDataFromServer = async () => {
+    getDataFromServer = async (): Promise<void> => {
         const game = await this.context.getGame();
         this.setState({
             scores: game.scores,
@@ -53,11 +53,11 @@ class GameOver extends Component<GameOverProps, GameOverState> {
         });
     };
 
-    startOver = () => {
+    startOver = (): void => {
         this.props.history.push(getDomRoutes().main);
     };
 
-    goToLeaderboard = () => {
+    goToLeaderboard = (): void => {
         this.props.history.push(getDomRoutes().leaderboard);
     };
 

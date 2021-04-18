@@ -21,7 +21,7 @@ interface NavigationBarState {
 class NavigationBar extends React.Component<NavigationBarProps, NavigationBarState> {
     static contextType = ApiContext;
 
-    renderForAuthorizedUser = () => {
+    renderForAuthorizedUser = () => { //TODO return type
         const {classes} = this.props;
         return (
             <>
@@ -42,7 +42,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         );
     };
 
-    renderForUnauthorizedUser = () => {
+    renderForUnauthorizedUser = () => { //TODO return type
         const {classes} = this.props;
         return (
             <>

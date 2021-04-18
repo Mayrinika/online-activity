@@ -18,7 +18,6 @@ const styles = (theme: { content: any; }) => (
 let ws: WebSocket;
 
 interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
-    //joinGame: (player: string | null, gameId: string) => void;
 }
 
 interface LoginState {
@@ -41,7 +40,7 @@ class Main extends Component<LoginProps, LoginState> {
         };
     }
 
-    addPlayer = async (gameId: string, player: string | null) => {
+    addPlayer = async (gameId: string, player: string | null) => { //TODO return type
         ws = new WebSocket('ws://localhost:8080');
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {
@@ -61,7 +60,7 @@ class Main extends Component<LoginProps, LoginState> {
         send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
     };
 
-    joinGame = async (player: string | null, gameId: string) => {
+    joinGame = async (player: string | null, gameId: string): Promise<void> => {
         await this.getAllGames();
         if (this.state.possibleGames.some(game => game.id === gameId)) {
             await this.addPlayer(gameId, player);
@@ -71,7 +70,7 @@ class Main extends Component<LoginProps, LoginState> {
         }
     };
 
-    getAllGames = async () => {
+    getAllGames = async (): Promise<void> => {
         const allGames = await this.context.getAllGames();
         this.setState({possibleGames: allGames});
     };
@@ -85,7 +84,7 @@ class Main extends Component<LoginProps, LoginState> {
         }));
     };
 
-    handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>) => {
+    handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         const {code} = this.state;
         const name = localStorage.getItem('playerName');
         evt.preventDefault();
@@ -105,7 +104,7 @@ class Main extends Component<LoginProps, LoginState> {
         }
     };
 
-    startGame = async (name: string | null, code: string) => {
+    startGame = async (name: string | null, code: string): Promise<void> => {
         localStorage.setItem('gameId', code);
         this.context.changeGameId(code);
         await this.joinGame(name, code);

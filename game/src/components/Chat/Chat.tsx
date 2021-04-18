@@ -31,7 +31,7 @@ class Chat extends Component<ChatProps, ChatState> {
         };
     }
 
-    addMessage = (evt: React.ChangeEvent<HTMLFormElement>) => {
+    addMessage = (evt: React.ChangeEvent<HTMLFormElement>): void => {
         evt.preventDefault();
         const { inputMessage } = this.state;
         const { wordToGuess } = this.props;
@@ -47,41 +47,41 @@ class Chat extends Component<ChatProps, ChatState> {
         this.props.sendMessage({'name': playerName, avatar: null, 'text': inputMessage, 'id':generatedId, 'marks': {'hot': false, 'cold': false}})
     };
 
-    enterMessage = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    enterMessage = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({ ...this.state, inputMessage: evt.target.value });
     };
 
-    wordIsGuessed = async (messageId?: string) => {
+    wordIsGuessed = async (messageId?: string): Promise<void> => {
         await this.context.clearCountdown();
         await this.setWinner(messageId);
     };
 
-    setWinner = async (messageId?: string) => {
+    setWinner = async (messageId?: string): Promise<void> => {
         let playerName = localStorage.getItem('playerName');
         if (messageId)
             playerName = this.getWinner(messageId) as string;
         this.props.setWinner(playerName);
     };
 
-    getWinner = (messageId: string) => {
+    getWinner = (messageId: string): string | undefined => {
         const message = this.props.chatMessages.find(message => message.id === messageId);
         if (message)
             return message.name;
     };
 
-    handlePlusClick = (messageId: string) => {
+    handlePlusClick = (messageId: string): void => {
         this.postMarks(messageId, true);
     };
 
-    handleMinusClick = (messageId: string) => {
+    handleMinusClick = (messageId: string): void => {
         this.postMarks(messageId, false);
     };
 
-    postMarks(messageId: string, isHot: boolean) {
+    postMarks(messageId: string, isHot: boolean): void {
         this.props.postMarks({ id: messageId, marks: { hot: isHot, cold: !isHot } });
     }
 
-    showButtons = (message: Message) => {
+    showButtons = (message: Message) => { //TODO return type
         const { isPainter } = this.props;
         if (isPainter) {
             return (
