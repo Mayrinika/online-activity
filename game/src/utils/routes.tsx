@@ -16,5 +16,6 @@ export default function getRoutes(currentGameId?: string | null) {
         suggestedWords: '/suggestedWords',
         signup: '/signup',
         login: '/login',
+        logout: '/logout'
     }
 }

@@ -51,6 +51,11 @@ export const login = async (req: any, res: any) => {
     }
 };
 
+export const logout = async (req:any, res: any) => {
+    req.session.user = undefined;
+    res.status(200).send(undefined);
+};
+
 const hashPassword = async (password: string): Promise<string> => {
     const hash = await bcrypt.hash(password, 12);
     return hash;

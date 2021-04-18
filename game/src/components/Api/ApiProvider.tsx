@@ -19,7 +19,7 @@ class ApiProvider extends React.Component<{}, ApiProviderState> {
         };
     }
 
-    private setUser = (user: User) => {
+    private setUser = (user?: User) => {
         this.setState({user});
     };
 
@@ -38,9 +38,9 @@ class ApiProvider extends React.Component<{}, ApiProviderState> {
 
 class ApiMethods implements Api {
     private _gameId: null | string = localStorage.getItem('gameId');
-    private readonly setUser: (user: User) => void;
+    private readonly setUser: (user?: User) => void;
 
-    constructor(setUser: (user: User) => void) {
+    constructor(setUser: (user?: User) => void) {
         this.setUser = setUser;
     }
 
@@ -117,6 +117,18 @@ class ApiMethods implements Api {
         //this.user = user;
         this.setUser(user);
         return user;
+    };
+
+    logout = async (): Promise<void> => {
+        await fetch(getRoutes().logout, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        })
+            .then(res => this.checkStatus(res))
+            .catch(err => console.log('Something went wrong:', err));
+        this.setUser(undefined);
     };
 
     checkAuthorization = async (): Promise<void> => {

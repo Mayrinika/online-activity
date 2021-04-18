@@ -32,13 +32,12 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                         color="secondary"
                     >Предложить слово</Button>
                 </Link>
-                <Link to={getDomRoutes().main} className={classes.navLink}>
-                    <Button
-                        className={classes.navButton}
-                        variant="contained"
-                        color="default"
-                    >Выйти</Button>
-                </Link>
+                <Button
+                    className={classes.navButton}
+                    variant="contained"
+                    color="default"
+                    onClick={this.context.logout}
+                >Выйти</Button>
             </>
         );
     };

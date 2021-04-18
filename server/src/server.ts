@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 //handlers
 import {games, suggestedWords, GAME_TIME, timerIds} from "./handlers/game";
-import {getAllUsers, signup, getUserLoginData, login} from './handlers/user';
+import {getAllUsers, signup, getUserLoginData, login, logout} from './handlers/user';
 import {
     getAllGames,
     getSuggestedWords,
@@ -57,6 +57,7 @@ app.get('/signup', getAllUsers);
 app.post('/signup', signup);
 app.get('/login', getUserLoginData);
 app.post('/login', login);
+app.post('/logout', logout);
 //game routes
 app.get('/suggestedWords', getSuggestedWords);
 

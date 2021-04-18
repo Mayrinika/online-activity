@@ -6,6 +6,7 @@ export interface Api {
     signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<User>;
     getAllUsers: () => Promise<User[]>;
     login: (name: string, password: string) => Promise<User>;
+    logout: () => Promise<void>;
     checkAuthorization: () => Promise<void>;
     getAllGames: () => Promise<GameType[]>;
     getGame: () => Promise<GameType>;
