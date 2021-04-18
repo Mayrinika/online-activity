@@ -21,6 +21,7 @@ class ApiProvider extends React.Component<{}, ApiProviderState> {
 
     private setUser = (user?: User): void => {
         this.setState({user});
+        console.log(user);
     };
 
     componentDidMount() {
@@ -86,7 +87,8 @@ class ApiMethods implements Api {
             })
             .then(res => res.json())
             .catch(err => console.log('Something went wrong:', err));
-        this.setUser(user);
+        if (!user.error)
+            this.setUser(user);
         return user;
     };
 
@@ -114,7 +116,8 @@ class ApiMethods implements Api {
             })
             .then(res => res.json())
             .catch(err => console.log('Something went wrong:', err));
-        this.setUser(user);
+        if (!user.error)
+            this.setUser(user);
         return user;
     };
 
