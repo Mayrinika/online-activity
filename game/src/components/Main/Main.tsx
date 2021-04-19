@@ -129,11 +129,16 @@ class Main extends Component<LoginProps, LoginState> {
                         <form onSubmit={this.handleSubmit} className={classes.innerContainer}
                               style={{paddingBottom: 16}}>
                             {!this.context.user ?
-                                <p>Пожалуйста, войдите или зарегистрируйтесь</p>
+                                <Typography>Пожалуйста, войдите или зарегистрируйтесь</Typography>
                                 : <div>
                                     {isNameExist ?
-                                        <p>{localStorage.getItem('playerName')}, не стоит жульничать!</p>
-                                        : <p>Добро пожаловать, {localStorage.getItem('playerName')}</p>}
+                                        <Typography>{localStorage.getItem('playerName')}, не стоит жульничать!</Typography>
+                                        : <div style={{display: 'flex', alignItems: 'center'}}>
+                                            <Typography>Добро пожаловать,</Typography>
+                                            <img src={this.context.user.avatar} alt='avatar' style={{width: 30, height: 30, borderRadius: '50%', padding: 10}}/>
+                                            <Typography> {localStorage.getItem('playerName')}</Typography>
+                                        </div>
+                                    }
                                     <TextField
                                         variant="outlined"
                                         margin="normal"
