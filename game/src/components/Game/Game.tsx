@@ -12,8 +12,14 @@ import {Player, Message} from "../../utils/Types/types";
 import websocket from "../../utils/websocket";
 //styles
 import './Game.css';
+import {withStyles, WithStyles} from "@material-ui/core/styles";
+import {Button, Container, Typography, Box, TextField, CircularProgress} from '@material-ui/core';
 
 let newWS: any;
+
+const styles = (theme: { content: any; }) => (
+    theme.content
+);
 
 interface GameState {
     wordToGuess: string;
@@ -25,7 +31,7 @@ interface GameState {
     time: number;
 }
 
-interface GameProps extends RouteComponentProps {
+interface GameProps extends RouteComponentProps, WithStyles<typeof styles> {
 }
 
 class Game extends Component<GameProps, GameState> {
@@ -144,17 +150,18 @@ class Game extends Component<GameProps, GameState> {
             : 'Отгадайте слово!';
         const guessers = players.filter(player => player.name !== painter.name);
         const isPainter = playerName === painter.name;
+        const {classes} = this.props;
         return (
-            <div className='Game'>
-                <header>
-                    <div className='Game-Word'>{wordToDisplay}</div>
+            <Container className={classes.outerContainer} maxWidth='lg' style={{height: '80vh'}}>
+                <header style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <Typography variant='h4' paragraph>{wordToDisplay}</Typography>
                     <Timer time={this.state.time}/>
                 </header>
-                <main>
+                <main style={{display: 'flex', height: '90%', width: '100%'}}>
                     {isPainter ?
                         <Canvas sendImg={this.sendImg}/>
                         : imgURL !== '' ?
-                            <img src={imgURL} alt='img from server'/>
+                            <img src={imgURL} alt='img from server' style={{width: '70%', border: '1px solid black', background: '#fff'}}/>
                             : <div className='Game emptyDiv'/>}
                     <aside>
                         <ListOfPlayers players={guessers} painter={painter}/>
@@ -169,9 +176,9 @@ class Game extends Component<GameProps, GameState> {
                         />
                     </aside>
                 </main>
-            </div>
+            </Container>
         );
     }
 }
 
-export default Game;
+export default (withStyles(styles)(Game));

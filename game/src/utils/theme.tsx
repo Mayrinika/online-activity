@@ -54,7 +54,7 @@ export default {
             padding: '48px 48px 48px 48px',
             border: '1px solid gray',
             borderRadius: 10,
-            backgroundColor: '#F3F3F3'
+            backgroundColor: '#F3F3F3',
         },
         playerContainer: {
             borderRadius: 10,
@@ -62,6 +62,10 @@ export default {
             backgroundColor: '#A1C1EC',
             margin: 8,
             padding: 8,
+           display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '20px',
         },
         button: {
             margin: '32px 16px 16px 16px',

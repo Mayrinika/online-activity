@@ -129,14 +129,12 @@ class StartGame extends Component<StartGameProps, StartGameState> {
                         Все игроки в сборе?
                     </Typography>
                     <Box className={classes.innerContainer}>
-                        <Typography variant='subtitle1'>
                             {players && players.map(player => {
                                 return <div key={player.name} className={classes.playerContainer}>
-                                    {player.avatar && <img src={player.avatar as string} alt="avatar"/>}
-                                    {player.name}
+                                    {player.avatar && <img src={player.avatar as string} alt="avatar" style={{borderRadius: '50%'}}/>}
+                                    <Typography variant='subtitle1'>{player.name} </Typography>
                                 </div>;
                             })}
-                        </Typography>
                     </Box>
                     <Button
                         className={classes.button}
