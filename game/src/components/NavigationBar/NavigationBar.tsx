@@ -6,7 +6,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import getDomRoutes from "../../utils/domRoutes";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, AppBar, Toolbar} from '@material-ui/core';
+import {Button, Container, AppBar, Toolbar, Typography} from '@material-ui/core';
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -32,12 +32,14 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                         color="secondary"
                     >Предложить слово</Button>
                 </Link>
+                <img src={this.context.user.avatar} alt="avatar" style={{borderRadius: '50%', marginLeft: 'auto', marginRight: 0}}/>
+                <Typography variant='subtitle1'>{this.context.user.name}</Typography>
                 <Button
                     className={classes.navButton}
                     variant="contained"
                     color="default"
                     onClick={this.context.logout}
-                    style={{marginLeft: 'auto', marginRight: 0}}
+
                 >Выйти</Button>
             </>
         );
@@ -92,5 +94,4 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
             </AppBar>);
     }
 }
-
 export default (withStyles(styles)(NavigationBar));
