@@ -64,10 +64,32 @@ class Signup extends Component<SignupProps, SignupState> {
     };
 
     addName = async (): Promise<void> => {
-        const {name, password, avatar} = this.state;
+        let {name, password, avatar} = this.state;
+        if (!avatar) {
+            avatar = this.generateAvatar(name);
+        }
         await this.context.checkAuthorization();
         await this.context.signup(name, password, avatar);
     };
+
+    generateAvatar(name: string): string {
+        const width = 50;
+        const height = 50;
+        const elem = document.createElement('canvas');
+        elem.width = width;
+        elem.height = height;
+        const ctx = elem.getContext('2d');
+        if (ctx) {
+            ctx.fillStyle = '#517413'
+            ctx.fillRect(0, 0, 50, 50);
+            ctx.fillStyle = '#fff'
+            ctx.font = "48px serif";
+            ctx.fillText(name[0].toUpperCase(), 10, 40);
+
+        }
+        const url = elem.toDataURL();
+        return url;
+    }
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
@@ -100,7 +122,7 @@ class Signup extends Component<SignupProps, SignupState> {
                 elem.height = height;
                 const ctx = elem.getContext('2d');
                 ctx?.drawImage(img, 0, 0, width, height);
-                let url = elem.toDataURL();
+                const url = elem.toDataURL();
                 this.setState({avatar: url, avatarIsLoading: false});
             };
             reader.onerror = error => console.log(error);

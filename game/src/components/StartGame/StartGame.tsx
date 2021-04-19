@@ -131,7 +131,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
                     <Box className={classes.innerContainer}>
                             {players && players.map(player => {
                                 return <div key={player.name} className={classes.playerContainer}>
-                                    {player.avatar && <img src={player.avatar as string} alt="avatar" style={{borderRadius: '50%'}}/>}
+                                    {player.avatar && <img src={player.avatar as string} alt="avatar" style={{borderRadius: '50%', border: "1px solid black"}}/>}
                                     <Typography variant='subtitle1'>{player.name} </Typography>
                                 </div>;
                             })}

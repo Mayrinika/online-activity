@@ -162,7 +162,7 @@ class Game extends Component<GameProps, GameState> {
                         <Canvas sendImg={this.sendImg}/>
                         : imgURL !== '' ?
                             <img src={imgURL} alt='img from server' style={{width: '70%', border: '1px solid black', background: '#fff'}}/>
-                            : <div className='Game emptyDiv'/>}
+                            : <div style={{width: '70%', border: '1px solid black', background: '#fff'}}/>}
                     <aside>
                         <ListOfPlayers players={guessers} painter={painter}/>
                         <Chat

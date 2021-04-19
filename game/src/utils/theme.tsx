@@ -62,7 +62,7 @@ export default {
             backgroundColor: '#A1C1EC',
             margin: 8,
             padding: 8,
-           display: 'flex',
+            display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '20px',
