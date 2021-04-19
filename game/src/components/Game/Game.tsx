@@ -13,7 +13,7 @@ import websocket from "../../utils/websocket";
 //styles
 import './Game.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, Typography, Box, TextField, CircularProgress} from '@material-ui/core';
+import {Container, Typography} from '@material-ui/core';
 
 let newWS: any;
 
@@ -159,11 +159,11 @@ class Game extends Component<GameProps, GameState> {
                 </header>
                 <main style={{display: 'flex', height: '90%', width: '100%'}}>
                     {isPainter ?
-                        <Canvas sendImg={this.sendImg}/>
+                        <Canvas sendImg={this.sendImg} />
                         : imgURL !== '' ?
                             <img src={imgURL} alt='img from server' style={{width: '70%', border: '1px solid black', background: '#fff'}}/>
                             : <div style={{width: '70%', border: '1px solid black', background: '#fff'}}/>}
-                    <aside>
+                    <aside style={{width: '30%'}}>
                         <ListOfPlayers players={guessers} painter={painter}/>
                         <Chat
                             isPainter={isPainter}
@@ -173,6 +173,7 @@ class Game extends Component<GameProps, GameState> {
                             chatMessages={chatMessages}
                             postMarks={this.postMarks}
                             setWinner={this.setWinner}
+                            {...this.props}
                         />
                     </aside>
                 </main>

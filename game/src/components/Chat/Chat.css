@@ -1,23 +1,36 @@
 .Chat {
-    min-width: 300px;
     box-sizing: border-box;
     width: 100%;
-    height: 70%;
+    height: 60%;
     text-align: left;
-    background-color: white;
-    border: 1px solid black;
-    border-radius: 10px;
     display: flex;
     flex-direction: column;
     padding: 5px;
+    border-top: 1px solid black;
 }
 .Chat-messages {
     margin-top: auto;
     overflow-y: auto;
-}
-.Chat form {
     margin-bottom: 10px;
 }
 .Chat-message-name {
     font-weight: 700;
+    display: inline-block;
+    margin-right: 5px;
+}
+.Chat-message{
+    background-color: #749dd2;
+    width: 100%;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    text-indent: 20px;
+    color: #fff
+}
+.icon {
+    color: grey;
+}
+.icon:hover {
+    cursor: pointer;
+    transform: scale(1.2);
 }

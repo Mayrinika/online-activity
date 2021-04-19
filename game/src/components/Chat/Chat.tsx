@@ -6,9 +6,17 @@ import {ApiContext} from "../Api/ApiProvider";
 import {Player, Message} from "../../utils/Types/types";
 //styles
 import './Chat.css';
+import {Button, TextField, Typography, Tooltip} from "@material-ui/core";
+import {WithStyles} from "@material-ui/core/styles";
+import WhatshotIcon from '@material-ui/icons/Whatshot';
+import CheckIcon from '@material-ui/icons/Check';
+import AcUnitIcon from '@material-ui/icons/AcUnit';
 
+const styles = (theme: { content: any; }) => (
+    theme.content
+);
 
-interface ChatProps {
+interface ChatProps extends WithStyles<typeof styles>{
     isPainter: boolean;
     wordToGuess: string;
     painter: Player;
@@ -63,6 +71,7 @@ class Chat extends Component<ChatProps, ChatState> {
         this.props.setWinner(playerName);
     };
 
+
     getWinner = (messageId: string): string | undefined => {
         const message = this.props.chatMessages.find(message => message.id === messageId);
         if (message)
@@ -85,20 +94,26 @@ class Chat extends Component<ChatProps, ChatState> {
         const { isPainter } = this.props;
         if (isPainter) {
             return (
-                <span>
-                    <button onClick={() => this.handlePlusClick(message.id)}>hot</button>
-                    <button onClick={() => this.handleMinusClick(message.id)}>cold</button>
-                    <button onClick={() => this.wordIsGuessed(message.id)}>да!</button>
+                <span style={{position: 'absolute', bottom: 0, zIndex: 2, right: 5}}>
+                    <Tooltip title="Тепло">
+                        <WhatshotIcon className="icon icon-hot" onClick={() => this.handlePlusClick(message.id)} style={{color: message.marks.hot ? 'red' : 'grey'}}/>
+                    </Tooltip>
+                    <Tooltip title="Холодно">
+                        <AcUnitIcon className="icon icon-cold" onClick={() => this.handleMinusClick(message.id)} style={{color: message.marks.cold ? 'blue' : 'grey'}}/>
+                    </Tooltip>
+                    <Tooltip title="Правильно!">
+                        <CheckIcon className="icon icon-ok" onClick={() => this.wordIsGuessed(message.id)}/>
+                    </Tooltip>
                 </span>
             );
         }
         if (message.marks.hot)
             return (
-                <span>=hot</span>
+                <WhatshotIcon style={{color: 'red'}}/>
             );
         if (message.marks.cold)
             return (
-                <span>=cold</span>
+                <AcUnitIcon style={{color: 'blue'}}/>
             );
         return;
     };
@@ -111,29 +126,51 @@ class Chat extends Component<ChatProps, ChatState> {
             <div className='Chat'>
                 <div className='Chat-messages'>
                     {chatMessages.map((message: Message) => (
-                        <div key={message.id}>
-                            {message.avatar && <img src={message.avatar as string} alt="avatar"/>}
-                            <span className='Chat-message-name'>{message.name}: </span>{message.text}
+                        <div key={message.id} style={{display: 'flex', margin: 5, position: 'relative'}}>
+                            {message.avatar && <img src={message.avatar as string} alt="avatar" style={{borderRadius: '50%', margin: '0 5px 0 0', width: '30px'}}/>}
+                            <div className='Chat-message'>
+                                <Typography variant='subtitle2'>
+                                    {message.name}:
+                                </Typography>
+                                <Typography variant='subtitle2'>
+                                    {message.text}
+                                </Typography>
+                            </div>
                             {this.showButtons(message)}
                         </div>
                     ))}
                 </div>
                 {!isPainter &&
-                <form onSubmit={this.addMessage}>
-                    <label htmlFor='message'>ваш ответ: </label>
-                    <input
+                <form onSubmit={this.addMessage} style={{display: 'flex', margin: 0}}>
+                    <TextField
                         id='message'
                         type='text'
                         name='message'
                         placeholder='ваш ответ'
                         value={inputMessage}
                         onChange={this.enterMessage}
+                        variant="outlined"
+                        margin="normal"
+                        required
+                        size="small"
+                        label="ваш ответ: "
+                        autoFocus
+                        style={{margin: 0}}
                     />
-                    <input type='submit' />
-                </form>}
+                    <Button
+                        className={this.props.classes.button}
+                        variant="contained"
+                        color="primary"
+                        type="submit"
+                        size="small"
+                        style={{margin: 0}}
+                    >
+                        Отправить
+                    </Button>
+                </form>
+                }
             </div>
         );
     }
 }
-
 export default Chat;
