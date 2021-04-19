@@ -18,8 +18,21 @@
 }
 .SuggestWord-word {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    align-items: center;
     margin: 5px;
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 0 10px;
+}
+.like:hover,
+.dislike:hover {
+    cursor: pointer;
+    transform: scale(1.2);
+}
+.like:active,
+.dislike:active {
+    transform: scale(0.8);
 }
 .active {
     background-color: #6a8759;

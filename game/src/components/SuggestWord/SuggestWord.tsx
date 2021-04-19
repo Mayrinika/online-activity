@@ -9,7 +9,9 @@ import {SuggestedWord} from "../../utils/Types/types";
 //styles
 import './SuggestWord.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, TextField, Box} from '@material-ui/core';
+import {Button, Container, TextField, Box, Tooltip, Typography} from '@material-ui/core';
+import ThumbUpAltIcon from '@material-ui/icons/ThumbUpAlt';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -108,8 +110,11 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
-                <Box>
-                    <form onSubmit={this.sendWord} className={classes.innerContainer}>
+                <Typography variant='h6'>
+                    Если у вас есть идеи слова для нашей игры, пожалуйста, добавьте его в форму ниже
+                </Typography>
+                <Box style={{height: '100%'}}>
+                    <form onSubmit={this.sendWord} className={classes.innerContainer} style={{padding: 20}}>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -132,24 +137,39 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                             Предложить
                         </Button>
                     </form>
-                    <Box>
+                    <Box style={{height: '50%', overflowY: 'auto'}}>
                         {this.state.words.filter(word => !word.isInDictionary && !word.isApproved && !word.isDeclined).map((word) => (
                             <div key={word.id} className="SuggestWord-word">
-                                {word.word}
+                                <Typography variant='h4'>
+                                    {word.word}
+                                </Typography>
                                 <div className="SuggestWord-buttons">
-                                    <button
-                                        className={`"SuggestedWord-button SuggestWord-button-plus" ${word.likes.includes(localStorage.getItem('playerName') || 'Аноним') ? "active" : ""}`}
-                                        onClick={() => this.likeWord(word.id)}>+
-                                    </button>
-                                    <button
-                                        className={`"SuggestedWord-button SuggestWord-button-plus" ${word.dislikes.includes(localStorage.getItem('playerName') || 'Аноним') ? "active" : ""}`}
-                                        onClick={() => this.dislikeWord(word.id)}>-
-                                    </button>
-                                    <div>{word.likes.length - word.dislikes.length}</div>
+                                    <Tooltip title="Супер">
+                                        <ThumbUpAltIcon
+                                            className="like"
+                                            onClick={() => this.likeWord(word.id)}
+                                            style={{color: word.likes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#fff'}}
+                                        />
+                                    </Tooltip>
+                                    <Typography variant='subtitle1'
+                                                style={{color: word.likes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#000'}}>
+                                        {word.likes.length}
+                                    </Typography>
+                                    <Tooltip title="Не очень">
+                                        <ThumbDownIcon
+                                            className="dislike"
+                                            onClick={() => this.dislikeWord(word.id)}
+                                            style={{color: word.dislikes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#fff'}}
+                                        />
+                                    </Tooltip>
+                                    <Typography variant='subtitle1'
+                                                style={{color: word.dislikes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#000'}}>
+                                        {word.dislikes.length}
+                                    </Typography>
                                 </div>
                             </div>
                         ))}
-                        <p>{wordStatusHasChanged}</p>
+                        <Typography variant='h6'>{wordStatusHasChanged}</Typography>
                     </Box>
                 </Box>
             </Container>
