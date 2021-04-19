@@ -28,6 +28,7 @@ class ListOfPlayers extends Component<ListOfPlayersProps, {}> {
                             style={{display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'start',
+                                margin: 5
                             }}
                         >
                             {player.avatar && <img src={player.avatar as string} alt="avatar" style={{borderRadius: '50%', margin: '0 5px 0 0', width: '30px'}}/>}

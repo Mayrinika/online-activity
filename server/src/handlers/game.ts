@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import {GameType, SuggestedWord} from "../utils/types";
 
-export const GAME_TIME: number = 5 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
+export const GAME_TIME: number = 3 * 60;
 export const timerIds: any = {}; //TODO разобраться с типом TimerIds
 
 export const suggestedWords: SuggestedWord[] = [];

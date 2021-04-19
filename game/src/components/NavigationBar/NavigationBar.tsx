@@ -37,6 +37,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                     variant="contained"
                     color="default"
                     onClick={this.context.logout}
+                    style={{marginLeft: 'auto', marginRight: 0}}
                 >Выйти</Button>
             </>
         );
@@ -46,7 +47,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         const {classes} = this.props;
         return (
             <>
-                <Link to={getDomRoutes().login} className={classes.navLink}>
+                <Link to={getDomRoutes().login} className={classes.navLink} style={{marginLeft: 'auto', marginRight: 0}}>
                     <Button
                         className={classes.navButton}
                         variant="contained"

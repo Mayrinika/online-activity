@@ -1,7 +1,7 @@
 import React from 'react';
 import './Timer.css';
 import {Box, CircularProgress, Typography} from "@material-ui/core";
-export const GAME_TIME: number = 5 * 60; //TODO 1 минута для тестирования, на продакшн изменить время (напрмиер 3 минуты)
+export const GAME_TIME: number = 3 * 60;
 
 function Timer(props: {time: number}) {
     const min: number = Math.floor(props.time/60);
