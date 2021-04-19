@@ -1,5 +1,5 @@
 export interface Api {
-    user?: User;
+    user?: User | null;
     changeGameId: (gameId: string) => void;
     addGame: () => Promise<void>;
     getUserLoginData: () => Promise<UserLoginData>;

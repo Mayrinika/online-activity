@@ -20,7 +20,7 @@ class App extends Component<{}, {}> {
 
     render() {
         const {user} = this.context;
-        const main = getDomRoutes().main;
+        const isAuthorized = user !== null;
         return (
             <div className="App">
                 <Switch>
@@ -31,19 +31,19 @@ class App extends Component<{}, {}> {
                         <Signup {...props} />
                     )}/>
                     <Route exact path={getDomRoutes().suggestWord} render={(props) => (
-                        user ? <SuggestWord {...props} /> : <Redirect to={main}/>
+                        isAuthorized ? <SuggestWord {...props} /> : <Redirect to={getDomRoutes().main}/>
                     )}/>
                     <Route path={getDomRoutes().leaderboard} render={(props) => (
                         <Leaderboard {...props} />
                     )}/>
                     <Route path={getDomRoutes(':gameId').game} render={(props) => (
-                        user ? <Game {...props} /> : <Redirect to={main}/>
+                        isAuthorized ? <Game {...props} /> : <Redirect to={getDomRoutes().main}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').gameOver} render={(props) => (
-                        user ? <GameOver {...props} /> : <Redirect to={main}/>
+                        isAuthorized ? <GameOver {...props} /> : <Redirect to={getDomRoutes().main}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').startGame} render={(props) => (
-                        user ? <StartGame {...props} /> : <Redirect to={main}/>
+                        isAuthorized ? <StartGame {...props} /> : <Redirect to={getDomRoutes().main}/>
                     )}/>
                     <Route exact path={getDomRoutes().main} render={(props) => (
                         <Main {...props} />
