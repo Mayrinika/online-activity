@@ -45,7 +45,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
                 players: game.players,
             });
         }
-        newWS.onmessage = (response: any) => {
+        newWS.onmessage = (response) => {
             if (JSON.parse(response.data).id === localStorage.getItem('gameId')) {
                 this.setState({players: JSON.parse(response.data).players});
             }

@@ -83,7 +83,6 @@ const Canvas = (props: canvasProps) => {
     const changeColor = (color: string): void => {
         setColor(color);
     };
-
     const undoLastDrawing = (e: any): void => { //TODO поправить тип
         if (e.keyCode === 90 && e.ctrlKey) {
             let newLines = [...lines];

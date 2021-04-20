@@ -1,32 +1,33 @@
 import fs from "fs-extra";
 import {GameType, SuggestedWord} from "../utils/types";
+import express from 'express';
 
 export const GAME_TIME: number = 3 * 60;
-export const timerIds: any = {}; //TODO разобраться с типом TimerIds
+export const timerIds: { [id: string] : ReturnType<typeof setTimeout> } = {}; //TODO разобраться с типом TimerIds
 
 export const suggestedWords: SuggestedWord[] = [];
 
 export const games: GameType[] = [];
 
-export const getAllGames = (req:any, res:any) => {
+export const getAllGames = (req: express.Request, res: express.Response) => {
     res.status(200).send(games);
 };
 
-export const getSuggestedWords = (req:any, res:any) => {
+export const getSuggestedWords = (req: express.Request, res: express.Response) => {
     res.status(200).send(suggestedWords);
 };
 
-export const getLeaderboard = (req:any, res:any) => {
+export const getLeaderboard = (req: express.Request, res: express.Response) => {
     const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
     res.status(200).send(leaderboard.players);
 };
 
-export const getCurrentGame = (req:any, res:any) => {
+export const getCurrentGame = (req: express.Request, res: express.Response) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     res.status(200).send(currentGame);
 };
 
-export const addGame = (req:any, res:any) => {
+export const addGame = (req: express.Request, res: express.Response) => {
     games.push({
         id: req.params.gameId,
         players: [],
@@ -45,7 +46,7 @@ export const addGame = (req:any, res:any) => {
     res.status(200).send(games);
 };
 
-export const addLine = (req:any, res:any) => {
+export const addLine = (req: express.Request, res: express.Response) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         currentGame.lines.push(req.body.line);
@@ -55,7 +56,7 @@ export const addLine = (req:any, res:any) => {
     }
 };
 
-export const deleteLine = (req: any, res: any) => {
+export const deleteLine = (req: express.Request, res: express.Response) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         currentGame.lines.pop();
@@ -65,7 +66,7 @@ export const deleteLine = (req: any, res: any) => {
     }
 };
 
-export const clearCountdown = (req:any, res:any) => {
+export const clearCountdown = (req: express.Request, res: express.Response) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         clearTimeout(timerIds[currentGame.id]);
@@ -75,7 +76,7 @@ export const clearCountdown = (req:any, res:any) => {
     }
 };
 
-export const setTimeIsOver = (req:any, res:any) => {
+export const setTimeIsOver = (req: express.Request, res: express.Response) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {
         currentGame.isTimeOver = true;

@@ -1,20 +1,21 @@
 import fs from "fs-extra";
 import {v4 as uuidv4} from "uuid";
 import bcrypt from "bcrypt";
+import express from 'express';
+import {User} from '../utils/types';
 
-interface User {
-    id: string;
-    name: string;
-    password: string;
-    avatar: string | ArrayBuffer | null;
+declare module 'express-session' {
+    interface SessionData {
+        user: User | null;
+    }
 }
 
-export const getAllUsers = (req: any, res: any) => {
+export const getAllUsers = (req: express.Request, res: express.Response) => {
     const users = fs.readJsonSync('./src/utils/users.json');
     res.status(200).send(users);
 };
 
-export const signup = async (req: any, res: any) => {
+export const signup = async (req: express.Request, res: express.Response) => {
     const users = fs.readJsonSync('./src/utils/users.json');
     const {name, password, avatar} = req.body;
     const hash = await hashPassword(password);
@@ -25,8 +26,8 @@ export const signup = async (req: any, res: any) => {
     res.status(200).send(user);
 };
 
-export const getUserLoginData = (req: any, res: any) => {
-    const {user} = req.session; //TODO убрать игнор
+export const getUserLoginData = (req: express.Request, res: express.Response) => {
+    const {user} = req.session;
     if (!user) {
         res.send({loggedIn: false});
     } else {
@@ -34,7 +35,7 @@ export const getUserLoginData = (req: any, res: any) => {
     }
 };
 
-export const login = async (req: any, res: any) => {
+export const login = async (req: express.Request, res: express.Response) => {
     const users = fs.readJsonSync('./src/utils/users.json');
     const {name, password} = req.body;
     const user = users.find((user: User) => user.name === name);
@@ -51,7 +52,7 @@ export const login = async (req: any, res: any) => {
     }
 };
 
-export const logout = async (req:any, res: any) => {
+export const logout = async (req: express.Request, res: express.Response) => {
     req.session.user = null;
     res.status(200).send(null);
 };

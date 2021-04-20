@@ -1,5 +1,5 @@
 import getRoutes from "../../utils/routes";
-import {Api, User, UserLoginData, GameType, SuggestedWord} from "../../utils/Types/types";
+import {Api, User, UserLoginData, GameType, SuggestedWord, Line} from "../../utils/Types/types";
 import React from "react";
 
 export const ApiContext = React.createContext<Api>({} as Api);
@@ -169,7 +169,7 @@ class ApiMethods implements Api {
             .catch(err => console.log('Something went wrong:', err));
     };
 
-    sendLineToServer = async (line: any): Promise<void> => {
+    sendLineToServer = async (line: Line): Promise<void> => {
         await fetch(getRoutes(this._gameId).addLine, {
             method: 'POST',
             headers: {

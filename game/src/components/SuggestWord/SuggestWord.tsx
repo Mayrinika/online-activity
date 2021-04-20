@@ -42,7 +42,7 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
     async componentDidMount() {
         this.getWordsFromServer();
         this.setConnection();
-        ws.onmessage = (response: any) => {
+        ws.onmessage = (response) => {
             this.setState({words: JSON.parse(response.data)});
         };
     }

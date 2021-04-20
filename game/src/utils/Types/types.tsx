@@ -11,7 +11,7 @@ export interface Api {
     getAllGames: () => Promise<GameType[]>;
     getGame: () => Promise<GameType>;
     clearCountdown: () => Promise<void>;
-    sendLineToServer: (line: string) => Promise<void>;
+    sendLineToServer: (line: Line) => Promise<void>;
     getLeaderboardDataFromServer: () => Promise<[userId: string, score: number][]>;
     getSuggestWordsFromServer: () => Promise<SuggestedWord[]>;
     deleteLine: () => Promise<void>;

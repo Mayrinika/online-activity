@@ -4,7 +4,12 @@ import colors from "../../utils/colors";
 //styles
 import './ColorPalette.css'
 
-function ColorPalette(props: any) {
+interface ColorPalletteProps {
+    currentColor: string;
+    onChangeColor(color: string): void;
+}
+
+function ColorPalette(props: ColorPalletteProps) {
     return (
         <div className="ColorPalette">
             {colors.map(color => (

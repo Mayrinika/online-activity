@@ -45,7 +45,7 @@ app.use(session({
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use((err: any, req: any, res: any, next: any) => { //TODO разобраться с типом
+app.use((err: { status: number, message: string }, req: express.Request, res: express.Response, next: express.NextFunction) => {
     const {status = 500, message = 'Something went wrong'} = err;
     res.status(status).send(message);
 });

@@ -15,7 +15,7 @@ import './Game.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Container, Typography} from '@material-ui/core';
 
-let newWS: any;
+let newWS: WebSocket;
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -53,7 +53,7 @@ class Game extends Component<GameProps, GameState> {
 
     async componentDidMount() {
         await this.getDataFromServer();
-        newWS.onmessage = (response: any) => {
+        newWS.onmessage = (response) => {
             if (JSON.parse(response.data).id === localStorage.getItem('gameId')) {
                 this.setState({
                     chatMessages: JSON.parse(response.data).chatMessages,
