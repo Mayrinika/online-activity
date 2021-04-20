@@ -1,22 +1,16 @@
 .SuggestWord {
-    width: 600px;
-    height: 600px;
-    background-color: #fff;
-    margin: 0 auto;
-    display: flex;
+    height: 500px;
 }
-.SuggestWord-form {
-    flex: 0 1 50%;
+.SuggestWord-Form {
+    padding: 20px !important;
 }
 .SuggestWord-words-list {
-    flex: 0 1 50%;
-    text-align: left;
-}
-.SuggestWord-buttons {
-    justify-self: flex-end;
-    display: flex;
+    height: 50%;
+    overflow-y: auto;
+    height: 200px;
 }
 .SuggestWord-word {
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -25,15 +19,25 @@
     border-radius: 15px;
     padding: 0 10px;
 }
+.like {
+    color: grey;
+}
+.like-number {
+    position: relative;
+    top: 15px;
+    right: 25%;
+    color: grey;
+}
 .like:hover,
 .dislike:hover {
     cursor: pointer;
     transform: scale(1.2);
 }
-.like:active,
-.dislike:active {
-    transform: scale(0.8);
+.like-active {
+    color: #75a61c;
 }
-.active {
-    background-color: #6a8759;
+.SuggestWord-buttons {
+    justify-self: flex-end;
+    display: flex;
 }
+

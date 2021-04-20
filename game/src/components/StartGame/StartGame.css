@@ -1,15 +1,13 @@
 .StartGame {
-    width: 40%;
-    height: 20%;
-    margin: 0 auto;
-    background-color: white;
-    border: 1px solid black;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    margin-bottom: 32px;
 }
-.StartGame h3, .StartGame button {
-    margin: 20px;
+#gameId {
+    background-color: #F3F3F3;
+}
+#readButton {
+    margin-left: 8px;
+}
+.avatar {
+    border-radius: 50%;
+    border: 1px solid black;
 }

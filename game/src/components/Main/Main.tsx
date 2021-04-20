@@ -8,6 +8,7 @@ import getDomRoutes from "../../utils/domRoutes";
 import {GameType} from "../../utils/Types/types";
 import websocket from "../../utils/websocket";
 //styles
+import './Main.css'
 import crocoImg from '../../img/cocodrilo.png';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField} from '@material-ui/core';
@@ -115,27 +116,26 @@ class Main extends Component<LoginProps, LoginState> {
         const {classes} = this.props;
         const {isCodeIncorrect, code, isNameExist} = this.state;
         return (
-            <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
+            <Container className={classes.outerContainer + " Main"} maxWidth='lg'>
                 <Grid container spacing={2} justify="center">
                     <Grid item xs={5}>
                         <div className={classes.imgContainer}>
-                            <img className="Login-Img" src={crocoImg} alt="Крокодил"/>
+                            <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
                         </div>
                     </Grid>
                     <Grid item xs={5} className={classes.loginFormContainer}>
                         <Typography variant='h4' paragraph>
                             Онлайн - активити
                         </Typography>
-                        <form onSubmit={this.handleSubmit} className={classes.innerContainer}
-                              style={{paddingBottom: 16}}>
+                        <form onSubmit={this.handleSubmit} className={classes.innerContainer}>
                             {!this.context.user ?
                                 <Typography>Пожалуйста, войдите или зарегистрируйтесь</Typography>
                                 : <div>
                                     {isNameExist ?
                                         <Typography>{localStorage.getItem('playerName')}, не стоит жульничать!</Typography>
-                                        : <div style={{display: 'flex', alignItems: 'center'}}>
+                                        : <div className="Main-Welcome">
                                             <Typography>Добро пожаловать,</Typography>
-                                            <img src={this.context.user.avatar} alt='avatar' style={{width: 30, height: 30, borderRadius: '50%', padding: 10}}/>
+                                            <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
                                             <Typography> {localStorage.getItem('playerName')}</Typography>
                                         </div>
                                     }

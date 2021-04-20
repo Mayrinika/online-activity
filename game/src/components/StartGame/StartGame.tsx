@@ -112,16 +112,24 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
                 <Box>
-                    <Box style={{marginBottom: 32}}>
+                    <Box className="StartGame">
                         <Typography variant='h4' paragraph>
                             Пригласи друзей!
                         </Typography>
                         <Box>
-                            <TextField id='gameId' variant="outlined" size='small'
-                                       style={{backgroundColor: '#F3F3F3'}} value={localStorage.getItem('gameId')}/>
-                            <Button id='readButton' variant="contained" size='medium' color='secondary'
-                                    style={{marginLeft: 8}}
-                                    onClick={this.copyGameId}>Copy
+                            <TextField
+                                id='gameId'
+                                variant="outlined"
+                                size='small'
+                                value={localStorage.getItem('gameId')}
+                            />
+                            <Button
+                                id='readButton'
+                                variant="contained"
+                                size='medium'
+                                color='secondary'
+                                onClick={this.copyGameId}>
+                                Copy
                             </Button>
                         </Box>
                     </Box>
@@ -131,7 +139,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
                     <Box className={classes.innerContainer}>
                             {players && players.map(player => {
                                 return <div key={player.name} className={classes.playerContainer}>
-                                    {player.avatar && <img src={player.avatar as string} alt="avatar" style={{borderRadius: '50%', border: "1px solid black"}}/>}
+                                    {player.avatar && <img src={player.avatar as string} alt="avatar" className="avatar"/>}
                                     <Typography variant='subtitle1'>{player.name} </Typography>
                                 </div>;
                             })}

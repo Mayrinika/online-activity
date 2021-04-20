@@ -11,21 +11,51 @@
 .Chat-messages {
     margin-top: auto;
     overflow-y: auto;
-    margin-bottom: 10px;
+}
+.Chat-messages-form {
+    display: flex;
+    align-items: center;
+    margin: 0;
+    height: 40px;
+}
+.Chat-messages-input {
+    width: 110px;
+    height: 40px;
+    position: relative;
+    top: 4px;
 }
 .Chat-message-name {
     font-weight: 700;
     display: inline-block;
     margin-right: 5px;
 }
+.Chat-message-wrapper {
+    display: flex;
+    margin: 5px;
+    position: relative;
+    align-items: center;
+}
 .Chat-message{
     background-color: #749dd2;
+    height: 30px;
     width: 100%;
     border-radius: 15px;
     display: flex;
     align-items: center;
     text-indent: 20px;
-    color: #fff
+    color: #fff;
+}
+
+.avatar {
+    border-radius: 50%;
+    margin: 0 5px 0 0;
+    width: 30px;
+}
+.painters-icons {
+    position: absolute;
+    bottom: 10px;
+    z-index: 2;
+    right: 5px;
 }
 .icon {
     color: grey;
@@ -33,4 +63,10 @@
 .icon:hover {
     cursor: pointer;
     transform: scale(1.2);
+}
+.icon-hot-active {
+    color: red;
+}
+.icon-cold-active {
+    color: blue;
 }

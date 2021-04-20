@@ -8,8 +8,19 @@
     margin: 10px auto;
 }
 .ListOfPlayers-list {
-    height: 50%;
+    height: 40%;
 }
 .ListOfPlayers p {
     margin: 5px auto;
+}
+.player-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    margin: 5px;
+}
+.avatar {
+    border-radius: 50%;
+    margin: 0 5px 0 0;
+    width: 30px;
 }

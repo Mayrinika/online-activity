@@ -16,22 +16,15 @@ class ListOfPlayers extends Component<ListOfPlayersProps, {}> {
         return (
             <div className="ListOfPlayers" >
                 <Typography variant='caption' align='left'>Художник:</Typography>
-                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'start'}}>
-                    {this.props.painter.avatar && <img src={this.props.painter.avatar as string} alt="avatar" style={{borderRadius: '50%', margin: '0 5px 0 0', width: '30px'}}/>}
+                <div className="player-wrapper">
+                    {this.props.painter.avatar && <img src={this.props.painter.avatar as string} alt="avatar" className="avatar"/>}
                     <Typography variant='caption'>{this.props.painter.name}</Typography>
                 </div>
                 <Typography variant='caption'>Игроки:</Typography>
                 <div className="ListOfPlayers-list">
                     {this.props.players.map((player: Player) => (
-                        <div
-                            key={uuidv4()}
-                            style={{display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'start',
-                                margin: 5
-                            }}
-                        >
-                            {player.avatar && <img src={player.avatar as string} alt="avatar" style={{borderRadius: '50%', margin: '0 5px 0 0', width: '30px'}}/>}
+                        <div key={uuidv4()} className="player-wrapper">
+                            {player.avatar && <img src={player.avatar as string} alt="avatar" className="avatar"/>}
                             <Typography variant='caption'>{player.name}</Typography>
                         </div>
                     ))}

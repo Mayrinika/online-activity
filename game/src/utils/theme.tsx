@@ -38,23 +38,25 @@ export default {
         imgContainer: {
             borderRight:'1px solid gray',
 
-            '& .Login-Img': {
+            '& .Main-Img': {
                 width: 300,
                 marginLeft: 'auto',
                 marginRight: 'auto',
             }
         },
-        loginFormContainer: {
+        mainFormContainer: {
             marginLeft: 'auto',
             marginRight: 'auto',
             padding: 48
         },
         innerContainer: {
             //marginTop: 48,
-            padding: '48px 48px 48px 48px',
+            // padding: '48px 48px 48px 48px',
             border: '1px solid gray',
             borderRadius: 10,
             backgroundColor: '#F3F3F3',
+            height: '50%',
+            padding: '30px 48px 70px 48px',
         },
         playerContainer: {
             borderRadius: 10,

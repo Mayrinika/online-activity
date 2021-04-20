@@ -9,3 +9,9 @@
 .active {
     border: 1px solid black;
 }
+.painters-icons {
+    position: absolute;
+    bottom: 0;
+    z-index: 2;
+    right: 5px
+}

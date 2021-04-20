@@ -49,7 +49,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
                     return (
                         <Typography variant='subtitle1' paragraph className={classes.playerContainer}
                                     key={item.player.name}>
-                            {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" style={{borderRadius: '50%'}}/>}
+                            {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" className="avatar"/>}
                             {item.player.name}: {item.score}
                         </Typography>
                     );

@@ -109,12 +109,12 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         }
         const {classes} = this.props;
         return (
-            <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
+            <Container className={classes.outerContainer + " SuggestWord"} maxWidth='lg'>
                 <Typography variant='h6'>
                     Если у вас есть идеи слова для нашей игры, пожалуйста, добавьте его в форму ниже
                 </Typography>
-                <Box style={{height: '100%'}}>
-                    <form onSubmit={this.sendWord} className={classes.innerContainer} style={{padding: 20}}>
+                <Box>
+                    <form onSubmit={this.sendWord} className={"SuggestWord-Form " + classes.innerContainer}>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -137,41 +137,33 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                             Предложить
                         </Button>
                     </form>
-                    <Box style={{height: '50%', overflowY: 'auto'}}>
+                    <Box className="SuggestWord-words-list">
                         {this.state.words.filter(word => !word.isInDictionary && !word.isApproved && !word.isDeclined).map((word) => (
                             <div key={word.id} className="SuggestWord-word">
-                                <Typography variant='h4' style={{marginRight: 10}}>
+                                <Typography variant='h4'>
                                     {word.word}
                                 </Typography>
                                 <div className="SuggestWord-buttons">
                                     <Tooltip title="Супер">
                                         <ThumbUpAltIcon
-                                            className="like"
+                                            className={"like " + (word.likes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
                                             onClick={() => this.likeWord(word.id)}
-                                            style={{color: word.likes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : 'grey'}}
                                         />
                                     </Tooltip>
                                     <Typography variant='subtitle1'
-                                                style={{color: word.likes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#000',
-                                                    position: 'relative',
-                                                    top: 15,
-                                                    right: '25%'
-                                                }}>
+                                            className={"like-number "  + (word.likes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                            >
                                         {word.likes.length}
                                     </Typography>
                                     <Tooltip title="Не очень">
                                         <ThumbDownIcon
-                                            className="dislike"
+                                            className={"like " + (word.dislikes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
                                             onClick={() => this.dislikeWord(word.id)}
-                                            style={{color: word.dislikes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : 'grey'}}
                                         />
                                     </Tooltip>
                                     <Typography variant='subtitle1'
-                                                style={{color: word.dislikes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#000',
-                                                    position: 'relative',
-                                                    top: 15,
-                                                    right: '25%'
-                                                }}>
+                                            className={"like-number "  + (word.dislikes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                            >
                                         {word.dislikes.length}
                                     </Typography>
                                 </div>

@@ -133,19 +133,18 @@ class Signup extends Component<SignupProps, SignupState> {
         const {classes} = this.props;
         const {isNameExist, name, password, avatarIsLoading} = this.state;
         return (
-            <Container className={classes.outerContainer} maxWidth='lg' style={{height: 500}}>
+            <Container className={classes.outerContainer + " Signup"} maxWidth='lg'>
                 <Grid container spacing={2} justify="center">
                     <Grid item xs={5}>
                         <div className={classes.imgContainer}>
-                            <img className="Login-Img" src={crocoImg} alt="Крокодил"/>
+                            <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
                         </div>
                     </Grid>
                     <Grid item xs={5} className={classes.loginFormContainer}>
                         <Typography variant='h4' paragraph>
                             Регистрация
                         </Typography>
-                        <form onSubmit={this.handleSignup} className={classes.innerContainer}
-                              style={{paddingBottom: 16}}>
+                        <form onSubmit={this.handleSignup} className={classes.innerContainer + " Signup-Form"}>
                             <TextField
                                 variant="outlined"
                                 margin="normal"

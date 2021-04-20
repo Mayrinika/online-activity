@@ -152,18 +152,18 @@ class Game extends Component<GameProps, GameState> {
         const isPainter = playerName === painter.name;
         const {classes} = this.props;
         return (
-            <Container className={classes.outerContainer} maxWidth='lg' style={{height: '80vh'}}>
-                <header style={{display: 'flex', justifyContent: 'space-between'}}>
+            <Container className={classes.outerContainer + " Game"} maxWidth='lg'>
+                <header>
                     <Typography variant='h4' paragraph>{wordToDisplay}</Typography>
                     <Timer time={this.state.time}/>
                 </header>
-                <main style={{display: 'flex', height: '90%', width: '100%'}}>
+                <main>
                     {isPainter ?
                         <Canvas sendImg={this.sendImg} />
                         : imgURL !== '' ?
-                            <img src={imgURL} alt='img from server' style={{width: '70%', border: '1px solid black', background: '#fff'}}/>
-                            : <div style={{width: '70%', border: '1px solid black', background: '#fff'}}/>}
-                    <aside style={{width: '30%'}}>
+                            <img src={imgURL} alt='img from server' className="Game-Image"/>
+                            : <div className="Game-EmptyDiv"/>}
+                    <aside>
                         <ListOfPlayers players={guessers} painter={painter}/>
                         <Chat
                             isPainter={isPainter}

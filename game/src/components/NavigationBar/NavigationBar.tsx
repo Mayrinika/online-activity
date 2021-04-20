@@ -5,6 +5,7 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 //styles
+import './NavigationBar.css'
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, AppBar, Toolbar, Typography} from '@material-ui/core';
 
@@ -32,7 +33,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                         color="secondary"
                     >Предложить слово</Button>
                 </Link>
-                <img src={this.context.user.avatar} alt="avatar" style={{borderRadius: '50%', marginLeft: 'auto', marginRight: 0}}/>
+                <img src={this.context.user.avatar} alt="avatar" className="avatar NavigationBar-Right"/>
                 <Typography variant='subtitle1'>{this.context.user.name}</Typography>
                 <Button
                     className={classes.navButton}
@@ -49,7 +50,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         const {classes} = this.props;
         return (
             <>
-                <Link to={getDomRoutes().login} className={classes.navLink} style={{marginLeft: 'auto', marginRight: 0}}>
+                <Link to={getDomRoutes().login} className={classes.navLink + " NavigationBar-Right"}>
                     <Button
                         className={classes.navButton}
                         variant="contained"

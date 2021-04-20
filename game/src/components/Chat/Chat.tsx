@@ -93,13 +93,14 @@ class Chat extends Component<ChatProps, ChatState> {
     showButtons = (message: Message) => { //TODO return type
         const { isPainter } = this.props;
         if (isPainter) {
+            console.log(message.marks.hot, message.marks.cold)
             return (
-                <span style={{position: 'absolute', bottom: 0, zIndex: 2, right: 5}}>
+                <span className="painters-icons">
                     <Tooltip title="Тепло">
-                        <WhatshotIcon className="icon icon-hot" onClick={() => this.handlePlusClick(message.id)} style={{color: message.marks.hot ? 'red' : 'grey'}}/>
+                        <WhatshotIcon className={"icon icon-hot " + (message.marks.hot? "icon-hot-active" : "")} onClick={() => this.handlePlusClick(message.id)}/>
                     </Tooltip>
                     <Tooltip title="Холодно">
-                        <AcUnitIcon className="icon icon-cold" onClick={() => this.handleMinusClick(message.id)} style={{color: message.marks.cold ? 'blue' : 'grey'}}/>
+                        <AcUnitIcon className={"icon icon-cold " + (message.marks.cold? "icon-cold-active" : "")} onClick={() => this.handleMinusClick(message.id)}/>
                     </Tooltip>
                     <Tooltip title="Правильно!">
                         <CheckIcon className="icon icon-ok" onClick={() => this.wordIsGuessed(message.id)}/>
@@ -109,11 +110,15 @@ class Chat extends Component<ChatProps, ChatState> {
         }
         if (message.marks.hot)
             return (
-                <WhatshotIcon style={{color: 'red'}}/>
+                <Tooltip title="Тепло">
+                    <WhatshotIcon className="icon-hot-active"/>
+                </Tooltip>
             );
         if (message.marks.cold)
             return (
-                <AcUnitIcon style={{color: 'blue'}}/>
+                <Tooltip title="Холодно">
+                    <AcUnitIcon className="icon-cold-active"/>
+                </Tooltip>
             );
         return;
     };
@@ -126,8 +131,8 @@ class Chat extends Component<ChatProps, ChatState> {
             <div className='Chat'>
                 <div className='Chat-messages'>
                     {chatMessages.map((message: Message) => (
-                        <div key={message.id} style={{display: 'flex', margin: 5, position: 'relative'}}>
-                            {message.avatar && <img src={message.avatar as string} alt="avatar" style={{borderRadius: '50%', margin: '0 5px 0 0', width: '30px'}}/>}
+                        <div key={message.id} className='Chat-message-wrapper'>
+                            {message.avatar && <img src={message.avatar as string} alt="avatar" className="avatar"/>}
                             <div className='Chat-message'>
                                 <Typography variant='subtitle2'>
                                     {message.name}:
@@ -141,12 +146,12 @@ class Chat extends Component<ChatProps, ChatState> {
                     ))}
                 </div>
                 {!isPainter &&
-                <form onSubmit={this.addMessage} style={{display: 'flex', margin: 0}}>
+                <form onSubmit={this.addMessage} className="Chat-messages-form">
                     <TextField
-                        id='message'
-                        type='text'
-                        name='message'
-                        placeholder='ваш ответ'
+                        id="message"
+                        type="text"
+                        name="message"
+                        placeholder="ваш ответ"
                         value={inputMessage}
                         onChange={this.enterMessage}
                         variant="outlined"
@@ -155,15 +160,13 @@ class Chat extends Component<ChatProps, ChatState> {
                         size="small"
                         label="ваш ответ: "
                         autoFocus
-                        style={{margin: 0}}
                     />
                     <Button
-                        className={this.props.classes.button}
+                        className={"Chat-messages-input "}
                         variant="contained"
                         color="primary"
                         type="submit"
                         size="small"
-                        style={{margin: 0}}
                     >
                         Отправить
                     </Button>
