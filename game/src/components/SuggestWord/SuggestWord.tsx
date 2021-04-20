@@ -140,7 +140,7 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                     <Box style={{height: '50%', overflowY: 'auto'}}>
                         {this.state.words.filter(word => !word.isInDictionary && !word.isApproved && !word.isDeclined).map((word) => (
                             <div key={word.id} className="SuggestWord-word">
-                                <Typography variant='h4'>
+                                <Typography variant='h4' style={{marginRight: 10}}>
                                     {word.word}
                                 </Typography>
                                 <div className="SuggestWord-buttons">
@@ -148,22 +148,30 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                                         <ThumbUpAltIcon
                                             className="like"
                                             onClick={() => this.likeWord(word.id)}
-                                            style={{color: word.likes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#fff'}}
+                                            style={{color: word.likes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : 'grey'}}
                                         />
                                     </Tooltip>
                                     <Typography variant='subtitle1'
-                                                style={{color: word.likes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#000'}}>
+                                                style={{color: word.likes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#000',
+                                                    position: 'relative',
+                                                    top: 15,
+                                                    right: '25%'
+                                                }}>
                                         {word.likes.length}
                                     </Typography>
                                     <Tooltip title="Не очень">
                                         <ThumbDownIcon
                                             className="dislike"
                                             onClick={() => this.dislikeWord(word.id)}
-                                            style={{color: word.dislikes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#fff'}}
+                                            style={{color: word.dislikes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : 'grey'}}
                                         />
                                     </Tooltip>
                                     <Typography variant='subtitle1'
-                                                style={{color: word.dislikes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#000'}}>
+                                                style={{color: word.dislikes.includes(localStorage.getItem('playerName') || '') ? '#75a61c' : '#000',
+                                                    position: 'relative',
+                                                    top: 15,
+                                                    right: '25%'
+                                                }}>
                                         {word.dislikes.length}
                                     </Typography>
                                 </div>
