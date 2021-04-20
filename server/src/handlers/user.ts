@@ -52,8 +52,8 @@ export const login = async (req: any, res: any) => {
 };
 
 export const logout = async (req:any, res: any) => {
-    req.session.user = undefined;
-    res.status(200).send(undefined);
+    req.session.user = null;
+    res.status(200).send(null);
 };
 
 const hashPassword = async (password: string): Promise<string> => {

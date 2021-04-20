@@ -5,7 +5,7 @@ import React from "react";
 export const ApiContext = React.createContext<Api>({} as Api);
 
 interface ApiProviderState {
-    user: User | undefined;
+    user: User | undefined | null;
 }
 
 class ApiProvider extends React.Component<{}, ApiProviderState> {
@@ -19,9 +19,8 @@ class ApiProvider extends React.Component<{}, ApiProviderState> {
         };
     }
 
-    private setUser = (user?: User): void => {
+    private setUser = (user: User | undefined | null): void => {
         this.setState({user});
-        console.log(user);
     };
 
     componentDidMount() {
@@ -39,9 +38,9 @@ class ApiProvider extends React.Component<{}, ApiProviderState> {
 
 class ApiMethods implements Api {
     private _gameId: null | string = localStorage.getItem('gameId');
-    private readonly setUser: (user?: User) => void;
+    private readonly setUser: (user: User | undefined | null) => void;
 
-    constructor(setUser: (user?: User) => void) {
+    constructor(setUser: (user: User | undefined | null) => void) {
         this.setUser = setUser;
     }
 
@@ -130,7 +129,7 @@ class ApiMethods implements Api {
         })
             .then(res => this.checkStatus(res))
             .catch(err => console.log('Something went wrong:', err));
-        this.setUser(undefined);
+        this.setUser(null);
     };
 
     checkAuthorization = async (): Promise<void> => {
