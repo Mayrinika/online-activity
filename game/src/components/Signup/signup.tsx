@@ -1,4 +1,4 @@
-import React, {ChangeEventHandler, Component} from "react";
+import React, {Component} from "react";
 import {RouteComponentProps} from "react-router-dom";
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -23,6 +23,10 @@ interface SignupState {
     possibleNames: string[];
     isNameExist: boolean;
     avatarIsLoading: boolean;
+}
+
+interface ChangeEventHandler<HTMLInputElement> {
+    target: HTMLInputElement & EventTarget;
 }
 
 class Signup extends Component<SignupProps, SignupState> {
@@ -106,27 +110,31 @@ class Signup extends Component<SignupProps, SignupState> {
         }));
     };
 
-    handleLoadAvatar = (evt: any): void => {
+    handleLoadAvatar = (evt: ChangeEventHandler<HTMLInputElement>): void => {
         this.setState({avatarIsLoading: true});
         const width = 50;
         const height = 50;
-        let file = evt.target.files[0];
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            const img = new Image();
-            img.src = reader.result as string;
-            img.onload = () => {
-                const elem = document.createElement('canvas');
-                elem.width = width;
-                elem.height = height;
-                const ctx = elem.getContext('2d');
-                ctx?.drawImage(img, 0, 0, width, height);
-                const url = elem.toDataURL();
-                this.setState({avatar: url, avatarIsLoading: false});
+        const files = (evt.target as HTMLInputElement).files;
+        let file;
+        if (files && files.length) {
+            file = files[0];
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const img = new Image();
+                img.src = reader.result as string;
+                img.onload = () => {
+                    const elem = document.createElement('canvas');
+                    elem.width = width;
+                    elem.height = height;
+                    const ctx = elem.getContext('2d');
+                    ctx?.drawImage(img, 0, 0, width, height);
+                    const url = elem.toDataURL();
+                    this.setState({avatar: url, avatarIsLoading: false});
+                };
+                reader.onerror = error => console.log(error);
             };
-            reader.onerror = error => console.log(error);
-        };
+        }
     };
 
     render() {

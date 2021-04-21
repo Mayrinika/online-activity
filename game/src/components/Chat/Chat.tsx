@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component, ReactElement} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -90,10 +90,9 @@ class Chat extends Component<ChatProps, ChatState> {
         this.props.postMarks({ id: messageId, marks: { hot: isHot, cold: !isHot } });
     }
 
-    showButtons = (message: Message) => { //TODO return type
+    showButtons = (message: Message): ReactElement => {
         const { isPainter } = this.props;
         if (isPainter) {
-            console.log(message.marks.hot, message.marks.cold)
             return (
                 <span className="painters-icons">
                     <Tooltip title="Тепло">
@@ -120,7 +119,9 @@ class Chat extends Component<ChatProps, ChatState> {
                     <AcUnitIcon className="icon-cold-active"/>
                 </Tooltip>
             );
-        return;
+        return (
+            <div></div>
+        );
     };
 
     render() {

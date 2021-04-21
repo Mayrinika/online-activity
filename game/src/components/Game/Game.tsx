@@ -87,7 +87,7 @@ class Game extends Component<GameProps, GameState> {
             time: game.time,
         });
     };
-    refreshConnection = () => { //TODO return type
+    refreshConnection = (): void => {
         newWS = new WebSocket('ws://localhost:8080');
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {

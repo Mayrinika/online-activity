@@ -41,7 +41,7 @@ class Main extends Component<LoginProps, LoginState> {
         };
     }
 
-    addPlayer = async (gameId: string, player: string | null) => { //TODO return type
+    addPlayer = async (gameId: string, player: string | null): Promise<void> => {
         ws = new WebSocket('ws://localhost:8080');
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {

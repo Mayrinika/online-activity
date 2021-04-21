@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, ReactElement} from 'react';
 import {Link} from 'react-router-dom';
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -22,7 +22,7 @@ interface NavigationBarState {
 class NavigationBar extends React.Component<NavigationBarProps, NavigationBarState> {
     static contextType = ApiContext;
 
-    renderForAuthorizedUser = () => { //TODO return type
+    renderForAuthorizedUser = (): ReactElement => {
         const {classes} = this.props;
         return (
             <>
@@ -46,7 +46,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         );
     };
 
-    renderForUnauthorizedUser = () => { //TODO return type
+    renderForUnauthorizedUser = (): ReactElement => {
         const {classes} = this.props;
         return (
             <>
