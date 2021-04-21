@@ -133,11 +133,12 @@ class Chat extends Component<ChatProps, ChatState> {
                 <div className='Chat-messages'>
                     {chatMessages.map((message: Message) => (
                         <div key={message.id} className='Chat-message-wrapper'>
-                            {message.avatar && <img src={message.avatar as string} alt="avatar" className="avatar"/>}
+                            <Tooltip title={message.name}>
+                                <div>
+                                    {message.avatar && <img src={message.avatar as string} alt="avatar" className="avatar"/>}
+                                </div>
+                            </Tooltip>
                             <div className='Chat-message'>
-                                <Typography variant='subtitle2'>
-                                    {message.name}:
-                                </Typography>
                                 <Typography variant='subtitle2'>
                                     {message.text}
                                 </Typography>
