@@ -141,8 +141,8 @@ class Signup extends Component<SignupProps, SignupState> {
         const {classes} = this.props;
         const {isNameExist, name, password, avatarIsLoading} = this.state;
         return (
-            <Container className={classes.outerContainer + " Signup"} maxWidth='lg'>
-                <Grid container spacing={2} justify="center">
+            <Container className={classes.outerContainer + " Signup"} maxWidth='md'>
+                <Grid container spacing={10} justify="center">
                     <Grid item xs={5}>
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>

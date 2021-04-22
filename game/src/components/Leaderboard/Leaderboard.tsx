@@ -60,7 +60,7 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
                     color="primary"
                     size="large"
                     onClick={this.startOver}
-                >Начать заново</Button>
+                >Играть</Button>
             </Container>
         );
     }

@@ -116,8 +116,8 @@ class Main extends Component<LoginProps, LoginState> {
         const {classes} = this.props;
         const {isCodeIncorrect, code, isNameExist} = this.state;
         return (
-            <Container className={classes.outerContainer + " Main"} maxWidth='lg'>
-                <Grid container spacing={2} justify="center">
+            <Container className={classes.outerContainer + " Main"} maxWidth='md'>
+                <Grid container spacing={10} justify="center">
                     <Grid item xs={5}>
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>

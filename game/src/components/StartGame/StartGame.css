@@ -1,5 +1,8 @@
-.StartGame {
+.InviteFriends {
     margin-bottom: 32px;
+}
+.StartGame {
+    margin: 0 32px;
 }
 #gameId {
     background-color: #F3F3F3;

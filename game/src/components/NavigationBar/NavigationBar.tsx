@@ -5,7 +5,7 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 //styles
-import './NavigationBar.css'
+import './NavigationBar.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, AppBar, Toolbar, Typography} from '@material-ui/core';
 
@@ -72,27 +72,26 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         const {classes} = this.props;
         return (
             <AppBar className={classes.navBarContainer}>
-                <Container>
-                    <Toolbar>
-                        <Link to={getDomRoutes().main} className={classes.navLink}>
-                            <Button
-                                className={classes.navButton}
-                                variant="contained"
-                                color="secondary"
-                            >Главная</Button>
-                        </Link>
-                        <Link to={getDomRoutes().leaderboard} className={classes.navLink}>
-                            <Button
-                                className={classes.navButton}
-                                variant="contained"
-                                color="secondary"
-                            >Лидерборд</Button>
-                        </Link>
-                        {this.context.user && this.renderForAuthorizedUser()}
-                        {!this.context.user && this.renderForUnauthorizedUser()}
-                    </Toolbar>
-                </Container>
+                <Toolbar>
+                    <Link to={getDomRoutes().main} className={classes.navLink}>
+                        <Button
+                            className={classes.navButton}
+                            variant="contained"
+                            color="secondary"
+                        >Главная</Button>
+                    </Link>
+                    <Link to={getDomRoutes().leaderboard} className={classes.navLink}>
+                        <Button
+                            className={classes.navButton}
+                            variant="contained"
+                            color="secondary"
+                        >Лидерборд</Button>
+                    </Link>
+                    {this.context.user && this.renderForAuthorizedUser()}
+                    {!this.context.user && this.renderForUnauthorizedUser()}
+                </Toolbar>
             </AppBar>);
     }
 }
+
 export default (withStyles(styles)(NavigationBar));

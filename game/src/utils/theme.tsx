@@ -18,7 +18,6 @@ export default {
         navBarContainer: {
            // backgroundColor: 'rgba(244,244,244,0.85)',
             border: '1px solid black',
-            borderRadius: 10,
         },
         navButton: {
             margin: '16px 8px 16px 8px',
@@ -30,13 +29,14 @@ export default {
             // width: 1000,
             // height: 500,
             margin: '0 auto',
-            padding: 48,
+            padding: '48px 16px',
             backgroundColor: 'rgba(244,244,244,0.85)',
             border: '1px solid black',
             borderRadius: 10,
         },
         imgContainer: {
-            borderRight:'1px solid gray',
+            // borderRight:'1px solid gray',
+            // paddingRight: '16px',
 
             '& .Main-Img': {
                 width: 300,

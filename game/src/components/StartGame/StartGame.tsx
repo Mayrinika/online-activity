@@ -99,6 +99,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         } else {
             navigator.clipboard.writeText(inputValue)
                 .then(() => {
+                    inputEl.select();
                 })
                 .catch(err => {
                     console.log('Something went wrong', err);
@@ -111,8 +112,8 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
-                <Box>
-                    <Box className="StartGame">
+                <Box className="StartGame">
+                    <Box className="InviteFriends">
                         <Typography variant='h4' paragraph>
                             Пригласи друзей!
                         </Typography>
