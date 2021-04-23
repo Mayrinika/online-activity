@@ -1,9 +1,9 @@
 export default {
     palette: {
         primary: {
-            light: '#749dd2',
-            main: '#5285c7',
-            dark: '#395d8b',
+            light: '#40c3ef',
+            main: '#11b4eb',
+            dark: '#0b7da4',
             contrastText: '#fff'
         },
         secondary: {
@@ -17,7 +17,7 @@ export default {
     content: {
         navBarContainer: {
            // backgroundColor: 'rgba(244,244,244,0.85)',
-            border: '1px solid black',
+            border: '1px solid #0b7da4',
         },
         navButton: {
             margin: '16px 8px 16px 8px',
