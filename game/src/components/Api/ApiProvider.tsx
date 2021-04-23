@@ -56,7 +56,7 @@ class ApiMethods implements Api {
             },
         })
             .then(res => this.checkStatus(res))
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
 
     getUserLoginData = async (): Promise<UserLoginData> => {
@@ -66,7 +66,7 @@ class ApiMethods implements Api {
                 return res;
             })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
         if (result.loggedIn)
             this.setUser(result.user);
         return result;
@@ -85,7 +85,7 @@ class ApiMethods implements Api {
                 return res;
             })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
         if (!user.error)
             this.setUser(user);
         return user;
@@ -98,7 +98,7 @@ class ApiMethods implements Api {
                 return res;
             })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
 
     login = async (name: string, password: string): Promise<User> => {
@@ -114,7 +114,7 @@ class ApiMethods implements Api {
                 return res;
             })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
         if (!user.error)
             this.setUser(user);
         return user;
@@ -128,14 +128,14 @@ class ApiMethods implements Api {
             },
         })
             .then(res => this.checkStatus(res))
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
         this.setUser(null);
     };
 
     checkAuthorization = async (): Promise<void> => {
         await fetch('/cookie-auth-protected-route', {credentials: 'include'})
             .then(res => this.checkStatus(res))
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
 
     getAllGames = async (): Promise<GameType[]> => {
@@ -145,7 +145,7 @@ class ApiMethods implements Api {
                 return res;
             })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
 
     getGame = async (): Promise<GameType> => {
@@ -155,7 +155,7 @@ class ApiMethods implements Api {
                 return res;
             })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
 
     clearCountdown = async (): Promise<void> => {
@@ -166,7 +166,7 @@ class ApiMethods implements Api {
             }
         })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
 
     sendLineToServer = async (line: Line): Promise<void> => {
@@ -178,7 +178,7 @@ class ApiMethods implements Api {
             body: JSON.stringify({line})
         })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
 
     getLeaderboardDataFromServer = async (): Promise<[userId: string, score: number][]> => {
@@ -188,7 +188,7 @@ class ApiMethods implements Api {
                 return res;
             })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
 
     getSuggestWordsFromServer = async (): Promise<SuggestedWord[]> => {
@@ -198,7 +198,7 @@ class ApiMethods implements Api {
                 return res;
             })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
 
     deleteLine = async (): Promise<void> => {
@@ -207,8 +207,12 @@ class ApiMethods implements Api {
             headers: {'Content-Type': 'application/json'}
         })
             .then(res => res.json())
-            .catch(err => console.log('Something went wrong:', err));
+            .catch(err => this.reportError(err));
     };
+
+    private reportError(err: string): void {
+        console.log('Something went wrong:', err);
+    }
 
     private async checkStatus(response: Response): Promise<void> {
         if (!(response.status >= 200 && response.status < 300)) {
@@ -220,7 +224,7 @@ class ApiMethods implements Api {
                 serverResponse = undefined;
             }
             if (serverResponse !== undefined) {
-                throw new Error(serverResponse.Message || serverResponse.message || serverResponse.Error);
+                throw new Error(serverResponse.error);
             }
             throw new Error(errorText);
         }
