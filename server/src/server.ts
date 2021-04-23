@@ -133,7 +133,8 @@ function sendSuggestedWordToServer(parsedMessage: {word: string, id: string}) {
     if (dictionary.words.includes(parsedMessage.word)) {
         addSuggestedWord(parsedMessage, true);
         sendSuggestedWordsToAllClients();
-        deleteElementFromArray(suggestedWords, parsedMessage.word);
+        const wordToDelete = suggestedWords.find(el => el.word === parsedMessage.word);
+        deleteElementFromArray(suggestedWords, wordToDelete);
     } else {
         addSuggestedWord(parsedMessage, false);
         sendSuggestedWordsToAllClients();
