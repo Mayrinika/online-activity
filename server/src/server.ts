@@ -260,7 +260,7 @@ function addNewWordToDictionary(word: string) {
     fs.outputJsonSync('./src/utils/words.json', newWords);
 }
 
-function deleteElementFromArray(array: any[], element: any) {
+function deleteElementFromArray<T>(array: T[], element: T) {
     array.splice(array.indexOf(element), 1);
 }
 
