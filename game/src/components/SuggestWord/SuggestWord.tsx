@@ -52,7 +52,7 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
     }
 
     setConnection = (): void => {
-        ws = new WebSocket('ws://localhost:9000');
+        ws = new WebSocket('wss://' + window.location.host);
     };
 
     sendWord = (evt: React.ChangeEvent<HTMLFormElement>): void => {

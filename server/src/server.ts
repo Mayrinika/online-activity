@@ -35,7 +35,7 @@ app.use(cors({ //TODO cors?
     credentials: true
 }));
 
-//app.use(express.static(path.join(__dirname + 'build')));
+app.use(express.static(path.join(__dirname + 'build')));
 
 app.use(express.json());
 app.use(session({
@@ -56,7 +56,7 @@ app.use((err: { status: number, message: string }, req: express.Request, res: ex
     res.status(status).send(message);
 });
 
-/*app.get('/static/!**', function (req, res) {
+app.get('/static/!**', function (req, res) {
     const url = req.path.split('static')[1];
     const file = path.join(__dirname, 'build', 'static', url);
     res.sendFile(file);
@@ -66,7 +66,7 @@ app.get('/!*.(ico|png|txt|json)', function (req, res) {
     const url = req.path.split('/')[1];
     const file = path.join(__dirname, 'build', url);
     res.sendFile(file);
-});*/
+});
 
 app.get('/api/games', getAllGames);
 

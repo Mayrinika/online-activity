@@ -58,7 +58,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
     }
 
     refreshConnection = (): void => {
-        newWS = new WebSocket('ws://localhost:9000');
+        newWS = new WebSocket('wss://' + window.location.host);
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {
                 return newWS.send(message);
