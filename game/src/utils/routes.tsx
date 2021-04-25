@@ -1,21 +1,22 @@
 export default function getRoutes(currentGameId?: string | null) {
+    const api = '/api';
     return {
-        app: `/app`,
-        gameId: `/${currentGameId}`,
-        chatMessages: `/${currentGameId}/chatMessages`,
-        addMark:`/${currentGameId}/addMark`,
-        addPlayer: `/${currentGameId}/addPlayer`,
-        addImg: `/${currentGameId}/addImg`,
-        deleteLine: `/${currentGameId}/deleteLine`,
-        addWordAndPainter: `/${currentGameId}/addWordAndPainter`,
-        clearCountdown: `/${currentGameId}/clearCountdown`,
-        setWinner: `/${currentGameId}/setWinner`,
-        setTimeIsOver: `/${currentGameId}/setTimeIsOver`,
-        addLine: `/${currentGameId}/addLine`,
-        leaderboard: `/leaderboard`,
-        suggestedWords: '/suggestedWords',
-        signup: '/signup',
-        login: '/login',
-        logout: '/logout'
+        games: `${api}/games`,
+        gameId: `${api}/${currentGameId}`,
+        chatMessages: `${api}/${currentGameId}/chatMessages`,
+        addMark:`${api}/${currentGameId}/addMark`,
+        addPlayer: `${api}/${currentGameId}/addPlayer`,
+        addImg: `${api}/${currentGameId}/addImg`,
+        deleteLine: `${api}/${currentGameId}/deleteLine`,
+        addWordAndPainter: `${api}/${currentGameId}/addWordAndPainter`,
+        clearCountdown: `${api}/${currentGameId}/clearCountdown`,
+        setWinner: `${api}/${currentGameId}/setWinner`,
+        setTimeIsOver: `${api}/${currentGameId}/setTimeIsOver`,
+        addLine: `${api}/${currentGameId}/addLine`,
+        leaderboard: `${api}/leaderboard`,
+        suggestedWords: `${api}/suggestedWords`,
+        signup: `${api}/signup`,
+        login: `${api}/login`,
+        logout: `${api}/logout`
     }
 }

@@ -50,25 +50,25 @@ app.use((err: { status: number, message: string }, req: express.Request, res: ex
     res.status(status).send(message);
 });
 
-app.get('/app', getAllGames);
+app.get('/api/games', getAllGames);
 
 //user routes
-app.get('/signup', getAllUsers);
-app.post('/signup', signup);
-app.get('/login', getUserLoginData);
-app.post('/login', login);
-app.post('/logout', logout);
+app.get('/api/signup', getAllUsers);
+app.post('/api/signup', signup);
+app.get('/api/login', getUserLoginData);
+app.post('/api/login', login);
+app.post('/api/logout', logout);
 //game routes
-app.get('/suggestedWords', getSuggestedWords);
+app.get('/api/suggestedWords', getSuggestedWords);
 
-app.get('/leaderboard', getLeaderboard);
+app.get('/api/leaderboard', getLeaderboard);
 
-app.get('/:gameId', getCurrentGame);
-app.post('/:gameId', addGame);
-app.post('/:gameId/addLine', addLine);
-app.post('/:gameId/deleteLine', deleteLine);
-app.post('/:gameId/clearCountdown', clearCountdown);
-app.post('/:gameId/setTimeIsOver', setTimeIsOver);
+app.get('/api/:gameId', getCurrentGame);
+app.post('/api/:gameId', addGame);
+app.post('/api/:gameId/addLine', addLine);
+app.post('/api/:gameId/deleteLine', deleteLine);
+app.post('/api/:gameId/clearCountdown', clearCountdown);
+app.post('/api/:gameId/setTimeIsOver', setTimeIsOver);
 
 app.listen(port, () => { //TODO (err) ?
     // if (err) {

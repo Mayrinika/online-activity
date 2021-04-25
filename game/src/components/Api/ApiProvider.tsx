@@ -138,7 +138,7 @@ class ApiMethods implements Api {
     };
 
     getAllGames = async (): Promise<GameType[]> => {
-        return await fetch(getRoutes().app)
+        return await fetch(getRoutes().games)
             .then(res => {
                 this.checkStatus(res);
                 return res;
