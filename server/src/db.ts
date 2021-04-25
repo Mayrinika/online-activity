@@ -21,11 +21,11 @@ export function initializeDb(): void {
         fs.outputFileSync(__dirname + dbPrefix + paths.words, '{"words": []}');
 }
 
-function getFile(path: string) { //TODO return type
+function getFile<T>(path: string):T {
     return fs.readJsonSync(__dirname + dbPrefix + path);
 }
 
-function writeToFile<T>(path: string, data: T) { //TODO return type
+function writeToFile<T>(path: string, data: T): void {
     fs.outputJsonSync(__dirname + dbPrefix + path, data);
 }
 
