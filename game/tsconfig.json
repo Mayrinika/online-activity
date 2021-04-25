@@ -6,6 +6,7 @@
       "dom.iterable",
       "esnext"
     ],
+    "outDir": "static",
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -21,6 +22,7 @@
     "noEmit": true
   },
   "include": [
-    "src"
+    "src",
+    "public"
   ]
 }
