@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import WebSocket from 'ws';
+import WebSocket, {Server} from 'ws';
 import WebsocketMessage from './utils/websocket';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
@@ -23,17 +23,20 @@ import {
 } from "./handlers/game";
 //utils
 import {Player, Message, GameType, User, SuggestedWord} from "./utils/types";
-
+import * as path from "path";
 
 initializeDb();
 const app = express();
 const port = process.env.PORT || 9000;
 
-app.use(cors({ //TODO ?
+app.use(cors({ //TODO cors?
     origin: ["https://localhost:3000"],
     methods: ["GET", "POST"],
     credentials: true
 }));
+
+//app.use(express.static(path.join(__dirname + 'build')));
+
 app.use(express.json());
 app.use(session({
     secret: 'shpora-frontend2021',
@@ -52,6 +55,18 @@ app.use((err: { status: number, message: string }, req: express.Request, res: ex
     const {status = 500, message = 'Something went wrong'} = err;
     res.status(status).send(message);
 });
+
+/*app.get('/static/!**', function (req, res) {
+    const url = req.path.split('static')[1];
+    const file = path.join(__dirname, 'build', 'static', url);
+    res.sendFile(file);
+});
+
+app.get('/!*.(ico|png|txt|json)', function (req, res) {
+    const url = req.path.split('/')[1];
+    const file = path.join(__dirname, 'build', url);
+    res.sendFile(file);
+});*/
 
 app.get('/api/games', getAllGames);
 
@@ -73,14 +88,19 @@ app.post('/api/:gameId/deleteLine', deleteLine);
 app.post('/api/:gameId/clearCountdown', clearCountdown);
 app.post('/api/:gameId/setTimeIsOver', setTimeIsOver);
 
-app.listen(port, () => { //TODO (err) ?
+// app.get('*', function (req, res) {
+//     const index = path.join(__dirname, 'build', 'index.html');
+//     res.sendFile(index);
+// });
+
+const server = app.listen(port, () => { //TODO (err) ?
     // if (err) {
     //     return console.log('something bad happened', err);
     // }
-    console.log(`Example app listening at http://localhost:${port}/app`);
+    console.log(`Example app listening at http://localhost:${port}`);
 });
 
-const wss = new WebSocket.Server({port: 8080});
+const wss = new Server({server});
 const webSockets: {[id: string]: WebSocket[]} = {};
 
 wss.on('connection', (ws) => {
