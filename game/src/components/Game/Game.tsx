@@ -88,6 +88,8 @@ class Game extends Component<GameProps, GameState> {
         });
     };
     refreshConnection = (): void => {
+        //for local build:
+        //newWS = new WebSocket('ws://localhost:9000');
         newWS = new WebSocket('wss://' + window.location.host);
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
             waitForConnection(function () {
