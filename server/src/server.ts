@@ -56,13 +56,13 @@ app.use((err: { status: number, message: string }, req: express.Request, res: ex
     res.status(status).send(message);
 });
 
-app.get('/static/!**', function (req, res) {
+app.get('/static/**', function (req, res) {
     const url = req.path.split('static')[1];
     const file = path.join(__dirname, 'build', 'static', url);
     res.sendFile(file);
 });
 
-app.get('/!*.(ico|png|txt|json)', function (req, res) {
+app.get('/*.(ico|png|txt|json)', function (req, res) {
     const url = req.path.split('/')[1];
     const file = path.join(__dirname, 'build', url);
     res.sendFile(file);
@@ -88,10 +88,10 @@ app.post('/api/:gameId/deleteLine', deleteLine);
 app.post('/api/:gameId/clearCountdown', clearCountdown);
 app.post('/api/:gameId/setTimeIsOver', setTimeIsOver);
 
-// app.get('*', function (req, res) {
-//     const index = path.join(__dirname, 'build', 'index.html');
-//     res.sendFile(index);
-// });
+app.get('*', function (req, res) {
+    const index = path.join(__dirname, 'build', 'index.html');
+    res.sendFile(index);
+});
 
 const server = app.listen(port, () => { //TODO (err) ?
     // if (err) {
