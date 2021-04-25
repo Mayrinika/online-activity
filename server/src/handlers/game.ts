@@ -1,9 +1,9 @@
-import fs from "fs-extra";
 import {GameType, SuggestedWord} from "../utils/types";
 import express from 'express';
+import db from "../db";
 
 export const GAME_TIME: number = 3 * 60;
-export const timerIds: { [id: string] : ReturnType<typeof setTimeout> } = {}; //TODO разобраться с типом TimerIds
+export const timerIds: { [id: string]: ReturnType<typeof setTimeout> } = {}; //TODO разобраться с типом TimerIds
 
 export const suggestedWords: SuggestedWord[] = [];
 
@@ -18,13 +18,16 @@ export const getSuggestedWords = (req: express.Request, res: express.Response) =
 };
 
 export const getLeaderboard = (req: express.Request, res: express.Response) => {
-    const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
+    const leaderboard = db.getLeaderboard();
     res.status(200).send(leaderboard.players);
 };
 
 export const getCurrentGame = (req: express.Request, res: express.Response) => {
     const currentGame = games.find(game => game.id === req.params.gameId);
-    res.status(200).send(currentGame);
+    if (!currentGame)
+        res.status(404).send(`game with id={${req.params.gameId}} not found`);
+    else
+        res.status(200).send(currentGame);
 };
 
 export const addGame = (req: express.Request, res: express.Response) => {
@@ -32,7 +35,7 @@ export const addGame = (req: express.Request, res: express.Response) => {
         id: req.params.gameId,
         players: [],
         wordToGuess: '',
-        painter: {name:'', avatar: null},
+        painter: {name: '', avatar: null},
         img: '',
         chatMessages: [],
         time: GAME_TIME,

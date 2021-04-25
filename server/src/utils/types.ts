@@ -6,7 +6,7 @@ export interface User {
     id: string;
     name: string;
     password: string;
-    avatar?: string | ArrayBuffer | null;
+    avatar: string | ArrayBuffer | null;
 }
 export interface SuggestedWord {
     id: string;

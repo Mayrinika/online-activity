@@ -1,8 +1,8 @@
-import fs from "fs-extra";
 import {v4 as uuidv4} from "uuid";
 import bcrypt from "bcrypt";
 import express from 'express';
 import {User} from '../utils/types';
+import db from "../db";
 
 declare module 'express-session' {
     interface SessionData {
@@ -11,17 +11,17 @@ declare module 'express-session' {
 }
 
 export const getAllUsers = (req: express.Request, res: express.Response) => {
-    const users = fs.readJsonSync('./src/utils/users.json');
+    const users = db.getUsers();
     res.status(200).send(users);
 };
 
 export const signup = async (req: express.Request, res: express.Response) => {
-    const users = fs.readJsonSync('./src/utils/users.json');
+    const users = db.getUsers();
     const {name, password, avatar} = req.body;
     const hash = await hashPassword(password);
     const user = {id: uuidv4(), name, password: hash, avatar};
     users.push(user);
-    fs.outputJsonSync('./src/utils/users.json', users);
+    db.saveUsers(users);
     req.session.user = user;
     res.status(200).send(user);
 };
@@ -36,7 +36,7 @@ export const getUserLoginData = (req: express.Request, res: express.Response) =>
 };
 
 export const login = async (req: express.Request, res: express.Response) => {
-    const users = fs.readJsonSync('./src/utils/users.json');
+    const users = db.getUsers();
     const {name, password} = req.body;
     const user = users.find((user: User) => user.name === name);
     if (!user) {

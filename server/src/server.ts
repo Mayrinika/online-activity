@@ -1,11 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import fs from 'fs-extra';
 import WebSocket from 'ws';
 import WebsocketMessage from './utils/websocket';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+//db
+import db, {initializeDb} from './db';
 //handlers
 import {games, suggestedWords, GAME_TIME, timerIds} from "./handlers/game";
 import {getAllUsers, signup, getUserLoginData, login, logout} from './handlers/user';
@@ -23,10 +24,12 @@ import {
 //utils
 import {Player, Message, GameType, User, SuggestedWord} from "./utils/types";
 
+
+initializeDb();
 const app = express();
 const port = process.env.PORT || 9000;
 
-app.use(cors({
+app.use(cors({ //TODO ?
     origin: ["https://localhost:3000"],
     methods: ["GET", "POST"],
     credentials: true
@@ -129,7 +132,7 @@ function parse(message: string) {
 }
 
 function sendSuggestedWordToServer(parsedMessage: {word: string, id: string}) {
-    const dictionary = fs.readJsonSync('./src/utils/words.json');
+    const dictionary = db.getWords();
     if (dictionary.words.includes(parsedMessage.word)) {
         addSuggestedWord(parsedMessage, true);
         sendSuggestedWordsToAllClients();
@@ -171,7 +174,7 @@ function dislikeWord(suggestedWord: SuggestedWord, author: string) {
 }
 
 function register(parsedMessage: {player: string}, currentGame: GameType, gameId: string, ws: WebSocket) {
-    const users = fs.readJsonSync('./src/utils/users.json');
+    const users = db.getUsers();
     const user = users.find((user: User) => user.name === parsedMessage.player);
     const avatar = user ? user.avatar : null;
     addPlayer(currentGame, parsedMessage.player, avatar);
@@ -222,7 +225,7 @@ function sendImg(currentGame: GameType, parsedMessage: {img: string}, gameId: st
     sendGameToClientsByGameId(gameId, currentGame);
 }
 
-function getRandomWord(words: []): string {
+function getRandomWord(words: string[]): string {
     const randomIdx = Math.floor(Math.random() * words.length);
     return words[randomIdx];
 }
@@ -232,7 +235,7 @@ function getPainter(players: Player[]): Player {
     return players[randomIdx];
 }
 
-function addPlayer(currentGame: GameType, name: string, avatar: string) {
+function addPlayer(currentGame: GameType, name: string, avatar: string | null | ArrayBuffer) {
     currentGame.players.push({name: name, avatar: avatar});
 }
 
@@ -255,10 +258,10 @@ function addSuggestedWord(parsedMessage: { word: string, id: string }, inDiction
 }
 
 function addNewWordToDictionary(word: string) {
-    const words = fs.readJsonSync('./src/utils/words.json');
+    const words = db.getWords();
     const newWords: { words?: string[] } = {};
     newWords.words = [...words.words, word];
-    fs.outputJsonSync('./src/utils/words.json', newWords);
+    db.saveWords(newWords);
 }
 
 function deleteElementFromArray<T>(array: T[], element: T) {
@@ -281,7 +284,7 @@ function sendGameToClientsByGameId(gameId: string, currentGame: GameType) {
 
 function chooseWordToGuess(currentGame: GameType) {
     if (currentGame.wordToGuess === '') {
-        const words = fs.readJsonSync('./src/utils/words.json').words;
+        const words = db.getWords().words;
         currentGame.wordToGuess = getRandomWord(words);
     }
 }
@@ -341,19 +344,18 @@ function addScoreForMarks(currentGame: GameType) {
 }
 
 function updateLeaderboard(localScores: {player: Player, score: number}[]) {
-    const leaderboard = fs.readJsonSync('./src/utils/leaderboard.json');
-    const newLeaderboard:{ players: {player: Player, score: number}[] } = {players: [...leaderboard.players]};
+    const leaderboard = db.getLeaderboard();
     for (const {player, score} of localScores) {
-        const playerFound = newLeaderboard.players.find((playerGlobal) => playerGlobal.player.name === player.name);
+        const playerFound = leaderboard.players.find((playerGlobal) => playerGlobal.player.name === player.name);
         if (playerFound) {
             playerFound.score += score;
         } else {
-            newLeaderboard.players.push({player, score});
+            leaderboard.players.push({player, score});
         }
     }
-    newLeaderboard.players.sort((item1: {player: Player, score: number}, item2: {player: Player, score: number}) =>
+    leaderboard.players.sort((item1: {player: Player, score: number}, item2: {player: Player, score: number}) =>
         item2.score - item1.score);
-    fs.outputJsonSync('./src/utils/leaderboard.json', newLeaderboard);
+    db.saveLeaderboard(leaderboard);
 }
 
 
