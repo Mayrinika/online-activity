@@ -13,8 +13,14 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "rootDir": "src"
   },
-  "lib": ["es2015"],
+  "include": [
+    "src"
+  ],
+  "lib": [
+    "es2015"
+  ]
 }
 
