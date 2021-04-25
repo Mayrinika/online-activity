@@ -5,8 +5,15 @@
   "main": "dist/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node dist/server.js",
-    "eslint": "eslint"
+    "eslint": "eslint",
+    "build-ts-heroku": "tsc && mv -i -v build dist/ && mv -i -v db dist/ && rm -v -rf src",
+    "build-ts": "copyfiles build/** dist && copyfiles db/** dist && tsc",
+    "postinstall": "npm run build-ts-heroku",
+    "start": "npm run serve",
+    "serve": "node dist/server.js",
+    "watch-node": "nodemon dist/server.js",
+    "watch-ts": "tsc -w",
+    "deploy": "git add . && git commit -m Heroku && git push -f heroku master"
   },
   "author": "",
   "license": "ISC",
