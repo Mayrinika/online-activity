@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {RouteComponentProps} from 'react-router-dom';
+import {Link, RouteComponentProps} from 'react-router-dom';
 import {v4 as uuidv4} from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -135,8 +135,10 @@ class Main extends Component<LoginProps, LoginState> {
                                         <Typography>{localStorage.getItem('playerName')}, не стоит жульничать!</Typography>
                                         : <div className="Main-Welcome">
                                             <Typography>Добро пожаловать,</Typography>
-                                            <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
-                                            <Typography> {localStorage.getItem('playerName')}</Typography>
+                                            <Link to={getDomRoutes().userProfile} className="Main-Link">
+                                                <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
+                                                <Typography> {localStorage.getItem('playerName')}</Typography>
+                                            </Link>
                                         </div>
                                     }
                                     <TextField

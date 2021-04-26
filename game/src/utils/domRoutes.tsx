@@ -8,5 +8,6 @@ export default function getDomRoutes(currentGameId?: string | null) {
         suggestWord: '/suggestWord',
         login: '/login',
         signup: '/signup',
+        userProfile: '/userProfile'
     };
 }

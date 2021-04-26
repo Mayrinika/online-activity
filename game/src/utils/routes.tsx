@@ -17,6 +17,8 @@ export default function getRoutes(currentGameId?: string | null) {
         suggestedWords: `${api}/suggestedWords`,
         signup: `${api}/signup`,
         login: `${api}/login`,
-        logout: `${api}/logout`
+        logout: `${api}/logout`,
+        changePassword: `${api}/changePassword`,
+        changeAvatar: `${api}/changeAvatar`,
     }
 }

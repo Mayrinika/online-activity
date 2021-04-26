@@ -14,3 +14,8 @@
     border-radius: 50%;
     padding: 10px;
 }
+.Main-Link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
