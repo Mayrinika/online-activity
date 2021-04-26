@@ -1,6 +1,5 @@
 enum WebsocketMessage {
     sendSuggestedWordToServer = 'sendSuggestedWordToServer',
-    sendPossibleGamesToServer = 'sendPossibleGamesToServer',
     likeWord = 'likeWord',
     dislikeWord = 'dislikeWord',
     register = 'register',
