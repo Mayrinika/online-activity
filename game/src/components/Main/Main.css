@@ -1,5 +1,5 @@
 .Main {
-    height: 500px;
+    height: 80vh;
 }
 .Main-Container {
     display: flex;
@@ -18,4 +18,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+@media (max-width: 960px) {
+    .Main-Img {
+        display: none;
+    }
 }
