@@ -20,7 +20,7 @@ interface PossibleGamesProps extends RouteComponentProps, WithStyles<typeof styl
 
 interface PossibleGamesState {
     possibleGames: GameType[];
-    //allGames: GameType[];
+    allGames: GameType[];
 }
 
 class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
@@ -30,21 +30,42 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
         super(props);
         this.state = {
             possibleGames: [],
-            //allGames: []
+            allGames: []
         };
+        this.setConnection();
     }
 
     async componentDidMount() {
-        //await this.getAllGames();
-        //const possibleGames = this.state.allGames.filter((game: GameType) => game.time > 120);
-        const possibleGames = await this.context.getPossibleGamesFromServer();
+        await this.getAllGames();
+        const possibleGames = this.state.allGames.filter((game: GameType) => game.time > 120);
+        //const possibleGames = await this.context.getPossibleGamesFromServer();
         this.setState({possibleGames});
+        this.setConnection();
+        ws.onmessage = (response) => {
+            this.setState({possibleGames: JSON.parse(response.data)});
+        };
+        this.sendPossibleGames();
     }
 
-    // getAllGames = async (): Promise<void> => {
-    //     const allGames = await this.context.getAllGames();
-    //     this.setState({allGames: allGames});
-    // };
+    componentWillUnmount() {
+        ws.close();
+    }
+
+    setConnection = (): void => {
+        ws = new WebSocket('ws://localhost:9000');
+    };
+    sendPossibleGames = (): void => {
+        ws.send(JSON.stringify({
+            'messageType': websocket.sendPossibleGamesToServer,
+            'possibleGames': this.state.possibleGames,
+        }));
+        //this.setState({enteredWord: ''});
+    };
+
+    getAllGames = async (): Promise<void> => {
+        const allGames = await this.context.getAllGames();
+        this.setState({allGames: allGames});
+    };
 
     handleJoin = async (gameId: string): Promise<void> => {
         await this.startGame(localStorage.getItem('playerName'), gameId);
@@ -54,7 +75,7 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
         localStorage.setItem('gameId', code);
         this.context.changeGameId(code);
         await this.joinGame(name, code);
-        this.props.history.push(getDomRoutes(code).startGame); //TODO
+        this.props.history.push(getDomRoutes(code).startGame);
     };
 
     joinGame = async (player: string | null, gameId: string): Promise<void> => {

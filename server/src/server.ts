@@ -8,7 +8,7 @@ import bodyParser from 'body-parser';
 //db
 import db, {initializeDb} from './db';
 //handlers
-import {games, suggestedWords, GAME_TIME, timerIds} from "./handlers/game";
+import {games, possibleGames, suggestedWords, GAME_TIME, timerIds} from "./handlers/game";
 import {getAllUsers, signup, getUserLoginData, login, logout} from './handlers/user';
 import {
     getAllGames,
@@ -102,42 +102,45 @@ const server = app.listen(port, () => { //TODO (err) ?
 });
 
 const wss = new Server({server});
-const webSockets: {[id: string]: WebSocket[]} = {};
+const webSockets: { [id: string]: WebSocket[] } = {};
 
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         const {messageType, parsedMessage, gameId, currentGame, suggestedWord, author} = parse(message as string);
         switch (messageType) {
-        case WebsocketMessage.sendSuggestedWordToServer:
-            sendSuggestedWordToServer(parsedMessage);
-            break;
-        case WebsocketMessage.likeWord:
-            likeWord(suggestedWord, author);
-            break;
-        case WebsocketMessage.dislikeWord:
-            dislikeWord(suggestedWord, author);
-            break;
-        case WebsocketMessage.register:
-            register(parsedMessage, currentGame, gameId, ws);
-            break;
-        case WebsocketMessage.refresh:
-            refresh(gameId, ws, currentGame);
-            break;
-        case WebsocketMessage.addWordAndPainter:
-            addWordAndPainter(currentGame, gameId);
-            break;
-        case WebsocketMessage.sendMessage:
-            sendMessage(currentGame, parsedMessage, gameId);
-            break;
-        case WebsocketMessage.postMarks:
-            postMarks(currentGame, parsedMessage, gameId);
-            break;
-        case WebsocketMessage.setWinner:
-            setWinner(currentGame, parsedMessage, gameId);
-            break;
-        case WebsocketMessage.sendImg:
-            sendImg(currentGame, parsedMessage, gameId);
-            break;
+            case WebsocketMessage.sendSuggestedWordToServer:
+                sendSuggestedWordToServer(parsedMessage);
+                break;
+            case WebsocketMessage.sendPossibleGamesToServer:
+                sendPossibleGamesToServer(parsedMessage);
+                break;
+            case WebsocketMessage.likeWord:
+                likeWord(suggestedWord, author);
+                break;
+            case WebsocketMessage.dislikeWord:
+                dislikeWord(suggestedWord, author);
+                break;
+            case WebsocketMessage.register:
+                register(parsedMessage, currentGame, gameId, ws);
+                break;
+            case WebsocketMessage.refresh:
+                refresh(gameId, ws, currentGame);
+                break;
+            case WebsocketMessage.addWordAndPainter:
+                addWordAndPainter(currentGame, gameId);
+                break;
+            case WebsocketMessage.sendMessage:
+                sendMessage(currentGame, parsedMessage, gameId);
+                break;
+            case WebsocketMessage.postMarks:
+                postMarks(currentGame, parsedMessage, gameId);
+                break;
+            case WebsocketMessage.setWinner:
+                setWinner(currentGame, parsedMessage, gameId);
+                break;
+            case WebsocketMessage.sendImg:
+                sendImg(currentGame, parsedMessage, gameId);
+                break;
         }
     });
 });
@@ -152,7 +155,7 @@ function parse(message: string) {
     return {messageType, parsedMessage, gameId, currentGame, suggestedWord, author};
 }
 
-function sendSuggestedWordToServer(parsedMessage: {word: string, id: string}) {
+function sendSuggestedWordToServer(parsedMessage: { word: string, id: string }) {
     const dictionary = db.getWords();
     if (dictionary.words.includes(parsedMessage.word)) {
         addSuggestedWord(parsedMessage, true);
@@ -163,6 +166,11 @@ function sendSuggestedWordToServer(parsedMessage: {word: string, id: string}) {
         addSuggestedWord(parsedMessage, false);
         sendSuggestedWordsToAllClients();
     }
+}
+
+function sendPossibleGamesToServer(parsedMessage: { possibleGames: GameType[] }) {
+    addPossibleGames(parsedMessage);
+    sendPossibleGamesToAllClients();
 }
 
 function likeWord(suggestedWord: SuggestedWord, author: string) {
@@ -194,7 +202,7 @@ function dislikeWord(suggestedWord: SuggestedWord, author: string) {
     }
 }
 
-function register(parsedMessage: {player: string}, currentGame: GameType, gameId: string, ws: WebSocket) {
+function register(parsedMessage: { player: string }, currentGame: GameType, gameId: string, ws: WebSocket) {
     const users = db.getUsers();
     const user = users.find((user: User) => user.name === parsedMessage.player);
     const avatar = user ? user.avatar : null;
@@ -216,13 +224,13 @@ function addWordAndPainter(currentGame: GameType, gameId: string) {
 
 function sendMessage(currentGame: GameType, parsedMessage: { message: Message }, gameId: string) {
     const foundPlayer = currentGame.players.find(player => player.name === parsedMessage.message.name);
-    const newAvatar = foundPlayer? foundPlayer.avatar : null;
+    const newAvatar = foundPlayer ? foundPlayer.avatar : null;
     const newMessage = {...parsedMessage.message, avatar: newAvatar};
     currentGame.chatMessages.push(newMessage);
     sendGameToClientsByGameId(gameId, currentGame);
 }
 
-function postMarks(currentGame: GameType, parsedMessage: {value: { id: string, marks: { hot: boolean, cold: boolean } }}, gameId: string) {
+function postMarks(currentGame: GameType, parsedMessage: { value: { id: string, marks: { hot: boolean, cold: boolean } } }, gameId: string) {
     const currentMessage = currentGame.chatMessages
         .find(item => item.id === parsedMessage.value.id);
     if (currentMessage !== undefined) {
@@ -231,7 +239,7 @@ function postMarks(currentGame: GameType, parsedMessage: {value: { id: string, m
     }
 }
 
-function setWinner(currentGame: GameType, parsedMessage: {winner: string}, gameId: string) {
+function setWinner(currentGame: GameType, parsedMessage: { winner: string }, gameId: string) {
     currentGame.winner = parsedMessage.winner;
     const winner = currentGame.players.find(player => player.name === parsedMessage.winner);
     currentGame.isWordGuessed = true;
@@ -241,7 +249,7 @@ function setWinner(currentGame: GameType, parsedMessage: {winner: string}, gameI
     updateLeaderboard(currentGame.scores);
 }
 
-function sendImg(currentGame: GameType, parsedMessage: {img: string}, gameId: string) {
+function sendImg(currentGame: GameType, parsedMessage: { img: string }, gameId: string) {
     currentGame.img = parsedMessage.img;
     sendGameToClientsByGameId(gameId, currentGame);
 }
@@ -266,6 +274,12 @@ function sendSuggestedWordsToAllClients() {
     });
 }
 
+function sendPossibleGamesToAllClients() {
+    wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
+        client.send(JSON.stringify(possibleGames));
+    });
+}
+
 function addSuggestedWord(parsedMessage: { word: string, id: string }, inDictionary: boolean): void {
     suggestedWords.push({
         word: parsedMessage.word,
@@ -276,6 +290,10 @@ function addSuggestedWord(parsedMessage: { word: string, id: string }, inDiction
         isDeclined: false,
         isInDictionary: inDictionary,
     });
+}
+
+function addPossibleGames(parsedMessage: { possibleGames: GameType[] }): void {
+    possibleGames.push(...parsedMessage.possibleGames);
 }
 
 function addNewWordToDictionary(word: string) {
@@ -347,6 +365,7 @@ function addLocalScore(currentGame: GameType, winner: Player | undefined) {
         addScoreForMarks(currentGame);
     }
 }
+
 function addScoreForMarks(currentGame: GameType) {
     currentGame.chatMessages.map(message => {
         if (message.marks.hot) {
@@ -357,14 +376,14 @@ function addScoreForMarks(currentGame: GameType) {
                 }
             } else {
                 const foundPlayer = currentGame.players.find(player => player.name === message.name);
-                const avatar = foundPlayer? foundPlayer.avatar : null;
+                const avatar = foundPlayer ? foundPlayer.avatar : null;
                 currentGame.scores.push({player: {name: message.name, avatar}, score: 2});
             }
         }
     });
 }
 
-function updateLeaderboard(localScores: {player: Player, score: number}[]) {
+function updateLeaderboard(localScores: { player: Player, score: number }[]) {
     const leaderboard = db.getLeaderboard();
     for (const {player, score} of localScores) {
         const playerFound = leaderboard.players.find((playerGlobal) => playerGlobal.player.name === player.name);
@@ -374,7 +393,7 @@ function updateLeaderboard(localScores: {player: Player, score: number}[]) {
             leaderboard.players.push({player, score});
         }
     }
-    leaderboard.players.sort((item1: {player: Player, score: number}, item2: {player: Player, score: number}) =>
+    leaderboard.players.sort((item1: { player: Player, score: number }, item2: { player: Player, score: number }) =>
         item2.score - item1.score);
     db.saveLeaderboard(leaderboard);
 }
