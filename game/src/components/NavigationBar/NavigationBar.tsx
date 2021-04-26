@@ -26,14 +26,14 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         const {classes} = this.props;
         return (
             <>
-                <Link to={getDomRoutes().suggestWord} className={classes.navLink}>
+                <Link to={getDomRoutes().suggestWord} className={classes.navLink + " menu__item"}>
                     <Button
                         className={classes.navButton}
                         variant="contained"
                         color="secondary"
                     >Предложить слово</Button>
                 </Link>
-                <Link to={getDomRoutes().userProfile} className={classes.navLink +" NavigationBar-Right"}>
+                <Link to={getDomRoutes().userProfile} className={classes.navLink +" NavigationBar-Right menu__item"}>
                     <img src={this.context.user.avatar} alt="avatar" className="avatar"/>
                     <Typography variant='subtitle1'>{this.context.user.name}</Typography>
                 </Link>
@@ -52,14 +52,14 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         const {classes} = this.props;
         return (
             <>
-                <Link to={getDomRoutes().login} className={classes.navLink + " NavigationBar-Right"}>
+                <Link to={getDomRoutes().login} className={classes.navLink + " NavigationBar-Right menu__item"}>
                     <Button
                         className={classes.navButton}
                         variant="contained"
                         color="default"
                     >Войти</Button>
                 </Link>
-                <Link to={getDomRoutes().signup} className={classes.navLink}>
+                <Link to={getDomRoutes().signup} className={classes.navLink + " menu__item"}>
                     <Button
                         className={classes.navButton}
                         variant="contained"
@@ -73,16 +73,20 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
     render() {
         const {classes} = this.props;
         return (
-            <AppBar className={classes.navBarContainer}>
-                <Toolbar>
-                    <Link to={getDomRoutes().main} className={classes.navLink}>
+            <AppBar className={classes.navBarContainer + " NavBar"}>
+                <input id="menu__toggle" type="checkbox"/>
+                <label className="menu__btn" htmlFor="menu__toggle">
+                    <span></span>
+                </label>
+                <Toolbar className="menu__box">
+                    <Link to={getDomRoutes().main} className={classes.navLink + " menu__item"}>
                         <Button
                             className={classes.navButton}
                             variant="contained"
                             color="secondary"
                         >Главная</Button>
                     </Link>
-                    <Link to={getDomRoutes().leaderboard} className={classes.navLink}>
+                    <Link to={getDomRoutes().leaderboard} className={classes.navLink + " menu__item"}>
                         <Button
                             className={classes.navButton}
                             variant="contained"

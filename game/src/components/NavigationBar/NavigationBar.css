@@ -1,3 +1,6 @@
+.NavBar {
+    height: 10vh;
+}
 .avatar {
     border-radius: 50%;
 }
@@ -7,4 +10,118 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.menu__box {
+    margin-right: 20px;
+}
+#menu__toggle {
+    display: none;
+}
+@media (max-width: 640px) {
+    .NavigationBar-Right {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .nav__buttons {
+        display: none;
+    }
+
+    #menu__toggle {
+        visibility: visible;
+    }
+
+    #menu__toggle {
+        opacity: 0;
+    }
+
+    #menu__toggle:checked ~ .menu__btn > span {
+        transform: rotate(45deg);
+    }
+
+    #menu__toggle:checked ~ .menu__btn > span::before {
+        top: 0;
+        transform: rotate(0);
+    }
+
+    #menu__toggle:checked ~ .menu__btn > span::after {
+        top: 0;
+        transform: rotate(90deg);
+    }
+
+    #menu__toggle:checked ~ .menu__box {
+        visibility: visible;
+        top: 10vh;
+    }
+
+    .menu__btn {
+        display: flex;
+        align-items: center;
+        position: fixed;
+        top: 20px;
+        right: 30px;
+
+        width: 26px;
+        height: 26px;
+
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    .menu__btn > span,
+    .menu__btn > span::before,
+    .menu__btn > span::after {
+        display: block;
+        position: absolute;
+
+        width: 100%;
+        height: 2px;
+
+        background-color: #C5E1E5;
+
+        transition-duration: .25s;
+    }
+
+    .menu__btn > span::before {
+        content: '';
+        top: -8px;
+    }
+
+    .menu__btn > span::after {
+        content: '';
+        top: 8px;
+    }
+
+    .NavBar .menu__box {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        visibility: hidden;
+        top: -100%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        list-style: none;
+        background-color: #2A8086;
+        transition-duration: .25s;
+        z-index: 2;
+    }
+
+    .menu__item {
+        width: 100%;
+        text-align: center;
+        display: block;
+        padding: 12px 24px;
+        color: #F3F7F8;
+        font-family: 'Roboto Mono', monospace;
+        font-size: 18px;
+        text-decoration: none;
+        transition-duration: .25s;
+        line-height: 24px;
+        text-transform: uppercase;
+    }
+
+    .menu__item:hover {
+        background-color: #CFD8DC;
+    }
 }
