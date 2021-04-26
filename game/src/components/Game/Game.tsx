@@ -162,7 +162,8 @@ class Game extends Component<GameProps, GameState> {
 
     render() {
         const {painter, wordToGuess, players, imgURL, chatMessages} = this.state;
-        const playerName = localStorage.getItem('playerName');
+        //const playerName = localStorage.getItem('playerName');
+        const playerName = this.context.user.name;
         const wordToDisplay = (playerName === painter.name) ?
             `Загаданное слово: ${wordToGuess}`
             : 'Отгадайте слово!';

@@ -75,14 +75,16 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         ws.send(JSON.stringify({
             'messageType': websocket.likeWord,
             'wordId': wordId,
-            'author': localStorage.getItem('playerName')
+            'author': this.context.user.name
+            // 'author': localStorage.getItem('playerName')
         }));
     };
     dislikeWord = (wordId: string): void => {
         ws.send(JSON.stringify({
             'messageType': websocket.dislikeWord,
             'wordId': wordId,
-            'author': localStorage.getItem('playerName')
+            'author': this.context.user.name
+            //'author': localStorage.getItem('playerName')
         }));
     };
 
@@ -146,23 +148,27 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                                 <div className="SuggestWord-buttons">
                                     <Tooltip title="Супер">
                                         <ThumbUpAltIcon
-                                            className={"like " + (word.likes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                            // className={"like " + (word.likes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                            className={"like " + (word.likes.includes(this.context.user.name || '') ? "like-active" : "")}
                                             onClick={() => this.likeWord(word.id)}
                                         />
                                     </Tooltip>
                                     <Typography variant='subtitle1'
-                                            className={"like-number "  + (word.likes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                            // className={"like-number "  + (word.likes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                                className={"like-number "  + (word.likes.includes(this.context.user.name || '') ? "like-active" : "")}
                                             >
                                         {word.likes.length}
                                     </Typography>
                                     <Tooltip title="Не очень">
                                         <ThumbDownIcon
-                                            className={"like " + (word.dislikes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                            //className={"like " + (word.dislikes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                            className={"like " + (word.dislikes.includes(this.context.user.name || '') ? "like-active" : "")}
                                             onClick={() => this.dislikeWord(word.id)}
                                         />
                                     </Tooltip>
                                     <Typography variant='subtitle1'
-                                            className={"like-number "  + (word.dislikes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                            // className={"like-number "  + (word.dislikes.includes(localStorage.getItem('playerName') || '') ? "like-active" : "")}
+                                                className={"like-number "  + (word.dislikes.includes(this.context.user.name || '') ? "like-active" : "")}
                                             >
                                         {word.dislikes.length}
                                     </Typography>
