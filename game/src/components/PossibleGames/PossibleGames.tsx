@@ -20,7 +20,7 @@ interface PossibleGamesProps extends RouteComponentProps, WithStyles<typeof styl
 
 interface PossibleGamesState {
     possibleGames: GameType[];
-    allGames: GameType[];
+    //allGames: GameType[];
 }
 
 class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
@@ -30,20 +30,21 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
         super(props);
         this.state = {
             possibleGames: [],
-            allGames: []
+            //allGames: []
         };
     }
 
     async componentDidMount() {
-        await this.getAllGames();
-        const possibleGames = this.state.allGames.filter((game: GameType) => game.time > 120);
+        //await this.getAllGames();
+        //const possibleGames = this.state.allGames.filter((game: GameType) => game.time > 120);
+        const possibleGames = await this.context.getPossibleGamesFromServer();
         this.setState({possibleGames});
     }
 
-    getAllGames = async (): Promise<void> => {
-        const allGames = await this.context.getAllGames();
-        this.setState({allGames: allGames});
-    };
+    // getAllGames = async (): Promise<void> => {
+    //     const allGames = await this.context.getAllGames();
+    //     this.setState({allGames: allGames});
+    // };
 
     handleJoin = async (gameId: string): Promise<void> => {
         await this.startGame(localStorage.getItem('playerName'), gameId);

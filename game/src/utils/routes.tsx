@@ -15,6 +15,7 @@ export default function getRoutes(currentGameId?: string | null) {
         addLine: `${api}/${currentGameId}/addLine`,
         leaderboard: `${api}/leaderboard`,
         suggestedWords: `${api}/suggestedWords`,
+        possibleGames:`${api}/possibleGames`,
         signup: `${api}/signup`,
         login: `${api}/login`,
         logout: `${api}/logout`

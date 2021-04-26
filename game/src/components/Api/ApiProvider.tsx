@@ -200,6 +200,16 @@ class ApiMethods implements Api {
             .catch(err => this.reportError(err));
     };
 
+    getPossibleGamesFromServer = async (): Promise<GameType[]> => {
+        return await fetch(getRoutes().possibleGames)
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => this.reportError(err));
+    };
+
     deleteLine = async (): Promise<void> => {
         await fetch(getRoutes(this._gameId).deleteLine, {
             method: 'POST',

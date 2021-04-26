@@ -14,6 +14,7 @@ import {
     getAllGames,
     getSuggestedWords,
     getLeaderboard,
+    getPossibleGames,
     getCurrentGame,
     addGame,
     addLine,
@@ -78,8 +79,8 @@ app.post('/api/login', login);
 app.post('/api/logout', logout);
 //game routes
 app.get('/api/suggestedWords', getSuggestedWords);
-
 app.get('/api/leaderboard', getLeaderboard);
+app.get('/api/possibleGames', getPossibleGames);
 
 app.get('/api/:gameId', getCurrentGame);
 app.post('/api/:gameId', addGame);
