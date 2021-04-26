@@ -73,7 +73,7 @@ class Main extends Component<LoginProps, LoginState> {
 
     getAllGames = async (): Promise<void> => {
         const allGames = await this.context.getAllGames();
-        this.setState({possibleGames: allGames});
+        this.setState({possibleGames: allGames}); //TODO rename
     };
 
     handleChange = async (evt: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
