@@ -2,6 +2,7 @@ import {GameType, SuggestedWord} from "../utils/types";
 import express from 'express';
 import db from "../db";
 
+const MIN_GAME_TIME: number = 2 * 60;
 export const GAME_TIME: number = 3 * 60;
 export const timerIds: { [id: string]: ReturnType<typeof setTimeout> } = {}; //TODO разобраться с типом TimerIds
 
@@ -22,8 +23,8 @@ export const getLeaderboard = (req: express.Request, res: express.Response) => {
     res.status(200).send(leaderboard.players);
 };
 
-export const getPossibleGames = (req: express.Request, res: express.Response):void => { //TODO убрать GAME_TIME
-    const possibleGames = games.filter((game:GameType) => game.time > 120 && game.time < GAME_TIME);
+export const getPossibleGames = (req: express.Request, res: express.Response):void => {
+    const possibleGames = games.filter((game:GameType) => game.time > MIN_GAME_TIME);
     res.status(200).send(possibleGames);
 };
 

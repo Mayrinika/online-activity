@@ -25,7 +25,6 @@ interface LoginState {
     code: string;
     possibleGames: GameType[];
     isCodeIncorrect: boolean;
-    isNameExist: boolean;
 }
 
 class Main extends Component<LoginProps, LoginState> {
@@ -37,7 +36,6 @@ class Main extends Component<LoginProps, LoginState> {
             code: '',
             possibleGames: [],
             isCodeIncorrect: false,
-            isNameExist: false
         };
     }
 
@@ -94,12 +92,7 @@ class Main extends Component<LoginProps, LoginState> {
             const newCode = uuidv4();
             await this.startGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
-            const currentGameId = this.state.possibleGames.find(game => game.id === code);
-            if (currentGameId!.players.some(player => player.name === name)) {
-                this.setState({isNameExist: true});
-            } else {
-                await this.startGame(name, code);
-            }
+            await this.startGame(name, code);
         } else {
             this.setState({isCodeIncorrect: true});
         }
@@ -114,7 +107,7 @@ class Main extends Component<LoginProps, LoginState> {
 
     render() {
         const {classes} = this.props;
-        const {isCodeIncorrect, code, isNameExist} = this.state;
+        const {isCodeIncorrect, code} = this.state;
         return (
             <Container className={classes.outerContainer + " Main"} maxWidth='md'>
                 <Grid container spacing={10} justify="center">
@@ -131,14 +124,11 @@ class Main extends Component<LoginProps, LoginState> {
                             {!this.context.user ?
                                 <Typography>Пожалуйста, войдите или зарегистрируйтесь</Typography>
                                 : <div>
-                                    {isNameExist ?
-                                        <Typography>{localStorage.getItem('playerName')}, не стоит жульничать!</Typography>
-                                        : <div className="Main-Welcome">
-                                            <Typography>Добро пожаловать,</Typography>
-                                            <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
-                                            <Typography> {localStorage.getItem('playerName')}</Typography>
-                                        </div>
-                                    }
+                                    <div className="Main-Welcome">
+                                        <Typography>Добро пожаловать,</Typography>
+                                        <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
+                                        <Typography> {localStorage.getItem('playerName')}</Typography>
+                                    </div>
                                     <TextField
                                         variant="outlined"
                                         margin="normal"

@@ -257,7 +257,15 @@ function getPainter(players: Player[]): Player {
 }
 
 function addPlayer(currentGame: GameType, name: string, avatar: string | null | ArrayBuffer) {
-    currentGame.players.push({name: name, avatar: avatar});
+    let isAlreadyExist = false;
+    for(const player of currentGame.players) {
+        if(player.name === name) {
+            isAlreadyExist = true;
+            break;
+        }
+    }
+    if(!isAlreadyExist)
+        currentGame.players.push({name: name, avatar: avatar});
 }
 
 function sendSuggestedWordsToAllClients() {
