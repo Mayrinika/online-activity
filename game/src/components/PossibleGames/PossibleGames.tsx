@@ -7,7 +7,7 @@ import getDomRoutes from "../../utils/domRoutes";
 import {GameType} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, TextField, Typography} from '@material-ui/core';
+import {Button, Container, TextField, Typography, Box} from '@material-ui/core';
 import websocket from "../../utils/websocket";
 
 const styles = (theme: { content: any; }) => (
@@ -76,7 +76,7 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
                 <Typography variant='h5' paragraph>Выбирай и играй!</Typography>
                 {possibleGames && possibleGames.map((game) => {
                     return (
-                        <div key={game.id}>
+                        <Box key={game.id} m={2}>
                             <TextField
                                 id={game.id}
                                 variant="outlined"
@@ -91,7 +91,7 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
                                 onClick={() => this.handleJoin(game.id)}>
                                 Join
                             </Button>
-                        </div>
+                        </Box>
                     );
                 })}
             </Container>
