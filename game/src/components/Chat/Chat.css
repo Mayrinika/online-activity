@@ -31,7 +31,6 @@
 }
 .Chat-message-wrapper {
     display: flex;
-    margin: 5px;
     position: relative;
     align-items: center;
 }
@@ -69,4 +68,28 @@
 }
 .icon-cold-active {
     color: blue;
+}
+@media (max-width: 650px) {
+    .Chat .Chat-messages-input {
+        display: none;
+    }
+    .Chat .avatar {
+        display: none;
+    }
+    .painters-icons {
+        bottom: 100%;
+        z-index: 2;
+        right: 5px;
+    }
+    .Chat-message-painter{
+        height: 60px;
+        align-items: flex-end;
+        text-indent: 20px;
+    }
+    .painters-icons {
+        bottom: 30px;
+        display: flex;
+        justify-content: space-between;
+        width: 80%
+    }
 }

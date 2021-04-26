@@ -138,7 +138,7 @@ class Chat extends Component<ChatProps, ChatState> {
                                     {message.avatar && <img src={message.avatar as string} alt="avatar" className="avatar"/>}
                                 </div>
                             </Tooltip>
-                            <div className='Chat-message'>
+                            <div className={`Chat-message ${isPainter ? " Chat-message-painter" : ""}`}>
                                 <Typography variant='subtitle2'>
                                     {message.text}
                                 </Typography>
