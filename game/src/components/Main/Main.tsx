@@ -85,7 +85,8 @@ class Main extends Component<LoginProps, LoginState> {
 
     handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         const {code} = this.state;
-        const name = localStorage.getItem('playerName');
+        //const name = localStorage.getItem('playerName');
+        const name = this.context.user.name;
         evt.preventDefault();
         await this.getAllGames();
         if (code === '') {
@@ -127,7 +128,8 @@ class Main extends Component<LoginProps, LoginState> {
                                     <div className="Main-Welcome">
                                         <Typography>Добро пожаловать,</Typography>
                                         <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
-                                        <Typography> {localStorage.getItem('playerName')}</Typography>
+                                        {/*<Typography> {localStorage.getItem('playerName')}</Typography>*/}
+                                        <Typography> {this.context.user.name}</Typography>
                                     </div>
                                     <TextField
                                         variant="outlined"

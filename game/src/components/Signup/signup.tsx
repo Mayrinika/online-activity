@@ -55,7 +55,7 @@ class Signup extends Component<SignupProps, SignupState> {
             this.setState({isNameExist: true});
         } else {
             await this.addName();
-            localStorage.setItem('playerName', name);
+            //localStorage.setItem('playerName', name);
             this.setState({name: '', password: '', avatar: null});
             await this.getAllUsers();
             this.props.history.push(getDomRoutes().main);

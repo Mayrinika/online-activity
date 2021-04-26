@@ -56,7 +56,7 @@ class Login extends Component<LoginProps, LoginState> {
         evt.preventDefault();
         await this.login();
         if (!this.state.isIncorrect) {
-            localStorage.setItem('playerName', this.state.name);
+            //localStorage.setItem('playerName', this.state.name);
             this.props.history.push(getDomRoutes().main);
         }
         if (this._isMounted) {
