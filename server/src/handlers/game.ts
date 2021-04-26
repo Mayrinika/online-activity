@@ -8,7 +8,6 @@ export const timerIds: { [id: string]: ReturnType<typeof setTimeout> } = {}; //T
 export const suggestedWords: SuggestedWord[] = [];
 
 export const games: GameType[] = [];
-export let possibleGames: GameType[] =[];
 
 export const getAllGames = (req: express.Request, res: express.Response) => {
     res.status(200).send(games);
@@ -24,7 +23,7 @@ export const getLeaderboard = (req: express.Request, res: express.Response) => {
 };
 
 export const getPossibleGames = (req: express.Request, res: express.Response):void => { //TODO убрать GAME_TIME
-    possibleGames = games.filter((game:GameType) => game.time > 120 && game.time < GAME_TIME);
+    const possibleGames = games.filter((game:GameType) => game.time > 120 && game.time < GAME_TIME);
     res.status(200).send(possibleGames);
 };
 

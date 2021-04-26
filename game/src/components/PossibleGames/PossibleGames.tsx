@@ -20,7 +20,6 @@ interface PossibleGamesProps extends RouteComponentProps, WithStyles<typeof styl
 
 interface PossibleGamesState {
     possibleGames: GameType[];
-    //allGames: GameType[];
 }
 
 class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
@@ -30,42 +29,23 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
         super(props);
         this.state = {
             possibleGames: [],
-            //allGames: []
         };
     }
 
     async componentDidMount() {
-        //await this.getAllGames();
-        //const possibleGames = this.state.allGames.filter((game: GameType) => game.time > 120);
         const possibleGames = await this.context.getPossibleGamesFromServer();
         this.setState({possibleGames});
     }
-
-    // getAllGames = async (): Promise<void> => {
-    //     const allGames = await this.context.getAllGames();
-    //     this.setState({allGames: allGames});
-    // };
 
     handleJoin = async (gameId: string): Promise<void> => {
         await this.startGame(localStorage.getItem('playerName'), gameId);
     }
 
-    startGame = async (name: string | null, code: string): Promise<void> => {
-        localStorage.setItem('gameId', code);
-        this.context.changeGameId(code);
-        await this.joinGame(name, code);
-        this.props.history.push(getDomRoutes(code).startGame); //TODO
-    };
-
-    joinGame = async (player: string | null, gameId: string): Promise<void> => {
-        //await this.getAllGames();
-        // if (this.state.allGames.some(game => game.id === gameId)) {
-        //     await this.addPlayer(gameId, player);
-        // } else {
-        //     await this.context.addGame(gameId);
-        //     await this.addPlayer(gameId, player);
-        // }
-        await this.addPlayer(gameId, player);
+    startGame = async (playerName: string | null, gameId: string): Promise<void> => {
+        localStorage.setItem('gameId', gameId);
+        this.context.changeGameId(gameId);
+        await this.addPlayer(gameId, playerName);
+        this.props.history.push(getDomRoutes(gameId).startGame);
     };
 
     addPlayer = async (gameId: string, player: string | null): Promise<void> => {
