@@ -76,10 +76,8 @@ export const changePassword = async (req: express.Request, res: express.Response
             user.password = hash;
             db.saveUsers(users);
             res.send({success: true});
-
         } else {
             res.send({success: false});
-
         }
     }
 };
@@ -94,12 +92,11 @@ export const changeAvatar = async (req: express.Request, res: express.Response) 
         const valid = await bcrypt.compare(oldPassword, user.password);
         if (valid) {
             user.avatar = newAvatar;
+            req.session.user = user;
             db.saveUsers(users);
             res.send(user);
-
         } else {
             res.send({error: true});
-
         }
     }
 };
