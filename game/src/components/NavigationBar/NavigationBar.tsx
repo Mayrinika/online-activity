@@ -40,28 +40,22 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                         color="secondary"
                     >Предложить слово</Button>
                 </Link>
-<<<<<<< HEAD
-                <Link to={getDomRoutes().possibleGames} className={classes.navLink}>
+                <Link to={getDomRoutes().possibleGames} className={classes.navLink +" menu__item"}>
                     <Button
                         className={classes.navButton}
                         variant="contained"
                         color="secondary"
                     >Не с кем играть</Button>
                 </Link>
-                <img src={this.context.user.avatar} alt="avatar" className="avatar NavigationBar-Right"/>
-                <Typography variant='subtitle1'>{this.context.user.name}</Typography>
-=======
                 <Link to={getDomRoutes().userProfile} className={classes.navLink +" NavigationBar-Right menu__item"} onClick={this.closeMenu}>
                     <img src={this.context.user.avatar} alt="avatar" className="avatar"/>
                     <Typography variant='subtitle1'>{this.context.user.name}</Typography>
                 </Link>
->>>>>>> adaptive
                 <Button
                     className={classes.navButton}
                     variant="contained"
                     color="default"
                     onClick={this.context.logout}
-
                 >Выйти</Button>
             </>
         );

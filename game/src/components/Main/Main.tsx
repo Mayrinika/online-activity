@@ -124,24 +124,11 @@ class Main extends Component<LoginProps, LoginState> {
                             {!this.context.user ?
                                 <Typography>Пожалуйста, войдите или зарегистрируйтесь</Typography>
                                 : <div>
-<<<<<<< HEAD
                                     <div className="Main-Welcome">
                                         <Typography>Добро пожаловать,</Typography>
                                         <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
                                         <Typography> {localStorage.getItem('playerName')}</Typography>
                                     </div>
-=======
-                                    {isNameExist ?
-                                        <Typography>{localStorage.getItem('playerName')}, не стоит жульничать!</Typography>
-                                        : <div className="Main-Welcome">
-                                            <Typography>Добро пожаловать,</Typography>
-                                            <Link to={getDomRoutes().userProfile} className="Main-Link">
-                                                <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
-                                                <Typography> {localStorage.getItem('playerName')}</Typography>
-                                            </Link>
-                                        </div>
-                                    }
->>>>>>> adaptive
                                     <TextField
                                         variant="outlined"
                                         margin="normal"
