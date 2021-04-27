@@ -38,8 +38,8 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
     }
 
     handleJoin = async (gameId: string): Promise<void> => {
-        await this.startGame(this.context.name, gameId);
-        //await this.startGame(localStorage.getItem('playerName'), gameId);
+        const playerName = this.context.user ? this.context.user.name : undefined;
+        await this.startGame(playerName, gameId);
     }
 
     startGame = async (playerName: string | null, gameId: string): Promise<void> => {

@@ -51,7 +51,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     }
     async componentDidMount() {
         const sortedLeaderboard = await this.context.getLeaderboardDataFromServer();
-        const name = localStorage.getItem('playerName');
+        const name = this.context.user ? this.context.user.name : undefined;
         const currentUser = sortedLeaderboard.find((el: {player: {name: string, avatar: string}, score: number}) => el.player.name === name);
         if (currentUser) {
             const position = sortedLeaderboard.indexOf(currentUser);
@@ -73,7 +73,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     handlePasswordChange = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         evt.preventDefault();
         const {oldPassword, newPassword} = this.state;
-        const success = await this.context.changePassword(oldPassword, newPassword, this.context.user.name);
+        const success = await this.context.changePassword(oldPassword, newPassword, this.context.user ? this.context.user.name : undefined);
         this.setState((state) => ({
             ...state,
             helperText: '',
@@ -99,7 +99,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     handleAvatarChange = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         evt.preventDefault();
         const {oldPassword, newAvatar} = this.state;
-        const user = await this.context.changeAvatar(oldPassword, newAvatar, this.context.user.name);
+        const user = await this.context.changeAvatar(oldPassword, newAvatar, this.context.user ? this.context.user.name : undefined);
         this.setState((state) => ({
             ...state,
             helperText: '',
