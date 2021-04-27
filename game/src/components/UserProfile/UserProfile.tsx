@@ -98,7 +98,10 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     }
     handleAvatarChange = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         evt.preventDefault();
-        const {oldPassword, newAvatar} = this.state;
+        let {oldPassword, newAvatar} = this.state;
+        if (!newAvatar) {
+            newAvatar = this.generateAvatar(this.context.user.name);
+        }
         const user = await this.context.changeAvatar(oldPassword, newAvatar, this.context.user.name);
         this.setState((state) => ({
             ...state,
@@ -121,6 +124,25 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
             oldPassword: '',
             newPassword: ''
         }));
+    }
+
+    generateAvatar(name: string): string {
+        const width = 50;
+        const height = 50;
+        const elem = document.createElement('canvas');
+        elem.width = width;
+        elem.height = height;
+        const ctx = elem.getContext('2d');
+        if (ctx) {
+            ctx.fillStyle = '#517413'
+            ctx.fillRect(0, 0, 50, 50);
+            ctx.fillStyle = '#fff'
+            ctx.font = "48px serif";
+            ctx.fillText(name[0].toUpperCase(), 10, 40);
+
+        }
+        const url = elem.toDataURL();
+        return url;
     }
 
     renderPasswordChange = (): ReactElement => {
