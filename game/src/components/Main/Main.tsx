@@ -109,17 +109,17 @@ class Main extends Component<LoginProps, LoginState> {
         const {classes} = this.props;
         const {isCodeIncorrect, code} = this.state;
         return (
-            <Container className={classes.outerContainer + " Main"} maxWidth='lg'>
-                <Grid container spacing={10} justify="center" >
+            <Container className={classes.outerContainer + " Main"} maxWidth='md'>
+                <Typography variant='h4' paragraph>
+                    Онлайн - активити
+                </Typography>
+                <Grid container spacing={10} justify="center" alignContent="center">
                     <Grid item md={5} xs={1} className="Main-Img-Container">
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
                         </div>
                     </Grid>
-                    <Grid item md={5} xs={12} className={classes.loginFormContainer}>
-                        <Typography variant='h4' paragraph>
-                            Онлайн - активити
-                        </Typography>
+                    <Grid item md={5} xs={12} className={classes.mainFormContainer}>
                         <form onSubmit={this.handleSubmit} className={classes.innerContainer}>
                             {!this.context.user ?
                                 <Typography>Пожалуйста, войдите или зарегистрируйтесь</Typography>

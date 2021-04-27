@@ -63,7 +63,7 @@ export default {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '20px',
+            // gap: '5px',
         },
         button: {
             margin: '32px 16px 16px 16px',

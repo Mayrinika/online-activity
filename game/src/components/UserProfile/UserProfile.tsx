@@ -169,7 +169,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
                 <Button
                     className={classes.button}
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     size="large"
                     onClick={()=>this.setState({isPasswordChanging: false})}
                 >
@@ -214,7 +214,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
                 <Button
                     className={classes.button}
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     size="large"
                     onClick={()=>this.setState({isAvatarChanging: false})}
                 >

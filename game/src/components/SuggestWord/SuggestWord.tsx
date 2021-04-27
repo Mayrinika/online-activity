@@ -140,7 +140,7 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                     <Box className="SuggestWord-words-list">
                         {this.state.words.filter(word => !word.isInDictionary && !word.isApproved && !word.isDeclined).map((word) => (
                             <div key={word.id} className="SuggestWord-word">
-                                <Typography variant='h4'>
+                                <Typography variant='h6'>
                                     {word.word}
                                 </Typography>
                                 <div className="SuggestWord-buttons">

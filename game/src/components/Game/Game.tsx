@@ -172,6 +172,8 @@ class Game extends Component<GameProps, GameState> {
         return (
             <Container className={classes.outerContainer + " Game"} maxWidth='lg'>
                 <header>
+                    <Timer time={this.state.time}/>
+                    <Typography variant='h6' paragraph>{wordToDisplay}</Typography>
                     <Box>
                         <TextField
                             id='gameId'
@@ -188,8 +190,6 @@ class Game extends Component<GameProps, GameState> {
                             Copy
                         </Button>
                     </Box>
-                    <Typography variant='h6' paragraph>{wordToDisplay}</Typography>
-                    <Timer time={this.state.time}/>
                 </header>
                 <main>
                     {isPainter ?
