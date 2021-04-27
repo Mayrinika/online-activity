@@ -5,6 +5,7 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 //styles
+import './Signup.css'
 import crocoImg from "../../img/cocodrilo.png";
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField, CircularProgress} from '@material-ui/core';
@@ -180,7 +181,14 @@ class Signup extends Component<SignupProps, SignupState> {
                                 onChange={this.handleChange}
                                 value={password}
                             />
-                            <input type="file" onChange={this.handleLoadAvatar}/>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                className="Signup-ChooseFile"
+                            >
+                                Загрузить аватарку
+                                <input type="file" onChange={this.handleLoadAvatar}/>
+                            </Button>
                             <Button
                                 className={classes.button}
                                 variant="contained"

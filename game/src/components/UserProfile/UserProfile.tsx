@@ -199,7 +199,14 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
                         error={isIncorrect}
                         helperText={isIncorrect ? 'Неверный пароль' : ''}
                     />
-                    <input type="file" onChange={this.handleLoadAvatar}/>
+                    <Button
+                        variant="contained"
+                        component="label"
+                        className="User-ChooseFile"
+                    >
+                        Загрузить аватарку
+                        <input type="file" onChange={this.handleLoadAvatar}/>
+                    </Button>
                     <Button
                         className={classes.button}
                         variant="contained"

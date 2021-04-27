@@ -1,6 +1,9 @@
-.Signup {
-    height: 50vh;
-}
-.Signup-Form {
-    padding-bottom: 16px;
+/*.Signup {*/
+/*    height: 50vh;*/
+/*}*/
+/*.Signup-Form {*/
+/*    padding-bottom: 16px;*/
+/*}*/
+.Signup-ChooseFile {
+    width: 100%;
 }
