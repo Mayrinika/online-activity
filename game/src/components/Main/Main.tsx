@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {RouteComponentProps} from 'react-router-dom';
+import {Link, RouteComponentProps} from 'react-router-dom';
 import {v4 as uuidv4} from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -110,14 +110,14 @@ class Main extends Component<LoginProps, LoginState> {
         const {classes} = this.props;
         const {isCodeIncorrect, code} = this.state;
         return (
-            <Container className={classes.outerContainer + " Main"} maxWidth='md'>
-                <Grid container spacing={10} justify="center">
-                    <Grid item xs={5}>
+            <Container className={classes.outerContainer + " Main"} maxWidth='lg'>
+                <Grid container spacing={10} justify="center" >
+                    <Grid item md={5} xs={1} className="Main-Img-Container">
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
                         </div>
                     </Grid>
-                    <Grid item xs={5} className={classes.loginFormContainer}>
+                    <Grid item md={5} xs={12} className={classes.loginFormContainer}>
                         <Typography variant='h4' paragraph>
                             Онлайн - активити
                         </Typography>

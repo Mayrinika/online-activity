@@ -32,7 +32,7 @@ export const getLeaderboard = (req: express.Request, res: express.Response): voi
 };
 
 export const getPossibleGames = (req: express.Request, res: express.Response): void => {
-    const possibleGames = games.filter((game: GameType) => game.time > MIN_GAME_TIME);
+    const possibleGames = games.filter((game: GameType) => !game.isGameOver && game.time > MIN_GAME_TIME);
     if (possibleGames)
         res.status(200).send(possibleGames);
     else

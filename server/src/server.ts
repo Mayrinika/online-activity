@@ -9,7 +9,15 @@ import bodyParser from 'body-parser';
 import db, {initializeDb} from './db';
 //handlers
 import {games, suggestedWords, GAME_TIME, timerIds} from "./handlers/game";
-import {getAllUsers, signup, getUserLoginData, login, logout} from './handlers/user';
+import {
+    getAllUsers,
+    signup,
+    getUserLoginData,
+    login,
+    logout,
+    changePassword,
+    changeAvatar
+} from './handlers/user';
 import {
     getAllGames,
     getSuggestedWords,
@@ -77,6 +85,8 @@ app.post('/api/signup', signup);
 app.get('/api/login', getUserLoginData);
 app.post('/api/login', login);
 app.post('/api/logout', logout);
+app.post('/api/changePassword', changePassword);
+app.post('/api/changeAvatar', changeAvatar);
 //game routes
 app.get('/api/suggestedWords', getSuggestedWords);
 app.get('/api/leaderboard', getLeaderboard);
