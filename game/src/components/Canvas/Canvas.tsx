@@ -40,7 +40,6 @@ const Canvas = (props: canvasProps) => {
     };
 
     const handleMouseMove = (e: any): void => { //TODO поправить тип
-        // no drawing - skipping
         if (!isDrawing) {
             return;
         }
@@ -63,7 +62,6 @@ const Canvas = (props: canvasProps) => {
                 ...lines,
                 {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
             ]);
-            isDrawing = false;
             context.sendLineToServer(currentLine);
             let uri = stageRef.current.toDataURL();
             addImage(uri);
@@ -84,14 +82,15 @@ const Canvas = (props: canvasProps) => {
         setColor(color);
     };
     const undoLastDrawing = (e: any): void => { //TODO поправить тип
+        console.log('here');
         if (e.keyCode === 90 && e.ctrlKey) {
             let newLines = [...lines];
             newLines.pop();
             setLines(newLines);
+            let uri = stageRef.current.toDataURL();
+            addImage(uri);
+            context.deleteLine();
         }
-        let uri = stageRef.current.toDataURL();
-        addImage(uri);
-        context.deleteLine();
     }
 
     return (
@@ -118,6 +117,9 @@ const Canvas = (props: canvasProps) => {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseLeave}
+                onTouchStart={handleMouseDown}
+                onTouchMove={handleMouseMove}
+                onTouchEnd={handleMouseUp}
             >
                 <Layer className="Canvas-Layer">
                     {tool === 'pen' &&

@@ -80,12 +80,12 @@ class Login extends Component<LoginProps, LoginState> {
         return (
             <Container className={classes.outerContainer + " Login"} maxWidth='md'>
                 <Grid container spacing={10} justify="center">
-                    <Grid item xs={5}>
+                    <Grid item md={5} xs={1}>
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
                         </div>
                     </Grid>
-                    <Grid item xs={5} className={classes.loginFormContainer}>
+                    <Grid item md={5} xs={12} className={classes.loginFormContainer}>
                         <Typography variant='h4' paragraph>
                             Вход
                         </Typography>

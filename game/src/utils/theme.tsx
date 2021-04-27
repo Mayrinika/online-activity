@@ -26,8 +26,7 @@ export default {
             textDecoration: 'none'
         },
         outerContainer: {
-            // width: 1000,
-            // height: 500,
+
             margin: '0 auto',
             padding: '48px 16px',
             backgroundColor: 'rgba(244,244,244,0.85)',
@@ -35,11 +34,8 @@ export default {
             borderRadius: 10,
         },
         imgContainer: {
-            // borderRight:'1px solid gray',
-            // paddingRight: '16px',
-
             '& .Main-Img': {
-                width: 300,
+                width: '30vh',
                 marginLeft: 'auto',
                 marginRight: 'auto',
             }

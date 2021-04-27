@@ -9,11 +9,13 @@ import Game from "../Game/Game";
 import GameOver from "../GameOver/GameOver";
 import Leaderboard from "../Leaderboard/Leaderboard";
 import SuggestWord from "../SuggestWord/SuggestWord";
+import PossibleGames from "../PossibleGames/PossibleGames";
 import {ApiContext} from '../Api/ApiProvider';
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './App.css';
+import UserProfile from "../UserProfile/UserProfile";
 
 class App extends Component<{}, {}> {
     static contextType = ApiContext;
@@ -21,6 +23,7 @@ class App extends Component<{}, {}> {
     render() {
         const {user} = this.context;
         const isAuthorized = user !== null;
+        const redirectToMain = <Redirect to={getDomRoutes().main}/>;
         return (
             <div className="App">
                 <Switch>
@@ -31,19 +34,25 @@ class App extends Component<{}, {}> {
                         <Signup {...props} />
                     )}/>
                     <Route exact path={getDomRoutes().suggestWord} render={(props) => (
-                        isAuthorized ? <SuggestWord {...props} /> : <Redirect to={getDomRoutes().main}/>
+                        isAuthorized ? <SuggestWord {...props} /> : redirectToMain
                     )}/>
                     <Route path={getDomRoutes().leaderboard} render={(props) => (
                         <Leaderboard {...props} />
                     )}/>
+                    <Route path={getDomRoutes().possibleGames} render={(props) => (
+                        isAuthorized ? <PossibleGames {...props} /> : redirectToMain
+                    )}/>
                     <Route path={getDomRoutes(':gameId').game} render={(props) => (
-                        isAuthorized ? <Game {...props} /> : <Redirect to={getDomRoutes().main}/>
+                        isAuthorized ? <Game {...props} /> : redirectToMain
                     )}/>
                     <Route path={getDomRoutes(':gameId').gameOver} render={(props) => (
-                        isAuthorized ? <GameOver {...props} /> : <Redirect to={getDomRoutes().main}/>
+                        isAuthorized ? <GameOver {...props} /> : redirectToMain
+                    )}/>
+                    <Route exact path={getDomRoutes().userProfile} render={(props) => (
+                        isAuthorized ? <UserProfile {...props} /> : <Redirect to={getDomRoutes().main}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').startGame} render={(props) => (
-                        isAuthorized ? <StartGame {...props} /> : <Redirect to={getDomRoutes().main}/>
+                        isAuthorized ? <StartGame {...props} /> : redirectToMain
                     )}/>
                     <Route exact path={getDomRoutes().main} render={(props) => (
                         <Main {...props} />

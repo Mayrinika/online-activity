@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {RouteComponentProps} from 'react-router-dom';
+import {Link, RouteComponentProps} from 'react-router-dom';
 import {v4 as uuidv4} from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -25,7 +25,6 @@ interface LoginState {
     code: string;
     possibleGames: GameType[];
     isCodeIncorrect: boolean;
-    isNameExist: boolean;
 }
 
 class Main extends Component<LoginProps, LoginState> {
@@ -37,7 +36,6 @@ class Main extends Component<LoginProps, LoginState> {
             code: '',
             possibleGames: [],
             isCodeIncorrect: false,
-            isNameExist: false
         };
     }
 
@@ -75,7 +73,7 @@ class Main extends Component<LoginProps, LoginState> {
 
     getAllGames = async (): Promise<void> => {
         const allGames = await this.context.getAllGames();
-        this.setState({possibleGames: allGames});
+        this.setState({possibleGames: allGames}); //TODO rename
     };
 
     handleChange = async (evt: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -96,12 +94,7 @@ class Main extends Component<LoginProps, LoginState> {
             const newCode = uuidv4();
             await this.startGame(name, newCode);
         } else if (this.state.possibleGames.some(game => game.id === code)) {
-            const currentGameId = this.state.possibleGames.find(game => game.id === code);
-            if (currentGameId!.players.some(player => player.name === name)) {
-                this.setState({isNameExist: true});
-            } else {
-                await this.startGame(name, code);
-            }
+            await this.startGame(name, code);
         } else {
             this.setState({isCodeIncorrect: true});
         }
@@ -116,16 +109,16 @@ class Main extends Component<LoginProps, LoginState> {
 
     render() {
         const {classes} = this.props;
-        const {isCodeIncorrect, code, isNameExist} = this.state;
+        const {isCodeIncorrect, code} = this.state;
         return (
-            <Container className={classes.outerContainer + " Main"} maxWidth='md'>
-                <Grid container spacing={10} justify="center">
-                    <Grid item xs={5}>
+            <Container className={classes.outerContainer + " Main"} maxWidth='lg'>
+                <Grid container spacing={10} justify="center" >
+                    <Grid item md={5} xs={1} className="Main-Img-Container">
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
                         </div>
                     </Grid>
-                    <Grid item xs={5} className={classes.loginFormContainer}>
+                    <Grid item md={5} xs={12} className={classes.loginFormContainer}>
                         <Typography variant='h4' paragraph>
                             Онлайн - активити
                         </Typography>
@@ -133,14 +126,11 @@ class Main extends Component<LoginProps, LoginState> {
                             {!this.context.user ?
                                 <Typography>Пожалуйста, войдите или зарегистрируйтесь</Typography>
                                 : <div>
-                                    {isNameExist ?
-                                        <Typography>{localStorage.getItem('playerName')}, не стоит жульничать!</Typography>
-                                        : <div className="Main-Welcome">
-                                            <Typography>Добро пожаловать,</Typography>
-                                            <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
-                                            <Typography> {localStorage.getItem('playerName')}</Typography>
-                                        </div>
-                                    }
+                                    <div className="Main-Welcome">
+                                        <Typography>Добро пожаловать,</Typography>
+                                        <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
+                                        <Typography> {localStorage.getItem('playerName')}</Typography>
+                                    </div>
                                     <TextField
                                         variant="outlined"
                                         margin="normal"

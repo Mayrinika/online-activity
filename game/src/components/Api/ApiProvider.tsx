@@ -200,6 +200,16 @@ class ApiMethods implements Api {
             .catch(err => this.reportError(err));
     };
 
+    getPossibleGamesFromServer = async (): Promise<GameType[]> => {
+        return await fetch(getRoutes().possibleGames)
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => this.reportError(err));
+    };
+
     deleteLine = async (): Promise<void> => {
         await fetch(getRoutes(this._gameId).deleteLine, {
             method: 'POST',
@@ -208,6 +218,38 @@ class ApiMethods implements Api {
             .then(res => res.json())
             .catch(err => this.reportError(err));
     };
+
+    changePassword = async (oldPassword: string, newPassword: string, name: string): Promise<boolean> => {
+        const response = await fetch(getRoutes().changePassword, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({oldPassword, newPassword, name})
+        })
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => this.reportError(err));
+        return response.success;
+    };
+
+    changeAvatar = async (oldPassword: string, newAvatar: string, name: string): Promise<User> => {
+        const user = await fetch(getRoutes().changeAvatar, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({oldPassword, newAvatar, name})
+        })
+            .then(res => {
+                this.checkStatus(res);
+                return res;
+            })
+            .then(res => res.json())
+            .catch(err => this.reportError(err));
+        if (!user.error)
+            this.setUser(user);
+        return user;
+    }
 
     private reportError(err: string): void {
         console.log('Something went wrong:', err);

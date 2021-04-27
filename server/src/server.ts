@@ -9,11 +9,20 @@ import bodyParser from 'body-parser';
 import db, {initializeDb} from './db';
 //handlers
 import {games, suggestedWords, GAME_TIME, timerIds} from "./handlers/game";
-import {getAllUsers, signup, getUserLoginData, login, logout} from './handlers/user';
+import {
+    getAllUsers,
+    signup,
+    getUserLoginData,
+    login,
+    logout,
+    changePassword,
+    changeAvatar
+} from './handlers/user';
 import {
     getAllGames,
     getSuggestedWords,
     getLeaderboard,
+    getPossibleGames,
     getCurrentGame,
     addGame,
     addLine,
@@ -76,10 +85,12 @@ app.post('/api/signup', signup);
 app.get('/api/login', getUserLoginData);
 app.post('/api/login', login);
 app.post('/api/logout', logout);
+app.post('/api/changePassword', changePassword);
+app.post('/api/changeAvatar', changeAvatar);
 //game routes
 app.get('/api/suggestedWords', getSuggestedWords);
-
 app.get('/api/leaderboard', getLeaderboard);
+app.get('/api/possibleGames', getPossibleGames);
 
 app.get('/api/:gameId', getCurrentGame);
 app.post('/api/:gameId', addGame);
@@ -256,7 +267,15 @@ function getPainter(players: Player[]): Player {
 }
 
 function addPlayer(currentGame: GameType, name: string, avatar: string | null | ArrayBuffer) {
-    currentGame.players.push({name: name, avatar: avatar});
+    let isAlreadyExist = false;
+    for(const player of currentGame.players) {
+        if(player.name === name) {
+            isAlreadyExist = true;
+            break;
+        }
+    }
+    if(!isAlreadyExist)
+        currentGame.players.push({name: name, avatar: avatar});
 }
 
 function sendSuggestedWordsToAllClients() {

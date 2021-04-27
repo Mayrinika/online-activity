@@ -5,9 +5,8 @@
     padding: 20px !important;
 }
 .SuggestWord-words-list {
-    height: 50%;
+    height: 15vh;
     overflow-y: auto;
-    height: 200px;
 }
 .SuggestWord-word {
     height: 60px;
@@ -39,5 +38,6 @@
 .SuggestWord-buttons {
     justify-self: flex-end;
     display: flex;
+    margin-left: 20px;
 }
 

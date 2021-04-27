@@ -13,7 +13,7 @@ import websocket from "../../utils/websocket";
 //styles
 import './Game.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Container, Typography} from '@material-ui/core';
+import {Box, Button, Container, TextField, Typography} from '@material-ui/core';
 
 let newWS: WebSocket;
 
@@ -144,6 +144,24 @@ class Game extends Component<GameProps, GameState> {
         }));
     };
 
+    copyGameId = (): void => {
+        const inputEl = document.querySelector('#gameId') as HTMLInputElement;
+        const inputValue = inputEl!.value.trim();
+
+        if (!navigator.clipboard) {
+            inputEl.select();
+            document.execCommand("copy");
+        } else {
+            navigator.clipboard.writeText(inputValue)
+                .then(() => {
+                    inputEl.select();
+                })
+                .catch(err => {
+                    console.log('Something went wrong', err);
+                });
+        }
+    };
+
     render() {
         const {painter, wordToGuess, players, imgURL, chatMessages} = this.state;
         const playerName = localStorage.getItem('playerName');
@@ -156,7 +174,23 @@ class Game extends Component<GameProps, GameState> {
         return (
             <Container className={classes.outerContainer + " Game"} maxWidth='lg'>
                 <header>
-                    <Typography variant='h4' paragraph>{wordToDisplay}</Typography>
+                    <Box>
+                        <TextField
+                            id='gameId'
+                            variant="outlined"
+                            size='small'
+                            value={localStorage.getItem('gameId')}
+                        />
+                        <Button
+                            id='readButton'
+                            variant="contained"
+                            size='medium'
+                            color='secondary'
+                            onClick={this.copyGameId}>
+                            Copy
+                        </Button>
+                    </Box>
+                    <Typography variant='h6' paragraph>{wordToDisplay}</Typography>
                     <Timer time={this.state.time}/>
                 </header>
                 <main>
