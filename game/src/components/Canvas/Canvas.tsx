@@ -118,6 +118,9 @@ const Canvas = (props: canvasProps) => {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseLeave}
+                onTouchStart={handleMouseDown}
+                onTouchMove={handleMouseMove}
+                onTouchEnd={handleMouseUp}
             >
                 <Layer className="Canvas-Layer">
                     {tool === 'pen' &&
