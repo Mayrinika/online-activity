@@ -120,6 +120,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     }
 
     generateAvatar(name: string): string {
+        const color =  '#' + (Math.random().toString(16) + '000000').substring(2,8).toUpperCase();
         const width = 50;
         const height = 50;
         const elem = document.createElement('canvas');
@@ -127,7 +128,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
         elem.height = height;
         const ctx = elem.getContext('2d');
         if (ctx) {
-            ctx.fillStyle = '#517413'
+            ctx.fillStyle = color
             ctx.fillRect(0, 0, 50, 50);
             ctx.fillStyle = '#fff'
             ctx.font = "48px serif";
