@@ -49,7 +49,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                 </Link>
                 <Link to={getDomRoutes().userProfile} className={classes.navLink +" NavigationBar-Right menu__item"} onClick={this.closeMenu}>
                     <img src={this.context.user.avatar} alt="avatar" className="avatar"/>
-                    <Typography variant='subtitle1'>{this.context.user.name}</Typography>
+                    <Typography variant='subtitle1'>{this.context.user ? this.context.user.name : undefined}</Typography>
                 </Link>
                 <Button
                     className={classes.navButton}
@@ -97,7 +97,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         const {classes} = this.props;
         return (
             <AppBar className={classes.navBarContainer + " NavBar"}>
-                <input id="menu__toggle" type="checkbox" checked={this.state.isMenuOpen} onClick={this.toggleMenu}/>
+                <input id="menu__toggle" type="checkbox" checked={this.state.isMenuOpen} onChange={this.toggleMenu}/>
                 <label className="menu__btn" htmlFor="menu__toggle">
                     <span></span>
                 </label>

@@ -131,12 +131,6 @@ class ApiMethods implements Api {
         this.setUser(null);
     };
 
-    checkAuthorization = async (): Promise<void> => {
-        await fetch('/cookie-auth-protected-route', {credentials: 'include'})
-            .then(res => this.checkStatus(res))
-            .catch(err => this.reportError(err));
-    };
-
     getAllGames = async (): Promise<GameType[]> => {
         return await fetch(getRoutes().games)
             .then(res => {

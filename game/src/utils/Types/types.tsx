@@ -7,7 +7,6 @@ export interface Api {
     getAllUsers: () => Promise<User[]>;
     login: (name: string, password: string) => Promise<User>;
     logout: () => Promise<void>;
-    checkAuthorization: () => Promise<void>;
     getAllGames: () => Promise<GameType[]>;
     getGame: () => Promise<GameType>;
     clearCountdown: () => Promise<void>;

@@ -44,7 +44,7 @@ class Chat extends Component<ChatProps, ChatState> {
         const { inputMessage } = this.state;
         const { wordToGuess } = this.props;
         this.setState({inputMessage: ''});
-        const playerName = localStorage.getItem('playerName');
+        const playerName = this.context.user ? this.context.user.name : undefined;
         const gameId = localStorage.getItem('gameId');
         if (playerName === null || gameId === null)
             return;
@@ -65,7 +65,7 @@ class Chat extends Component<ChatProps, ChatState> {
     };
 
     setWinner = async (messageId?: string): Promise<void> => {
-        let playerName = localStorage.getItem('playerName');
+        let playerName = this.context.user ? this.context.user.name : undefined;
         if (messageId)
             playerName = this.getWinner(messageId) as string;
         this.props.setWinner(playerName);

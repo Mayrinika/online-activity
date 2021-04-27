@@ -1,11 +1,13 @@
 .SuggestWord {
     height: 500px;
 }
-.SuggestWord-Form {
-    padding: 20px !important;
+.SuggestWord .SuggestWord-Form {
+    padding: 20px;
+    display: flex;
+    align-items: center;
 }
 .SuggestWord-words-list {
-    height: 15vh;
+    height: 25vh;
     overflow-y: auto;
 }
 .SuggestWord-word {
@@ -38,6 +40,7 @@
 .SuggestWord-buttons {
     justify-self: flex-end;
     display: flex;
-    margin-left: 20px;
+    margin-left: 30px;
+    gap: 5px;
 }
 

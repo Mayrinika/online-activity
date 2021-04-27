@@ -56,7 +56,6 @@ class Login extends Component<LoginProps, LoginState> {
         evt.preventDefault();
         await this.login();
         if (!this.state.isIncorrect) {
-            localStorage.setItem('playerName', this.state.name);
             this.props.history.push(getDomRoutes().main);
         }
         if (this._isMounted) {
@@ -65,7 +64,6 @@ class Login extends Component<LoginProps, LoginState> {
     };
     login = async (): Promise<void> => {
         const {name, password} = this.state;
-        await this.context.checkAuthorization();
         const user = await this.context.login(name, password);
         if (user.error) {
             this.setState({isIncorrect: true});

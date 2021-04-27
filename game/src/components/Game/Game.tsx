@@ -164,7 +164,7 @@ class Game extends Component<GameProps, GameState> {
 
     render() {
         const {painter, wordToGuess, players, imgURL, chatMessages} = this.state;
-        const playerName = localStorage.getItem('playerName');
+        const playerName = this.context.user ? this.context.user.name : undefined;
         const wordToDisplay = (playerName === painter.name) ?
             `Загаданное слово: ${wordToGuess}`
             : 'Отгадайте слово!';
@@ -174,6 +174,8 @@ class Game extends Component<GameProps, GameState> {
         return (
             <Container className={classes.outerContainer + " Game"} maxWidth='lg'>
                 <header>
+                    <Timer time={this.state.time}/>
+                    <Typography variant='h6' paragraph>{wordToDisplay}</Typography>
                     <Box>
                         <TextField
                             id='gameId'
@@ -190,8 +192,6 @@ class Game extends Component<GameProps, GameState> {
                             Copy
                         </Button>
                     </Box>
-                    <Typography variant='h6' paragraph>{wordToDisplay}</Typography>
-                    <Timer time={this.state.time}/>
                 </header>
                 <main>
                     {isPainter ?

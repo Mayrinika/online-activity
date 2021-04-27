@@ -7,6 +7,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import './UserProfile.css'
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, TextField, Typography} from "@material-ui/core";
+import {Player} from "../../utils/Types/types";
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -16,8 +17,6 @@ interface UserProfileProps extends RouteComponentProps, WithStyles<typeof styles
 }
 
 interface UserProfileState {
-    position: string;
-    score: number;
     isPasswordChanging: boolean;
     isAvatarChanging: boolean;
     oldPassword: string;
@@ -26,6 +25,7 @@ interface UserProfileState {
     isIncorrect: boolean;
     newAvatar: string | null;
     avatarIsLoading: boolean;
+    sortedLeaderboard: { player: Player, score: number }[];
 }
 
 interface ChangeEventHandler<HTMLInputElement> {
@@ -37,8 +37,6 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     constructor(props: UserProfileProps) {
         super(props);
         this.state = {
-            position: '-',
-            score: 0,
             isPasswordChanging: false,
             isAvatarChanging: false,
             oldPassword: '',
@@ -47,21 +45,15 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
             isIncorrect: false,
             newAvatar: null,
             avatarIsLoading: false,
+            sortedLeaderboard: []
         };
     }
     async componentDidMount() {
         const sortedLeaderboard = await this.context.getLeaderboardDataFromServer();
-        const name = localStorage.getItem('playerName');
-        const currentUser = sortedLeaderboard.find((el: {player: {name: string, avatar: string}, score: number}) => el.player.name === name);
-        if (currentUser) {
-            const position = sortedLeaderboard.indexOf(currentUser);
-            if (position !== -1){
-                this.setState({position, score: currentUser.score});
-            }
-        }
         this.setState((state) => ({
             ...state,
             helperText: '',
+            sortedLeaderboard: sortedLeaderboard
         }));
     }
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
@@ -73,7 +65,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     handlePasswordChange = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         evt.preventDefault();
         const {oldPassword, newPassword} = this.state;
-        const success = await this.context.changePassword(oldPassword, newPassword, this.context.user.name);
+        const success = await this.context.changePassword(oldPassword, newPassword, this.context.user ? this.context.user.name : undefined);
         this.setState((state) => ({
             ...state,
             helperText: '',
@@ -98,8 +90,12 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     }
     handleAvatarChange = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         evt.preventDefault();
-        const {oldPassword, newAvatar} = this.state;
-        const user = await this.context.changeAvatar(oldPassword, newAvatar, this.context.user.name);
+        let {oldPassword, newAvatar} = this.state;
+        const name = this.context.user ? this.context.user.name : undefined;
+        if (!newAvatar) {
+            newAvatar = this.generateAvatar(name);
+        }
+        const user = await this.context.changeAvatar(oldPassword, newAvatar, name);
         this.setState((state) => ({
             ...state,
             helperText: '',
@@ -121,6 +117,26 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
             oldPassword: '',
             newPassword: ''
         }));
+    }
+
+    generateAvatar(name: string): string {
+        const color =  '#' + (Math.random().toString(16) + '000000').substring(2,8).toUpperCase();
+        const width = 50;
+        const height = 50;
+        const elem = document.createElement('canvas');
+        elem.width = width;
+        elem.height = height;
+        const ctx = elem.getContext('2d');
+        if (ctx) {
+            ctx.fillStyle = color
+            ctx.fillRect(0, 0, 50, 50);
+            ctx.fillStyle = '#fff'
+            ctx.font = "48px serif";
+            ctx.fillText(name[0].toUpperCase(), 10, 40);
+
+        }
+        const url = elem.toDataURL();
+        return url;
     }
 
     renderPasswordChange = (): ReactElement => {
@@ -169,7 +185,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
                 <Button
                     className={classes.button}
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     size="large"
                     onClick={()=>this.setState({isPasswordChanging: false})}
                 >
@@ -199,7 +215,14 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
                         error={isIncorrect}
                         helperText={isIncorrect ? 'Неверный пароль' : ''}
                     />
-                    <input type="file" onChange={this.handleLoadAvatar}/>
+                    <Button
+                        variant="contained"
+                        component="label"
+                        className="User-ChooseFile"
+                    >
+                        Загрузить аватарку
+                        <input type="file" onChange={this.handleLoadAvatar}/>
+                    </Button>
                     <Button
                         className={classes.button}
                         variant="contained"
@@ -214,7 +237,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
                 <Button
                     className={classes.button}
                     variant="contained"
-                    color="primary"
+                    color="secondary"
                     size="large"
                     onClick={()=>this.setState({isAvatarChanging: false})}
                 >
@@ -254,7 +277,19 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     render() {
         const {user} = this.context;
         const {classes} = this.props;
-        const {position, score, isPasswordChanging, helperText, isAvatarChanging} = this.state;
+        const {isPasswordChanging, helperText, isAvatarChanging, sortedLeaderboard} = this.state;
+        let currentUser;
+        let position;
+        let score;
+        if (user) {
+            currentUser = sortedLeaderboard.find((el: { player: Player, score: number }) => el.player.name === user.name);
+        }
+        if (currentUser) {
+            position = sortedLeaderboard.indexOf(currentUser);
+            if (position !== -1){
+                score = currentUser.score;
+            }
+        }
         return (
             <Container className={classes.outerContainer + " Main"} maxWidth='md'>
                 {user && <Typography variant='h4' paragraph>

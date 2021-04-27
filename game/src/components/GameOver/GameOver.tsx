@@ -88,7 +88,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                                                     className={classes.playerContainer}
                                                     key={item.player.name}>
                                             {item.player.avatar &&
-                                            <img src={item.player.avatar as string} alt="avatar"/>}
+                                            <img src={item.player.avatar as string} alt="avatar" className="avatar"/>}
                                             {item.player.name}: {item.score}
                                         </Typography>
                                     );

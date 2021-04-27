@@ -5,6 +5,7 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 //styles
+import './Signup.css'
 import crocoImg from "../../img/cocodrilo.png";
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Grid, Typography, TextField, CircularProgress} from '@material-ui/core';
@@ -55,7 +56,6 @@ class Signup extends Component<SignupProps, SignupState> {
             this.setState({isNameExist: true});
         } else {
             await this.addName();
-            localStorage.setItem('playerName', name);
             this.setState({name: '', password: '', avatar: null});
             await this.getAllUsers();
             this.props.history.push(getDomRoutes().main);
@@ -72,11 +72,11 @@ class Signup extends Component<SignupProps, SignupState> {
         if (!avatar) {
             avatar = this.generateAvatar(name);
         }
-        await this.context.checkAuthorization();
         await this.context.signup(name, password, avatar);
     };
 
     generateAvatar(name: string): string {
+        const color =  '#' + (Math.random().toString(16) + '000000').substring(2,8).toUpperCase();
         const width = 50;
         const height = 50;
         const elem = document.createElement('canvas');
@@ -84,7 +84,7 @@ class Signup extends Component<SignupProps, SignupState> {
         elem.height = height;
         const ctx = elem.getContext('2d');
         if (ctx) {
-            ctx.fillStyle = '#517413'
+            ctx.fillStyle = color
             ctx.fillRect(0, 0, 50, 50);
             ctx.fillStyle = '#fff'
             ctx.font = "48px serif";
@@ -180,7 +180,14 @@ class Signup extends Component<SignupProps, SignupState> {
                                 onChange={this.handleChange}
                                 value={password}
                             />
-                            <input type="file" onChange={this.handleLoadAvatar}/>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                className="Signup-ChooseFile"
+                            >
+                                Загрузить аватарку
+                                <input type="file" onChange={this.handleLoadAvatar}/>
+                            </Button>
                             <Button
                                 className={classes.button}
                                 variant="contained"

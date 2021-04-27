@@ -87,7 +87,7 @@ class Main extends Component<LoginProps, LoginState> {
 
     handleSubmit = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
         const {code} = this.state;
-        const name = localStorage.getItem('playerName');
+        const name = this.context.user ? this.context.user.name : undefined;
         evt.preventDefault();
         await this.getAllGames();
         if (code === '') {
@@ -111,17 +111,17 @@ class Main extends Component<LoginProps, LoginState> {
         const {classes} = this.props;
         const {isCodeIncorrect, code} = this.state;
         return (
-            <Container className={classes.outerContainer + " Main"} maxWidth='lg'>
-                <Grid container spacing={10} justify="center" >
+            <Container className={classes.outerContainer + " Main"} maxWidth='md'>
+                <Typography variant='h4' paragraph>
+                    Онлайн - активити
+                </Typography>
+                <Grid container spacing={10} justify="center" alignContent="center">
                     <Grid item md={5} xs={1} className="Main-Img-Container">
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
                         </div>
                     </Grid>
-                    <Grid item md={5} xs={12} className={classes.loginFormContainer}>
-                        <Typography variant='h4' paragraph>
-                            Онлайн - активити
-                        </Typography>
+                    <Grid item md={5} xs={12} className={classes.mainFormContainer}>
                         <form onSubmit={this.handleSubmit} className={classes.innerContainer}>
                             {!this.context.user ?
                                 <Typography>Пожалуйста, войдите или зарегистрируйтесь</Typography>
@@ -129,7 +129,7 @@ class Main extends Component<LoginProps, LoginState> {
                                     <div className="Main-Welcome">
                                         <Typography>Добро пожаловать,</Typography>
                                         <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
-                                        <Typography> {localStorage.getItem('playerName')}</Typography>
+                                        <Typography> {this.context.user ? this.context.user.name : undefined}</Typography>
                                     </div>
                                     <TextField
                                         variant="outlined"
