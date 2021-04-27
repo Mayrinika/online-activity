@@ -97,7 +97,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         const {classes} = this.props;
         return (
             <AppBar className={classes.navBarContainer + " NavBar"}>
-                <input id="menu__toggle" type="checkbox" checked={this.state.isMenuOpen} onClick={this.toggleMenu}/>
+                <input id="menu__toggle" type="checkbox" checked={this.state.isMenuOpen} onChange={this.toggleMenu}/>
                 <label className="menu__btn" htmlFor="menu__toggle">
                     <span></span>
                 </label>
