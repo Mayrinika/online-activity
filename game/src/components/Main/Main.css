@@ -1,5 +1,5 @@
 .Main {
-    height: 80vh;
+    height: 60vh;
 }
 .Main-Container {
     display: flex;
@@ -21,6 +21,9 @@
 }
 @media (max-width: 960px) {
     .Main-Img {
+        display: none;
+    }
+    .Main .Main-Img-Container {
         display: none;
     }
 }
