@@ -72,7 +72,6 @@ class Signup extends Component<SignupProps, SignupState> {
         if (!avatar) {
             avatar = this.generateAvatar(name);
         }
-        await this.context.checkAuthorization();
         await this.context.signup(name, password, avatar);
     };
 

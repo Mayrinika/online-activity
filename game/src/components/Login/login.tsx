@@ -64,7 +64,6 @@ class Login extends Component<LoginProps, LoginState> {
     };
     login = async (): Promise<void> => {
         const {name, password} = this.state;
-        await this.context.checkAuthorization();
         const user = await this.context.login(name, password);
         if (user.error) {
             this.setState({isIncorrect: true});
