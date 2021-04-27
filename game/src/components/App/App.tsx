@@ -15,6 +15,7 @@ import {ApiContext} from '../Api/ApiProvider';
 import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './App.css';
+import UserProfile from "../UserProfile/UserProfile";
 
 class App extends Component<{}, {}> {
     static contextType = ApiContext;
@@ -46,6 +47,9 @@ class App extends Component<{}, {}> {
                     )}/>
                     <Route path={getDomRoutes(':gameId').gameOver} render={(props) => (
                         isAuthorized ? <GameOver {...props} /> : redirectToMain
+                    )}/>
+                    <Route exact path={getDomRoutes().userProfile} render={(props) => (
+                        isAuthorized ? <UserProfile {...props} /> : <Redirect to={getDomRoutes().main}/>
                     )}/>
                     <Route path={getDomRoutes(':gameId').startGame} render={(props) => (
                         isAuthorized ? <StartGame {...props} /> : redirectToMain

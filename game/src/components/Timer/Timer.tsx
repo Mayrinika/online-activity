@@ -8,7 +8,7 @@ function Timer(props: {time: number}) {
     const sec: string = (props.time%60).toString(10).padStart(2,'0');
     const timeProgress = Math.round(props.time * 100 / GAME_TIME);
     return (
-        <Box position="relative" display="inline-flex">
+        <Box position="relative" display="inline-flex" className="Timer">
             <CircularProgress variant="determinate" value={timeProgress} size={60}/>
             <Box
                 top={0}

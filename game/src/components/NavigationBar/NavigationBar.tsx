@@ -17,22 +17,30 @@ interface NavigationBarProps extends WithStyles<typeof styles> {
 }
 
 interface NavigationBarState {
+    isMenuOpen: boolean;
 }
 
 class NavigationBar extends React.Component<NavigationBarProps, NavigationBarState> {
     static contextType = ApiContext;
+    constructor(props: NavigationBarProps) {
+        super(props);
+        this.state = {
+            isMenuOpen: false,
+        }
+    }
 
     renderForAuthorizedUser = (): ReactElement => {
         const {classes} = this.props;
         return (
             <>
-                <Link to={getDomRoutes().suggestWord} className={classes.navLink}>
+                <Link to={getDomRoutes().suggestWord} className={classes.navLink + " menu__item"} onClick={this.closeMenu}>
                     <Button
                         className={classes.navButton}
                         variant="contained"
                         color="secondary"
                     >Предложить слово</Button>
                 </Link>
+<<<<<<< HEAD
                 <Link to={getDomRoutes().possibleGames} className={classes.navLink}>
                     <Button
                         className={classes.navButton}
@@ -42,6 +50,12 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                 </Link>
                 <img src={this.context.user.avatar} alt="avatar" className="avatar NavigationBar-Right"/>
                 <Typography variant='subtitle1'>{this.context.user.name}</Typography>
+=======
+                <Link to={getDomRoutes().userProfile} className={classes.navLink +" NavigationBar-Right menu__item"} onClick={this.closeMenu}>
+                    <img src={this.context.user.avatar} alt="avatar" className="avatar"/>
+                    <Typography variant='subtitle1'>{this.context.user.name}</Typography>
+                </Link>
+>>>>>>> adaptive
                 <Button
                     className={classes.navButton}
                     variant="contained"
@@ -57,14 +71,14 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
         const {classes} = this.props;
         return (
             <>
-                <Link to={getDomRoutes().login} className={classes.navLink + " NavigationBar-Right"}>
+                <Link to={getDomRoutes().login} className={classes.navLink + " NavigationBar-Right menu__item"} onClick={this.closeMenu}>
                     <Button
                         className={classes.navButton}
                         variant="contained"
                         color="default"
                     >Войти</Button>
                 </Link>
-                <Link to={getDomRoutes().signup} className={classes.navLink}>
+                <Link to={getDomRoutes().signup} className={classes.navLink + " menu__item"} onClick={this.closeMenu}>
                     <Button
                         className={classes.navButton}
                         variant="contained"
@@ -74,20 +88,34 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
             </>
         );
     };
+    toggleMenu = () => {
+        if (this.state.isMenuOpen) {
+            this.setState({isMenuOpen: false});
+        } else {
+            this.setState({isMenuOpen: true});
+        }
+    }
+    closeMenu = () => {
+        this.setState({isMenuOpen: false});
+    }
 
     render() {
         const {classes} = this.props;
         return (
-            <AppBar className={classes.navBarContainer}>
-                <Toolbar>
-                    <Link to={getDomRoutes().main} className={classes.navLink}>
+            <AppBar className={classes.navBarContainer + " NavBar"}>
+                <input id="menu__toggle" type="checkbox" checked={this.state.isMenuOpen} onClick={this.toggleMenu}/>
+                <label className="menu__btn" htmlFor="menu__toggle">
+                    <span></span>
+                </label>
+                <Toolbar className="menu__box">
+                    <Link to={getDomRoutes().main} className={classes.navLink + " menu__item"} onClick={this.closeMenu}>
                         <Button
                             className={classes.navButton}
                             variant="contained"
                             color="secondary"
                         >Главная</Button>
                     </Link>
-                    <Link to={getDomRoutes().leaderboard} className={classes.navLink}>
+                    <Link to={getDomRoutes().leaderboard} className={classes.navLink + " menu__item"} onClick={this.closeMenu}>
                         <Button
                             className={classes.navButton}
                             variant="contained"

@@ -1,5 +1,5 @@
 .Main {
-    height: 500px;
+    height: 60vh;
 }
 .Main-Container {
     display: flex;
@@ -13,4 +13,17 @@
     height: 30px;
     border-radius: 50%;
     padding: 10px;
+}
+.Main-Link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@media (max-width: 960px) {
+    .Main-Img {
+        display: none;
+    }
+    .Main .Main-Img-Container {
+        display: none;
+    }
 }

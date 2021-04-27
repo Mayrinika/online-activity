@@ -15,6 +15,8 @@ export interface Api {
     getLeaderboardDataFromServer: () => Promise<[userId: string, score: number][]>;
     getSuggestWordsFromServer: () => Promise<SuggestedWord[]>;
     deleteLine: () => Promise<void>;
+    changePassword: (oldPassword: string, newPassword: string, name: string) => Promise<boolean>;
+    changeAvatar: (oldPassword: string, newAvatar: string, name: string) => Promise<User>;
 }
 
 export interface UserLoginData {
