@@ -51,7 +51,7 @@ export default {
             border: '1px solid gray',
             borderRadius: 10,
             backgroundColor: '#F3F3F3',
-            height: '50%',
+            height: '55%',
             padding: '30px 48px 70px 48px',
         },
         playerContainer: {

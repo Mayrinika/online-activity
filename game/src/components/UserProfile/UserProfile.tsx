@@ -196,19 +196,11 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     };
 
     renderAvatarChange = (): ReactElement => {
-        const {oldPassword, isIncorrect, avatarIsLoading} = this.state;
+        const {oldPassword, isIncorrect, avatarIsLoading, newAvatar} = this.state;
         const {classes} = this.props;
         return (
             <>
                 <form onSubmit={this.handleAvatarChange}>
-                    <Button
-                        variant="contained"
-                        component="label"
-                        className="User-ChooseFile"
-                    >
-                        Загрузить аватарку
-                        <input type="file" onChange={this.handleLoadAvatar}/>
-                    </Button>
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -223,6 +215,15 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
                         error={isIncorrect}
                         helperText={isIncorrect ? 'Неверный пароль' : ''}
                     />
+                    <Button
+                        variant="contained"
+                        component="label"
+                        className="User-ChooseFile"
+                    >
+                        Загрузить аватарку
+                        <input type="file" onChange={this.handleLoadAvatar}/>
+                    </Button>
+                    {newAvatar && <img src={newAvatar} alt='avatar' className="avatar UserProfile-Avatar"/>}
                     <Button
                         className={classes.button}
                         variant="contained"

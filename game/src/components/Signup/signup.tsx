@@ -20,7 +20,7 @@ interface SignupProps extends RouteComponentProps, WithStyles<typeof styles> {
 interface SignupState {
     name: string;
     password: string;
-    avatar: string | ArrayBuffer | null;
+    avatar: string | null;
     possibleNames: string[];
     isNameExist: boolean;
     avatarIsLoading: boolean;
@@ -139,7 +139,7 @@ class Signup extends Component<SignupProps, SignupState> {
 
     render() {
         const {classes} = this.props;
-        const {isNameExist, name, password, avatarIsLoading} = this.state;
+        const {isNameExist, name, password, avatarIsLoading, avatar} = this.state;
         return (
             <Container className={classes.outerContainer + " Signup"} maxWidth='md'>
                 <Grid container spacing={10} justify="center">
@@ -188,6 +188,7 @@ class Signup extends Component<SignupProps, SignupState> {
                                 Загрузить аватарку
                                 <input type="file" onChange={this.handleLoadAvatar}/>
                             </Button>
+                            {avatar && <img src={avatar} alt='avatar' className="avatar"/>}
                             <Button
                                 className={classes.button}
                                 variant="contained"

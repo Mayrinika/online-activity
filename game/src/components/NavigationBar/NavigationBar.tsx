@@ -1,4 +1,4 @@
-import React, {Component, ReactElement} from 'react';
+import React, {ReactElement} from 'react';
 import {Link} from 'react-router-dom';
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -7,7 +7,7 @@ import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './NavigationBar.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, AppBar, Toolbar, Typography} from '@material-ui/core';
+import {Button, AppBar, Toolbar, Typography} from '@material-ui/core';
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -47,7 +47,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                         color="secondary"
                     >Не с кем играть</Button>
                 </Link>
-                <Link to={getDomRoutes().userProfile} className={classes.navLink +" NavigationBar-Right menu__item"} onClick={this.closeMenu}>
+                <Link to={getDomRoutes().userProfile} className={classes.navLink +" NavigationBar-Right menu__item NavBar-UserProfileLink"} onClick={this.closeMenu}>
                     <img src={this.context.user.avatar} alt="avatar" className="avatar"/>
                     <Typography variant='subtitle1'>{this.context.user ? this.context.user.name : undefined}</Typography>
                 </Link>
