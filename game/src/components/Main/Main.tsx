@@ -6,7 +6,7 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import {GameType} from "../../utils/Types/types";
-import {WebsocketMessage as websocket, WS} from "../../utils/websocket";
+import {WS} from "../../utils/websocket";
 //styles
 import './Main.css'
 import crocoImg from '../../img/cocodrilo.png';
@@ -16,7 +16,7 @@ import {Button, Container, Grid, Typography, TextField} from '@material-ui/core'
 const styles = (theme: { content: any; }) => (
     theme.content
 );
-//let ws: WebSocket;
+
 let ws = new WS();
 
 interface LoginProps extends RouteComponentProps, WithStyles<typeof styles> {
@@ -39,26 +39,6 @@ class Main extends Component<LoginProps, LoginState> {
             isCodeIncorrect: false,
         };
     }
-
-    // addPlayer = async (gameId: string, player: string | null): Promise<void> => {
-    //     ws = new WebSocket('ws://localhost:9000');
-    //     const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-    //         waitForConnection(function () {
-    //             return ws.send(message);
-    //         }, 100);
-    //     };
-    //
-    //     const waitForConnection = function (callback: () => void, interval: number) {
-    //         if (ws.readyState === 1) {
-    //             callback();
-    //         } else {
-    //             setTimeout(function () {
-    //                 waitForConnection(callback, interval);
-    //             }, interval);
-    //         }
-    //     };
-    //     send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
-    // };
 
     joinGame = async (player: string | null, gameId: string): Promise<void> => {
         await this.getAllGames();

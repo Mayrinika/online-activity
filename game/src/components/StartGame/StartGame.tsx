@@ -10,7 +10,6 @@ import {Player} from "../../utils/Types/types";
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
 
-//let newWS: WebSocket;
 let newWS = new WS();
 
 const styles = (theme: { content: any; }) => (
@@ -57,26 +56,6 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         this._isMounted = false;
         newWS.close();
     }
-
-    // refreshConnection = (): void => {
-    //     newWS = new WebSocket('ws://localhost:9000');
-    //     const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-    //         waitForConnection(function () {
-    //             return newWS.send(message);
-    //         }, 100);
-    //     };
-    //
-    //     const waitForConnection = function (callback: () => void, interval: number) {
-    //         if (newWS.readyState === 1) {
-    //             callback();
-    //         } else {
-    //             setTimeout(function () {
-    //                 waitForConnection(callback, interval);
-    //             }, interval);
-    //         }
-    //     };
-    //     send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
-    // };
 
     startGame = async (): Promise<void> => {
         await this.addWordAndPainter();

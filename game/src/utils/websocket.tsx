@@ -11,13 +11,31 @@ export enum WebsocketMessage {
     sendImg = 'sendImg'
 }
 
-export class WS extends WebSocket{
-    constructor(url:string = 'ws://localhost:9000') {
+export class WS extends WebSocket {
+    constructor(url: string = 'ws://localhost:9000') {
         super(url);
     }
 
+    // private initDelay = async (): (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) => void => {
+    //     const send = (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) => {
+    //         waitForConnection(() => {
+    //             return this.send(message);
+    //         }, 100);
+    //     };
+    //
+    //     const waitForConnection = (callback: () => void, interval: number) => {
+    //         if (this.readyState === 1) {
+    //             callback();
+    //         } else {
+    //             setTimeout(function () {
+    //                 waitForConnection(callback, interval);
+    //             }, interval);
+    //         }
+    //     };
+    //     return send;
+    // }
+
     addPlayer = async (gameId: string, player: string | null): Promise<void> => {
-        //ws = new WebSocket('ws://localhost:9000');
         const send = (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) => {
             waitForConnection(() => {
                 return this.send(message);
@@ -37,7 +55,6 @@ export class WS extends WebSocket{
     };
 
     refreshConnection = (): void => {
-        //newWS = new WebSocket('ws://localhost:9000');
         const send = (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) => {
             waitForConnection(() => {
                 return this.send(message);

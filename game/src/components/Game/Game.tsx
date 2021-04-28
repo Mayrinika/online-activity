@@ -9,13 +9,13 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import {Player, Message} from "../../utils/Types/types";
-import {WebsocketMessage as websocket}  from "../../utils/websocket";
+import {WebsocketMessage as websocket, WS} from "../../utils/websocket";
 //styles
 import './Game.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Box, Button, Container, TextField, Typography} from '@material-ui/core';
 
-let newWS: WebSocket;
+let newWS = new WS();
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -48,7 +48,7 @@ class Game extends Component<GameProps, GameState> {
             chatMessages: [],
             time: 0
         };
-        this.refreshConnection();
+        newWS.refreshConnection();
     }
 
     async componentDidMount() {
@@ -75,7 +75,7 @@ class Game extends Component<GameProps, GameState> {
     }
 
     getDataFromServer = async (): Promise<void> => {
-        this.refreshConnection();
+        newWS.refreshConnection();
         const game = await this.context.getGame();
         this.setState({
             imgURL: game.img,
@@ -86,25 +86,6 @@ class Game extends Component<GameProps, GameState> {
             chatMessages: game.chatMessages,
             time: game.time,
         });
-    };
-    refreshConnection = (): void => {
-        newWS = new WebSocket('ws://localhost:9000');
-        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-            waitForConnection(function () {
-                return newWS.send(message);
-            }, 500);
-        };
-
-        const waitForConnection = function (callback: () => void, interval: number) {
-            if (newWS.readyState === 1) {
-                callback();
-            } else {
-                setTimeout(function () {
-                    waitForConnection(callback, interval);
-                }, interval);
-            }
-        };
-        send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
     };
 
     gameOver = (): void => {

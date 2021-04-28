@@ -4,7 +4,7 @@ import {v4 as uuidv4} from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
-import {WebsocketMessage as websocket} from "../../utils/websocket";
+import {WebsocketMessage as websocket, WS} from "../../utils/websocket";
 import {SuggestedWord} from "../../utils/Types/types";
 //styles
 import './SuggestWord.css';
@@ -17,7 +17,7 @@ const styles = (theme: { content: any; }) => (
     theme.content
 );
 
-let ws: WebSocket;
+let ws = new WS();
 
 interface SuggestWordState {
     enteredWord: string;
@@ -36,12 +36,10 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
             enteredWord: '',
             words: [],
         };
-        this.setConnection();
     }
 
     async componentDidMount() {
         this.getWordsFromServer();
-        this.setConnection();
         ws.onmessage = (response) => {
             this.setState({words: JSON.parse(response.data)});
         };
@@ -50,10 +48,6 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
     componentWillUnmount() {
         ws.close();
     }
-
-    setConnection = (): void => {
-        ws = new WebSocket('ws://localhost:9000');
-    };
 
     sendWord = (evt: React.ChangeEvent<HTMLFormElement>): void => {
         evt.preventDefault();
