@@ -27,3 +27,9 @@
         display: none;
     }
 }
+.Main-Welcome_UserProfile-link {
+    color: #000;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}

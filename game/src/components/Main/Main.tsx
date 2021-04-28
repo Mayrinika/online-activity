@@ -130,8 +130,10 @@ class Main extends Component<LoginProps, LoginState> {
                                 : <div>
                                     <div className="Main-Welcome">
                                         <Typography>Добро пожаловать,</Typography>
-                                        <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
-                                        <Typography> {this.context.user ? this.context.user.name : undefined}</Typography>
+                                        <Link to={getDomRoutes().userProfile} className="Main-Welcome_UserProfile-link">
+                                            <img src={this.context.user.avatar} alt='avatar' className="avatar"/>
+                                            <Typography> {this.context.user ? this.context.user.name : undefined}</Typography>
+                                        </Link>
                                     </div>
                                     <TextField
                                         variant="outlined"
