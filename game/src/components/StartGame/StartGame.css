@@ -1,16 +1,5 @@
-.InviteFriends {
-    margin-bottom: 32px;
-}
-.StartGame {
-    margin: 0 32px;
-}
-#gameId {
-    background-color: #F3F3F3;
-}
-#readButton {
-    margin-left: 8px;
-}
-.avatar {
-    border-radius: 50%;
-    border: 1px solid black;
+.StartGame-Copy {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }

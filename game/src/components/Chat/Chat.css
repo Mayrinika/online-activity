@@ -69,6 +69,7 @@
 .icon-cold-active {
     color: blue;
 }
+
 @media (max-width: 650px) {
     .Chat .Chat-messages-input {
         display: none;

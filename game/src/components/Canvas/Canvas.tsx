@@ -11,11 +11,10 @@ interface canvasProps {
     sendImg: (img: string) => void;
 }
 
-let isDrawing = false; // TODO вообще-то это лучше сделать useRef, а не глобальной переменной. Но у меня не получилось создать два useRef в компоненте
+let isDrawing = false;
 const Canvas = (props: canvasProps) => {
     const [tool, setTool] = useState('pen');
     const [lines, setLines]: [any, any] = useState([]); //TODO поправить тип
-    const [currentLine, setCurrentLine]: [any, any] = useState(null); //TODO поправить тип
     const [color, setColor] = useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = useState([550, 750]);
     const context = useContext(ApiContext);
@@ -36,7 +35,7 @@ const Canvas = (props: canvasProps) => {
     const handleMouseDown = (e: any): void => { //TODO поправить тип
         isDrawing = true;
         const pos = e.target.getStage().getPointerPosition();
-        setCurrentLine({tool, points: [pos.x, pos.y], color});
+        setLines([...lines, { tool, points: [pos.x, pos.y], color }]);
     };
 
     const handleMouseMove = (e: any): void => { //TODO поправить тип
@@ -44,10 +43,10 @@ const Canvas = (props: canvasProps) => {
             return;
         }
         const pos = e.target.getStage().getPointerPosition();
-        setCurrentLine({
-            ...currentLine,
-            points: [...currentLine.points, pos.x, pos.y]
-        });
+        let lastLine = lines[lines.length - 1];
+        lastLine.points = lastLine.points.concat([pos.x, pos.y]);
+        lines.splice(lines.length - 1, 1, lastLine);
+        setLines(lines.concat());
     };
 
     const addImage = async (img: string): Promise<void> => {
@@ -55,19 +54,12 @@ const Canvas = (props: canvasProps) => {
     };
 
     const stopDrawing = async (e: any): Promise<void> => { //TODO поправить тип
-        const pos = e.target.getStage().getPointerPosition();
         if (isDrawing) {
-            setCurrentLine({...currentLine, points: [...currentLine.points, pos.x, pos.y]});
-            setLines([
-                ...lines,
-                {...currentLine, points: [...currentLine.points, pos.x, pos.y]}
-            ]);
-            context.sendLineToServer(currentLine);
+            context.sendLineToServer(lines[lines.length - 1]);
             let uri = stageRef.current.toDataURL();
             addImage(uri);
         }
         isDrawing = false;
-        setCurrentLine(null);
     };
 
     const handleMouseUp = async (e: any): Promise<void> => { //TODO поправить тип
@@ -82,7 +74,6 @@ const Canvas = (props: canvasProps) => {
         setColor(color);
     };
     const undoLastDrawing = (e: any): void => { //TODO поправить тип
-        console.log('here');
         if (e.keyCode === 90 && e.ctrlKey) {
             let newLines = [...lines];
             newLines.pop();
@@ -122,13 +113,6 @@ const Canvas = (props: canvasProps) => {
                 onTouchEnd={handleMouseUp}
             >
                 <Layer className="Canvas-Layer">
-                    {tool === 'pen' &&
-                    <Line
-                        {...currentLine}
-                        strokeWidth={2}
-                        stroke={color}
-                    />
-                    }
                     {lines.map((line: { tool: string, points: number[], color: string }, i: number) => (
                         <Line
                             key={i}

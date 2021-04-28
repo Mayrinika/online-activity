@@ -29,3 +29,8 @@
 aside {
     width: 30%;
 }
+.Game-Copy {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}

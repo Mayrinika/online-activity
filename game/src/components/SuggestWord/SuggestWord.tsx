@@ -1,5 +1,5 @@
 import {RouteComponentProps} from "react-router-dom";
-import React, {Component} from "react";
+import React, {Component, ReactElement} from "react";
 import {v4 as uuidv4} from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -66,13 +66,16 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         }));
         this.setState({enteredWord: ''});
     };
+
     enterWord = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState({...this.state, enteredWord: evt.target.value});
     };
+
     getWordsFromServer = async (): Promise<void> => {
         const words = await this.context.getSuggestWordsFromServer();
         this.setState({words});
     };
+
     likeWord = (wordId: string): void => {
         ws.send(JSON.stringify({
             'messageType': websocket.likeWord,
@@ -80,6 +83,7 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
             'author': this.context.user ? this.context.user.name : undefined
         }));
     };
+
     dislikeWord = (wordId: string): void => {
         ws.send(JSON.stringify({
             'messageType': websocket.dislikeWord,
@@ -88,27 +92,95 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
         }));
     };
 
+    renderForm = (): ReactElement => {
+        const {classes} = this.props;
+        const {enteredWord} = this.state;
+        return (
+            <form onSubmit={this.sendWord} className={"SuggestWord-Form " + classes.innerContainer}>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="wordInput"
+                    label="Введите слово"
+                    name="word"
+                    autoFocus
+                    onChange={this.enterWord}
+                    value={enteredWord}
+                />
+                <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    size="large"
+                >
+                    Предложить
+                </Button>
+            </form>
+        );
+    }
+
+    renderWordsList = (): ReactElement => {
+        const wordStatusHasChanged = this.getWordStatus();
+        return (
+            <Box className="SuggestWord-words-list">
+                {this.state.words.filter(word => !word.isInDictionary && !word.isApproved && !word.isDeclined).map((word) => (
+                    <div key={word.id} className="SuggestWord-word">
+                        <Typography variant='h6'>
+                            {word.word}
+                        </Typography>
+                        <div className="SuggestWord-buttons">
+                            <Tooltip title="Супер">
+                                <ThumbUpAltIcon
+                                    className={"like " + (word.likes.includes((this.context.user ? this.context.user.name : undefined) || '') ? "like-active" : "")}
+                                    onClick={() => this.likeWord(word.id)}
+                                />
+                            </Tooltip>
+                            <Typography variant='subtitle1'
+                                        className={"like-number " + (word.likes.includes((this.context.user ? this.context.user.name : undefined) || '') ? "like-active" : "")}
+                            >
+                                {word.likes.length}
+                            </Typography>
+                            <Tooltip title="Не очень">
+                                <ThumbDownIcon
+                                    className={"like " + (word.dislikes.includes((this.context.user ? this.context.user.name : undefined) || '') ? "like-active" : "")}
+                                    onClick={() => this.dislikeWord(word.id)}
+                                />
+                            </Tooltip>
+                            <Typography variant='subtitle1'
+                                        className={"like-number " + (word.dislikes.includes((this.context.user ? this.context.user.name : undefined) || '') ? "like-active" : "")}
+                            >
+                                {word.dislikes.length}
+                            </Typography>
+                        </div>
+                    </div>
+                ))}
+                <Typography variant='h6'>{wordStatusHasChanged}</Typography>
+            </Box>
+        );
+    }
+
+    getWordStatus = (): string => {
+        const {words} = this.state;
+        let wordStatusHasChanged = '';
+        const approvedWord = words.find(word => word.isApproved);
+        if (approvedWord) {
+            wordStatusHasChanged = `Слово ${approvedWord.word} было одобрено тремя игроками и попало в наш словарь!`;
+        }
+        const declinedWord = words.find(word => word.isDeclined);
+        if (declinedWord) {
+            wordStatusHasChanged = `Слово ${declinedWord.word} было удалено, так как не понравилось трем игрокам`;
+        }
+        const suggestedWord = words.find(word => word.isInDictionary);
+        if (suggestedWord) {
+            wordStatusHasChanged = `Слово ${suggestedWord.word} уже есть в словаре`;
+        }
+        return wordStatusHasChanged;
+    }
+
     render() {
-        const {words, enteredWord} = this.state;
-        let wordStatusHasChanged;
-        if (words.some((word: SuggestedWord) => word.isApproved)) {
-            const approvedWord = words.find(word => word.isApproved);
-            if (approvedWord) {
-                wordStatusHasChanged = `Слово ${approvedWord.word} было одобрено тремя игроками и попало в наш словарь!`;
-            }
-        }
-        if (words.some((word: SuggestedWord) => word.isDeclined)) {
-            const declinedWord = words.find(word => word.isDeclined);
-            if (declinedWord) {
-                wordStatusHasChanged = `Слово ${declinedWord.word} было удалено, так как не понравилось трем игрокам`;
-            }
-        }
-        if (words.some((word: SuggestedWord) => word.isInDictionary)) {
-            const suggestedWord = words.find(word => word.isInDictionary);
-            if (suggestedWord) {
-                wordStatusHasChanged = `Слово ${suggestedWord.word} уже есть в словаре`;
-            }
-        }
         const {classes} = this.props;
         return (
             <Container className={classes.outerContainer + " SuggestWord"} maxWidth='lg'>
@@ -116,63 +188,8 @@ class SuggestWord extends Component<SuggestWordProps, SuggestWordState> {
                     Если у вас есть идеи слова для нашей игры, пожалуйста, добавьте его в форму ниже
                 </Typography>
                 <Box>
-                    <form onSubmit={this.sendWord} className={"SuggestWord-Form " + classes.innerContainer}>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="wordInput"
-                            label="Введите слово"
-                            name="word"
-                            autoFocus
-                            onChange={this.enterWord}
-                            value={enteredWord}
-                        />
-                        <Button
-                            className={classes.button}
-                            variant="contained"
-                            color="primary"
-                            type="submit"
-                            size="large"
-                        >
-                            Предложить
-                        </Button>
-                    </form>
-                    <Box className="SuggestWord-words-list">
-                        {this.state.words.filter(word => !word.isInDictionary && !word.isApproved && !word.isDeclined).map((word) => (
-                            <div key={word.id} className="SuggestWord-word">
-                                <Typography variant='h6'>
-                                    {word.word}
-                                </Typography>
-                                <div className="SuggestWord-buttons">
-                                    <Tooltip title="Супер">
-                                        <ThumbUpAltIcon
-                                            className={"like " + (word.likes.includes((this.context.user ? this.context.user.name : undefined) || '') ? "like-active" : "")}
-                                            onClick={() => this.likeWord(word.id)}
-                                        />
-                                    </Tooltip>
-                                    <Typography variant='subtitle1'
-                                                className={"like-number "  + (word.likes.includes((this.context.user ? this.context.user.name : undefined) || '') ? "like-active" : "")}
-                                            >
-                                        {word.likes.length}
-                                    </Typography>
-                                    <Tooltip title="Не очень">
-                                        <ThumbDownIcon
-                                            className={"like " + (word.dislikes.includes((this.context.user ? this.context.user.name : undefined) || '') ? "like-active" : "")}
-                                            onClick={() => this.dislikeWord(word.id)}
-                                        />
-                                    </Tooltip>
-                                    <Typography variant='subtitle1'
-                                                className={"like-number "  + (word.dislikes.includes((this.context.user ? this.context.user.name : undefined) || '') ? "like-active" : "")}
-                                            >
-                                        {word.dislikes.length}
-                                    </Typography>
-                                </div>
-                            </div>
-                        ))}
-                        <Typography variant='h6'>{wordStatusHasChanged}</Typography>
-                    </Box>
+                    {this.renderForm()}
+                    {this.renderWordsList()}
                 </Box>
             </Container>
         );

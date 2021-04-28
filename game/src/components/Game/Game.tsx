@@ -10,6 +10,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import getDomRoutes from "../../utils/domRoutes";
 import {Player, Message} from "../../utils/Types/types";
 import websocket from "../../utils/websocket";
+import copyGameId from "../../utils/copyGameId";
 //styles
 import './Game.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
@@ -87,6 +88,7 @@ class Game extends Component<GameProps, GameState> {
             time: game.time,
         });
     };
+
     refreshConnection = (): void => {
         //for local build:
         //newWS = new WebSocket('ws://localhost:9000');
@@ -122,6 +124,7 @@ class Game extends Component<GameProps, GameState> {
             'message': message
         }));
     };
+
     postMarks = (value: { id: string, marks: { hot: boolean, cold: boolean } }): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.postMarks,
@@ -129,6 +132,7 @@ class Game extends Component<GameProps, GameState> {
             'value': value
         }));
     };
+
     setWinner = (winner: string | null): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.setWinner,
@@ -136,30 +140,13 @@ class Game extends Component<GameProps, GameState> {
             'winner': winner
         }));
     };
+
     sendImg = (img: string): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.sendImg,
             'gameId': localStorage.getItem('gameId'),
             'img': img
         }));
-    };
-
-    copyGameId = (): void => {
-        const inputEl = document.querySelector('#gameId') as HTMLInputElement;
-        const inputValue = inputEl!.value.trim();
-
-        if (!navigator.clipboard) {
-            inputEl.select();
-            document.execCommand("copy");
-        } else {
-            navigator.clipboard.writeText(inputValue)
-                .then(() => {
-                    inputEl.select();
-                })
-                .catch(err => {
-                    console.log('Something went wrong', err);
-                });
-        }
     };
 
     render() {
@@ -176,7 +163,7 @@ class Game extends Component<GameProps, GameState> {
                 <header>
                     <Timer time={this.state.time}/>
                     <Typography variant='h6' paragraph>{wordToDisplay}</Typography>
-                    <Box>
+                    <Box className="Game-Copy">
                         <TextField
                             id='gameId'
                             variant="outlined"
@@ -188,7 +175,7 @@ class Game extends Component<GameProps, GameState> {
                             variant="contained"
                             size='medium'
                             color='secondary'
-                            onClick={this.copyGameId}>
+                            onClick={copyGameId}>
                             Copy
                         </Button>
                     </Box>
