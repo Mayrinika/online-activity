@@ -201,6 +201,14 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
         return (
             <>
                 <form onSubmit={this.handleAvatarChange}>
+                    <Button
+                        variant="contained"
+                        component="label"
+                        className="User-ChooseFile"
+                    >
+                        Загрузить аватарку
+                        <input type="file" onChange={this.handleLoadAvatar}/>
+                    </Button>
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -215,14 +223,6 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
                         error={isIncorrect}
                         helperText={isIncorrect ? 'Неверный пароль' : ''}
                     />
-                    <Button
-                        variant="contained"
-                        component="label"
-                        className="User-ChooseFile"
-                    >
-                        Загрузить аватарку
-                        <input type="file" onChange={this.handleLoadAvatar}/>
-                    </Button>
                     <Button
                         className={classes.button}
                         variant="contained"
@@ -279,13 +279,13 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
         const {classes} = this.props;
         const {isPasswordChanging, helperText, isAvatarChanging, sortedLeaderboard} = this.state;
         let currentUser;
-        let position;
-        let score;
+        let position: string | number = '-';
+        let score = 0;
         if (user) {
             currentUser = sortedLeaderboard.find((el: { player: Player, score: number }) => el.player.name === user.name);
         }
         if (currentUser) {
-            position = sortedLeaderboard.indexOf(currentUser);
+            position = sortedLeaderboard.indexOf(currentUser) + 1;
             if (position !== -1){
                 score = currentUser.score;
             }
