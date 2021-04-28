@@ -4,3 +4,8 @@
 .Login-Form {
     padding-bottom: 16px
 }
+@media (max-width: 960px) {
+    .Login .Img-Container {
+        display: none;
+    }
+}

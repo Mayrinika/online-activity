@@ -103,7 +103,7 @@ class Signup extends Component<SignupProps, SignupState> {
         return (
             <Container className={classes.outerContainer + " Signup"} maxWidth='md'>
                 <Grid container spacing={10} justify="center">
-                    <Grid item md={5} xs={1}>
+                    <Grid item md={5} xs={1} className="Img-Container">
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
                         </div>
