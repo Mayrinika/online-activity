@@ -76,6 +76,7 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
         return (
             <Container className={classes.outerContainer} maxWidth='md'>
                 <Typography variant='h5' paragraph>Выбирай и играй!</Typography>
+                <div className="PossibleGame-Container">
                 {possibleGames.length===0 ?  <Typography variant='subtitle1' paragraph>Нет доступных игр. Создай свою!</Typography>
                     : possibleGames.map((game) => {
                     return (
@@ -98,6 +99,7 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
                         </Box>
                     );
                 })}
+                </div>
             </Container>
         );
     }

@@ -4,3 +4,7 @@
     align-items: center;
     justify-content: center;
 }
+.PossibleGame-Container {
+    max-height: 50vh;
+    overflow-y: auto;
+}
