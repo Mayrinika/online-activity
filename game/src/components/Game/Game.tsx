@@ -174,7 +174,7 @@ class Game extends Component<GameProps, GameState> {
                 <header>
                     <Timer time={this.state.time}/>
                     <Typography variant='h6' paragraph>{wordToDisplay}</Typography>
-                    <Box>
+                    <Box className="Game-Copy">
                         <TextField
                             id='gameId'
                             variant="outlined"
