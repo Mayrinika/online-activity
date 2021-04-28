@@ -7,6 +7,7 @@ import getDomRoutes from "../../utils/domRoutes";
 import websocket from "../../utils/websocket";
 import {Player} from "../../utils/Types/types";
 //styles
+import './StartGame.css'
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
 
@@ -111,13 +112,13 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         const {players} = this.state;
         const {classes} = this.props;
         return (
-            <Container className={classes.outerContainer} maxWidth='sm'>
+            <Container className={classes.outerContainer + " StartGame"} maxWidth='sm'>
                 <Box className="StartGame">
                     <Box className="InviteFriends">
                         <Typography variant='h4' paragraph>
                             Пригласи друзей!
                         </Typography>
-                        <Box>
+                        <Box className="StartGame-Copy">
                             <TextField
                                 id='gameId'
                                 variant="outlined"
