@@ -4,6 +4,7 @@ import {RouteComponentProps} from "react-router-dom";
 import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
+import {load, generate} from "../../utils/avatar";
 //styles
 import './Signup.css'
 import crocoImg from "../../img/cocodrilo.png";
@@ -70,30 +71,11 @@ class Signup extends Component<SignupProps, SignupState> {
     addName = async (): Promise<void> => {
         let {name, password, avatar} = this.state;
         if (!avatar) {
-            avatar = this.generateAvatar(name);
+            avatar = generate(name);
         }
         await this.context.signup(name, password, avatar);
     };
 
-    generateAvatar(name: string): string {
-        const color =  '#' + (Math.random().toString(16) + '000000').substring(2,8).toUpperCase();
-        const width = 50;
-        const height = 50;
-        const elem = document.createElement('canvas');
-        elem.width = width;
-        elem.height = height;
-        const ctx = elem.getContext('2d');
-        if (ctx) {
-            ctx.fillStyle = color
-            ctx.fillRect(0, 0, 50, 50);
-            ctx.fillStyle = '#fff'
-            ctx.font = "48px serif";
-            ctx.fillText(name[0].toUpperCase(), 10, 40);
-
-        }
-        const url = elem.toDataURL();
-        return url;
-    }
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
@@ -109,6 +91,11 @@ class Signup extends Component<SignupProps, SignupState> {
             [evt.target.name]: evt.target.value
         }));
     };
+
+    // handleLoadAvatar = (evt: ChangeEventHandler<HTMLInputElement>): void => {
+    //     this.setState({avatarIsLoading: true});
+    //     load(evt, () => this.setState({avatar: url, avatarIsLoading: false}));
+    // }
 
     handleLoadAvatar = (evt: ChangeEventHandler<HTMLInputElement>): void => {
         this.setState({avatarIsLoading: true});

@@ -3,6 +3,7 @@ import {RouteComponentProps} from 'react-router-dom';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
+import {load, generate} from "../../utils/avatar";
 //styles
 import './UserProfile.css'
 import {withStyles, WithStyles} from "@material-ui/core/styles";
@@ -94,7 +95,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
         let {oldPassword, newAvatar} = this.state;
         const name = this.context.user ? this.context.user.name : undefined;
         if (!newAvatar) {
-            newAvatar = this.generateAvatar(name);
+            newAvatar = generate(name);
         }
         const user = await this.context.changeAvatar(oldPassword, newAvatar, name);
         this.setState((state) => ({
@@ -118,26 +119,6 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
             oldPassword: '',
             newPassword: ''
         }));
-    }
-
-    generateAvatar(name: string): string {
-        const color =  '#' + (Math.random().toString(16) + '000000').substring(2,8).toUpperCase();
-        const width = 50;
-        const height = 50;
-        const elem = document.createElement('canvas');
-        elem.width = width;
-        elem.height = height;
-        const ctx = elem.getContext('2d');
-        if (ctx) {
-            ctx.fillStyle = color
-            ctx.fillRect(0, 0, 50, 50);
-            ctx.fillStyle = '#fff'
-            ctx.font = "48px serif";
-            ctx.fillText(name[0].toUpperCase(), 10, 40);
-
-        }
-        const url = elem.toDataURL();
-        return url;
     }
 
     renderPasswordChange = (): ReactElement => {
