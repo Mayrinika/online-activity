@@ -5,10 +5,11 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import {GameType} from "../../utils/Types/types";
+import websocket from "../../utils/websocket";
 //styles
+import './PossibleGames.css'
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, TextField, Typography, Box} from '@material-ui/core';
-import websocket from "../../utils/websocket";
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -78,7 +79,7 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
                 {possibleGames.length===0 ?  <Typography variant='subtitle1' paragraph>Нет доступных игр. Создай свою!</Typography>
                     : possibleGames.map((game) => {
                     return (
-                        <Box key={game.id} m={2}>
+                        <Box key={game.id} m={2} className='PossibleGame-Games'>
                             <TextField
                                 id={game.id}
                                 variant="outlined"
@@ -90,7 +91,8 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
                                 variant="contained"
                                 size='medium'
                                 color='primary'
-                                onClick={() => this.handleJoin(game.id)}>
+                                onClick={() => this.handleJoin(game.id)}
+                            >
                                 Join
                             </Button>
                         </Box>
