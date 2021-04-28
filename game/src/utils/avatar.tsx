@@ -2,7 +2,7 @@ interface ChangeEventHandler<HTMLInputElement> {
     target: HTMLInputElement & EventTarget;
 }
 
-export const load = (evt: ChangeEventHandler<HTMLInputElement>, callback: () => void): void => {
+export const load = (evt: ChangeEventHandler<HTMLInputElement>, callback: (url:string) => void): void => {
     const width = 50;
     const height = 50;
     const files = (evt.target as HTMLInputElement).files;
@@ -21,7 +21,7 @@ export const load = (evt: ChangeEventHandler<HTMLInputElement>, callback: () => 
                 const ctx = elem.getContext('2d');
                 ctx?.drawImage(img, 0, 0, width, height);
                 const url = elem.toDataURL();
-                callback();
+                callback(url);
             };
             reader.onerror = error => console.log(error);
         };

@@ -231,29 +231,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
 
     handleLoadAvatar = (evt: ChangeEventHandler<HTMLInputElement>): void => {
         this.setState({avatarIsLoading: true});
-        const width = 50;
-        const height = 50;
-        const files = (evt.target as HTMLInputElement).files;
-        let file;
-        if (files && files.length) {
-            file = files[0];
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                const img = new Image();
-                img.src = reader.result as string;
-                img.onload = () => {
-                    const elem = document.createElement('canvas');
-                    elem.width = width;
-                    elem.height = height;
-                    const ctx = elem.getContext('2d');
-                    ctx?.drawImage(img, 0, 0, width, height);
-                    const url = elem.toDataURL();
-                    this.setState({newAvatar: url, avatarIsLoading: false});
-                };
-                reader.onerror = error => console.log(error);
-            };
-        }
+        load(evt, (url) => this.setState({newAvatar: url, avatarIsLoading: false}));
     };
 
     render() {
