@@ -22,7 +22,7 @@ interface SignupState {
     name: string;
     password: string;
     avatar: string | null;
-    possibleNames: string[];
+    allGames: string[];
     isNameExist: boolean;
     avatarIsLoading: boolean;
 }
@@ -39,7 +39,7 @@ class Signup extends Component<SignupProps, SignupState> {
         this.state = {
             name: '',
             password: '',
-            possibleNames: [],
+            allGames: [],
             avatar: null,
             isNameExist: false,
             avatarIsLoading: false,
@@ -51,9 +51,9 @@ class Signup extends Component<SignupProps, SignupState> {
     }
 
     handleSignup = async (evt: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
-        const {possibleNames, name} = this.state;
+        const {allGames, name} = this.state;
         evt.preventDefault();
-        if (possibleNames.includes(name)) {
+        if (allGames.includes(name)) {
             this.setState({isNameExist: true});
         } else {
             await this.addName();
@@ -65,7 +65,7 @@ class Signup extends Component<SignupProps, SignupState> {
 
     getAllUsers = async (): Promise<void> => {
         const allUsers = await this.context.getAllUsers();
-        this.setState({possibleNames: allUsers.map((name: { name: string, password: string }) => name.name)});
+        this.setState({allGames: allUsers.map((name: { name: string, password: string }) => name.name)});
     };
 
     addName = async (): Promise<void> => {
