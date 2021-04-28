@@ -98,11 +98,11 @@ class Main extends Component<LoginProps, LoginState> {
         }
     };
 
-    startGame = async (name: string | null, code: string): Promise<void> => { //TODO moved
-        localStorage.setItem('gameId', code);
-        this.context.changeGameId(code);
-        await this.joinGame(name, code);
-        this.props.history.push(getDomRoutes(code).startGame);
+    startGame = async (playerName: string | null, gameId: string): Promise<void> => { //TODO moved
+        localStorage.setItem('gameId', gameId);
+        this.context.changeGameId(gameId);
+        await this.joinGame(playerName, gameId);
+        this.props.history.push(getDomRoutes(gameId).startGame);
     };
 
     renderForm = (): ReactElement => {
