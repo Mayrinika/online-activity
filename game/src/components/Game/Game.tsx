@@ -10,6 +10,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import getDomRoutes from "../../utils/domRoutes";
 import {Player, Message} from "../../utils/Types/types";
 import websocket from "../../utils/websocket";
+import copyGameId from "../../utils/copyGameId";
 //styles
 import './Game.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
@@ -142,24 +143,6 @@ class Game extends Component<GameProps, GameState> {
         }));
     };
 
-    copyGameId = (): void => {
-        const inputEl = document.querySelector('#gameId') as HTMLInputElement;
-        const inputValue = inputEl!.value.trim();
-
-        if (!navigator.clipboard) {
-            inputEl.select();
-            document.execCommand("copy");
-        } else {
-            navigator.clipboard.writeText(inputValue)
-                .then(() => {
-                    inputEl.select();
-                })
-                .catch(err => {
-                    console.log('Something went wrong', err);
-                });
-        }
-    };
-
     render() {
         const {painter, wordToGuess, players, imgURL, chatMessages} = this.state;
         const playerName = this.context.user ? this.context.user.name : undefined;
@@ -186,7 +169,7 @@ class Game extends Component<GameProps, GameState> {
                             variant="contained"
                             size='medium'
                             color='secondary'
-                            onClick={this.copyGameId}>
+                            onClick={copyGameId}>
                             Copy
                         </Button>
                     </Box>
