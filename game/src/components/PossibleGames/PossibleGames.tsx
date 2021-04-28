@@ -75,7 +75,8 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
         return (
             <Container className={classes.outerContainer} maxWidth='md'>
                 <Typography variant='h5' paragraph>Выбирай и играй!</Typography>
-                {possibleGames && possibleGames.map((game) => {
+                {possibleGames.length===0 ?  <Typography variant='subtitle1' paragraph>Нет доступных игр. Создай свою!</Typography>
+                    : possibleGames.map((game) => {
                     return (
                         <Box key={game.id} m={2}>
                             <TextField
