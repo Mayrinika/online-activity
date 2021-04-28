@@ -89,7 +89,7 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
                                 id='readButton'
                                 variant="contained"
                                 size='medium'
-                                color='secondary'
+                                color='primary'
                                 onClick={() => this.handleJoin(game.id)}>
                                 Join
                             </Button>
