@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, ReactElement} from "react";
 import {RouteComponentProps} from "react-router-dom";
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -97,9 +97,63 @@ class Signup extends Component<SignupProps, SignupState> {
         load(evt, (url) => this.setState({avatar: url, avatarIsLoading: false}));
     }
 
-    render() {
+    renderForm = (): ReactElement => {
         const {classes} = this.props;
         const {isNameExist, name, password, avatarIsLoading, avatar} = this.state;
+        return (
+            <form onSubmit={this.handleSignup} className={classes.innerContainer + " Signup-Form"}>
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="name"
+                    type="text"
+                    label="Введите ваше имя"
+                    name="name"
+                    autoFocus
+                    onChange={this.handleNameChange}
+                    value={name}
+                    error={isNameExist}
+                    helperText={isNameExist ? `Извините, имя ${name} уже занято` : ''}
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="password"
+                    type="password"
+                    label="Введите пароль"
+                    name="password"
+                    onChange={this.handleChange}
+                    value={password}
+                />
+                <Button
+                    variant="contained"
+                    component="label"
+                    className="Signup-ChooseFile"
+                >
+                    Загрузить аватарку
+                    <input type="file" onChange={this.handleLoadAvatar}/>
+                </Button>
+                {avatar && <img src={avatar} alt='avatar' className="avatar"/>}
+                <Button
+                    className={classes.button}
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    size="large"
+                    disabled={(isNameExist || avatarIsLoading) && true}
+                >
+                    {avatarIsLoading ? <CircularProgress/> : 'Зарегистрироваться'}
+                </Button>
+            </form>
+        );
+    }
+
+    render() {
+        const {classes} = this.props;
         return (
             <Container className={classes.outerContainer + " Signup"} maxWidth='md'>
                 <Grid container spacing={10} justify="center">
@@ -112,54 +166,7 @@ class Signup extends Component<SignupProps, SignupState> {
                         <Typography variant='h4' paragraph>
                             Регистрация
                         </Typography>
-                        <form onSubmit={this.handleSignup} className={classes.innerContainer + " Signup-Form"}>
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="name"
-                                type="text"
-                                label="Введите ваше имя"
-                                name="name"
-                                autoFocus
-                                onChange={this.handleNameChange}
-                                value={name}
-                                error={isNameExist}
-                                helperText={isNameExist ? `Извините, имя ${name} уже занято` : ''}
-                            />
-                            <TextField
-                                variant="outlined"
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="password"
-                                type="password"
-                                label="Введите пароль"
-                                name="password"
-                                onChange={this.handleChange}
-                                value={password}
-                            />
-                            <Button
-                                variant="contained"
-                                component="label"
-                                className="Signup-ChooseFile"
-                            >
-                                Загрузить аватарку
-                                <input type="file" onChange={this.handleLoadAvatar}/>
-                            </Button>
-                            {avatar && <img src={avatar} alt='avatar' className="avatar"/>}
-                            <Button
-                                className={classes.button}
-                                variant="contained"
-                                color="primary"
-                                type="submit"
-                                size="large"
-                                disabled={(isNameExist || avatarIsLoading) && true}
-                            >
-                                {avatarIsLoading ? <CircularProgress/> : 'Зарегистрироваться'}
-                            </Button>
-                        </form>
+                        {this.renderForm()}
                     </Grid>
                 </Grid>
             </Container>
