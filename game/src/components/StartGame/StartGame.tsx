@@ -49,7 +49,12 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         }
         newWS.onmessage = (response) => {
             if (JSON.parse(response.data).id === localStorage.getItem('gameId')) {
-                this.setState({players: JSON.parse(response.data).players});
+                if (JSON.parse(response.data).painter.name){
+                    this.props.history.push(getDomRoutes(localStorage.getItem('gameId')).game);
+                }
+                if (this._isMounted) {
+                    this.setState({players: JSON.parse(response.data).players});
+                }
             }
         };
     }
