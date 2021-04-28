@@ -59,6 +59,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
             ...state,
+            isIncorrect: false,
             [evt.target.name]: evt.target.value
         }));
     }
