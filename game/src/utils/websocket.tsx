@@ -12,18 +12,20 @@ export enum WebsocketMessage {
 }
 
 export class WS extends WebSocket{
-    ws: any = new WebSocket('ws://localhost:9000');
+    constructor(url:string = 'ws://localhost:9000') {
+        super(url);
+    }
 
     addPlayer = async (gameId: string, player: string | null): Promise<void> => {
         //ws = new WebSocket('ws://localhost:9000');
         const send = (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) => {
             waitForConnection(() => {
-                return this.ws.send(message);
+                return this.send(message);
             }, 100);
         };
 
         const waitForConnection = (callback: () => void, interval: number) => {
-            if (this.ws.readyState === 1) {
+            if (this.readyState === 1) {
                 callback();
             } else {
                 setTimeout(function () {
@@ -38,12 +40,12 @@ export class WS extends WebSocket{
         //newWS = new WebSocket('ws://localhost:9000');
         const send = (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) => {
             waitForConnection(() => {
-                return this.ws.send(message);
+                return this.send(message);
             }, 100);
         };
 
         const waitForConnection = (callback: () => void, interval: number) => {
-            if (this.ws.readyState === 1) {
+            if (this.readyState === 1) {
                 callback();
             } else {
                 setTimeout(function () {

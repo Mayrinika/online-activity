@@ -11,7 +11,7 @@ import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
 
 //let newWS: WebSocket;
-let newWS: WebSocket = new WS();
+let newWS = new WS();
 
 const styles = (theme: { content: any; }) => (
     theme.content
