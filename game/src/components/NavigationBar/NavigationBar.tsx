@@ -107,7 +107,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                             className={classes.navButton}
                             variant="contained"
                             color="secondary"
-                        >Главная</Button>
+                        >Играть</Button>
                     </Link>
                     <Link to={getDomRoutes().leaderboard} className={classes.navLink + " menu__item"} onClick={this.closeMenu}>
                         <Button
