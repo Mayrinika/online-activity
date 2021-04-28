@@ -40,7 +40,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                         color="secondary"
                     >Предложить слово</Button>
                 </Link>
-                <Link to={getDomRoutes().possibleGames} className={classes.navLink +" menu__item"}>
+                <Link to={getDomRoutes().possibleGames} className={classes.navLink +" menu__item"}  onClick={this.closeMenu}>
                     <Button
                         className={classes.navButton}
                         variant="contained"
