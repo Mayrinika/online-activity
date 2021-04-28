@@ -145,7 +145,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
         const {classes} = this.props;
         return (
             <>
-                <form onSubmit={this.handlePasswordChange}>
+                <form onSubmit={this.handlePasswordChange} className="UserProfile-Form">
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -201,7 +201,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
         const {classes} = this.props;
         return (
             <>
-                <form onSubmit={this.handleAvatarChange}>
+                <form onSubmit={this.handleAvatarChange} className="UserProfile-Form">
                     <TextField
                         variant="outlined"
                         margin="normal"

@@ -4,3 +4,11 @@
 .User-ChooseFile {
   width: 230px;
 }
+.UserProfile-Form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 5px;
+}
