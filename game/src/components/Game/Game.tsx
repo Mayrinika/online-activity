@@ -9,7 +9,7 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import {Player, Message} from "../../utils/Types/types";
-import websocket from "../../utils/websocket";
+import {WebsocketMessage as websocket}  from "../../utils/websocket";
 //styles
 import './Game.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";

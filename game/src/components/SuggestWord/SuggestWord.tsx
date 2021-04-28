@@ -4,7 +4,7 @@ import {v4 as uuidv4} from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
-import websocket from "../../utils/websocket";
+import {WebsocketMessage as websocket} from "../../utils/websocket";
 import {SuggestedWord} from "../../utils/Types/types";
 //styles
 import './SuggestWord.css';

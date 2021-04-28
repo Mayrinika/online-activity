@@ -5,15 +5,16 @@ import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
 import {GameType} from "../../utils/Types/types";
+import {WebsocketMessage as websocket, WS} from "../../utils/websocket";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, TextField, Typography, Box} from '@material-ui/core';
-import websocket from "../../utils/websocket";
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
-let ws: WebSocket;
+//let ws: WebSocket;
+let ws = new WS();
 
 interface PossibleGamesProps extends RouteComponentProps, WithStyles<typeof styles> {
 }
@@ -45,29 +46,29 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
     startGame = async (playerName: string | null, gameId: string): Promise<void> => {
         localStorage.setItem('gameId', gameId);
         this.context.changeGameId(gameId);
-        await this.addPlayer(gameId, playerName);
+        await ws.addPlayer(gameId, playerName);
         this.props.history.push(getDomRoutes(gameId).startGame);
     };
 
-    addPlayer = async (gameId: string, player: string | null): Promise<void> => {
-        ws = new WebSocket('ws://localhost:9000');
-        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-            waitForConnection(function () {
-                return ws.send(message);
-            }, 100);
-        };
-
-        const waitForConnection = function (callback: () => void, interval: number) {
-            if (ws.readyState === 1) {
-                callback();
-            } else {
-                setTimeout(function () {
-                    waitForConnection(callback, interval);
-                }, interval);
-            }
-        };
-        send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
-    };
+    // addPlayer = async (gameId: string, player: string | null): Promise<void> => {
+    //     ws = new WebSocket('ws://localhost:9000');
+    //     const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
+    //         waitForConnection(function () {
+    //             return ws.send(message);
+    //         }, 100);
+    //     };
+    //
+    //     const waitForConnection = function (callback: () => void, interval: number) {
+    //         if (ws.readyState === 1) {
+    //             callback();
+    //         } else {
+    //             setTimeout(function () {
+    //                 waitForConnection(callback, interval);
+    //             }, interval);
+    //         }
+    //     };
+    //     send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
+    // };
 
     render() {
         const {classes} = this.props;

@@ -4,13 +4,14 @@ import {RouteComponentProps} from 'react-router-dom';
 import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
-import websocket from "../../utils/websocket";
+import {WebsocketMessage as websocket, WS} from "../../utils/websocket";
 import {Player} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box, TextField} from '@material-ui/core';
 
-let newWS: WebSocket;
+//let newWS: WebSocket;
+let newWS: WebSocket = new WS();
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -33,12 +34,12 @@ class StartGame extends Component<StartGameProps, StartGameState> {
             players: [],
         };
         this._isMounted = false;
-        this.refreshConnection();
+        newWS.refreshConnection();
     }
 
     async componentDidMount() {
         this._isMounted = true;
-        this.refreshConnection();
+        newWS.refreshConnection();
         const game = await this.context.getGame();
         if (this._isMounted) {
             this.setState({
@@ -57,25 +58,25 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         newWS.close();
     }
 
-    refreshConnection = (): void => {
-        newWS = new WebSocket('ws://localhost:9000');
-        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-            waitForConnection(function () {
-                return newWS.send(message);
-            }, 100);
-        };
-
-        const waitForConnection = function (callback: () => void, interval: number) {
-            if (newWS.readyState === 1) {
-                callback();
-            } else {
-                setTimeout(function () {
-                    waitForConnection(callback, interval);
-                }, interval);
-            }
-        };
-        send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
-    };
+    // refreshConnection = (): void => {
+    //     newWS = new WebSocket('ws://localhost:9000');
+    //     const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
+    //         waitForConnection(function () {
+    //             return newWS.send(message);
+    //         }, 100);
+    //     };
+    //
+    //     const waitForConnection = function (callback: () => void, interval: number) {
+    //         if (newWS.readyState === 1) {
+    //             callback();
+    //         } else {
+    //             setTimeout(function () {
+    //                 waitForConnection(callback, interval);
+    //             }, interval);
+    //         }
+    //     };
+    //     send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
+    // };
 
     startGame = async (): Promise<void> => {
         await this.addWordAndPainter();
