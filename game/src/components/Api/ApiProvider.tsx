@@ -59,6 +59,18 @@ class ApiMethods implements Api {
             .catch(err => this.reportError(err));
     };
 
+    restartGame = async (): Promise<void> => {
+        const res = await fetch(getRoutes(this._gameId).restartGame, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+        })
+            .then(res => this.checkStatus(res))
+            .catch(err => this.reportError(err));
+        console.log(res);
+    };
+
     getUserLoginData = async (): Promise<UserLoginData> => {
         const result = await fetch(getRoutes().login)
             .then(res => {

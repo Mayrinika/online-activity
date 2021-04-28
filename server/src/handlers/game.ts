@@ -69,6 +69,33 @@ export const addGame = (req: express.Request, res: express.Response): void => {
         res.status(404).send(`games not found`);
 };
 
+export const restartGame = (req: express.Request, res: express.Response): void => {
+    let currentGameId;
+    for (let i = 0; i < games.length; i++) {
+        if (games[i].id === req.params.gameId) {
+            currentGameId = i;
+            break;
+        }
+    }
+    if (currentGameId !== undefined) {
+        // games.splice(currentGameId, 1);
+        // addGame(req, res);
+        games[currentGameId].wordToGuess = '';
+        games[currentGameId].painter = {name: '', avatar: null};
+        games[currentGameId].img = '';
+        games[currentGameId].chatMessages= [];
+        games[currentGameId].time = GAME_TIME;
+        games[currentGameId].winner = '';
+        games[currentGameId].scores = [];
+        games[currentGameId].isWordGuessed = false;
+        games[currentGameId].isTimeOver = false;
+        games[currentGameId].isGameOver = false;
+        games[currentGameId].lines = [];
+        res.status(200).send(games);
+    } else
+        res.status(404).send(`game with id={${req.params.gameId}} not found`);
+};
+
 export const addLine = (req: express.Request, res: express.Response): void => {
     const currentGame = games.find(game => game.id === req.params.gameId);
     if (currentGame) {

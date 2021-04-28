@@ -3,6 +3,7 @@ export default function getRoutes(currentGameId?: string | null) {
     return {
         games: `${api}/games`,
         gameId: `${api}/${currentGameId}`,
+        restartGame: `${api}/${currentGameId}/restartGame`,
         chatMessages: `${api}/${currentGameId}/chatMessages`,
         addMark:`${api}/${currentGameId}/addMark`,
         addPlayer: `${api}/${currentGameId}/addPlayer`,

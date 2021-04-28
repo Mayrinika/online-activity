@@ -2,6 +2,7 @@ export interface Api {
     user?: User | null;
     changeGameId: (gameId: string) => void;
     addGame: () => Promise<void>;
+    restartGame: () => Promise<void>;
     getUserLoginData: () => Promise<UserLoginData>;
     signup: (name: string, password: string, avatar: string | ArrayBuffer | null) => Promise<User>;
     getAllUsers: () => Promise<User[]>;

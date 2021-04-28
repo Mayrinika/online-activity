@@ -28,7 +28,8 @@ import {
     addLine,
     deleteLine,
     clearCountdown,
-    setTimeIsOver
+    setTimeIsOver,
+    restartGame
 } from "./handlers/game";
 //utils
 import {Player, Message, GameType, User, SuggestedWord} from "./utils/types";
@@ -94,6 +95,7 @@ app.get('/api/possibleGames', getPossibleGames);
 
 app.get('/api/:gameId', getCurrentGame);
 app.post('/api/:gameId', addGame);
+app.post('/api/:gameId/restartGame', restartGame);
 app.post('/api/:gameId/addLine', addLine);
 app.post('/api/:gameId/deleteLine', deleteLine);
 app.post('/api/:gameId/clearCountdown', clearCountdown);

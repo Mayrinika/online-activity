@@ -4,24 +4,27 @@ import {RouteComponentProps} from 'react-router-dom';
 import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
-import {Player} from "../../utils/Types/types";
+import {GameType, Player} from "../../utils/Types/types";
 //styles
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box} from '@material-ui/core';
+import websocket from "../../utils/websocket";
 
 const styles = (theme: { content: any; }) => (
     theme.content
 );
+let ws: WebSocket;
 
 interface GameOverProps extends RouteComponentProps, WithStyles<typeof styles> {
 }
 
 interface GameOverState {
-    scores: { player: Player, score: number }[],
-    isWordGuessed: boolean,
-    isTimeOver: boolean,
-    winner: string,
-    wordToGuess: string
+    scores: { player: Player, score: number }[];
+    isWordGuessed: boolean;
+    isTimeOver: boolean;
+    winner: string;
+    wordToGuess: string;
+    allGames: GameType[];
 }
 
 class GameOver extends Component<GameOverProps, GameOverState> {
@@ -35,6 +38,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
             isTimeOver: false,
             winner: '',
             wordToGuess: '',
+            allGames: [],
         };
     }
 
@@ -57,8 +61,49 @@ class GameOver extends Component<GameOverProps, GameOverState> {
         this.props.history.push(getDomRoutes().main);
     };
 
-    goToLeaderboard = (): void => {
-        this.props.history.push(getDomRoutes().leaderboard);
+    restartGame = async (): Promise<void> => {
+        const name = this.context.user ? this.context.user.name : undefined;
+        const gameId = localStorage.getItem('gameId');
+        if (!gameId) return;
+        await this.startGame(name, gameId);
+    };
+
+    startGame = async (playerName: string | null, gameId: string): Promise<void> => { //TODO moved
+        //localStorage.setItem('gameId', gameId);
+        //this.context.changeGameId(gameId);
+        await this.joinGame(playerName, gameId);
+        this.props.history.push(getDomRoutes(gameId).startGame);
+    };
+
+    joinGame = async (player: string | null, gameId: string): Promise<void> => {
+        //await this.context.addGame(gameId); //TODO
+        await this.context.restartGame(gameId);
+        await this.addPlayer(gameId, player);
+    };
+
+    // getAllGames = async (): Promise<void> => {
+    //     const allGames = await this.context.getAllGames();
+    //     this.setState({allGames: allGames});
+    // };
+
+    addPlayer = async (gameId: string, player: string | null): Promise<void> => {
+        ws = new WebSocket('ws://localhost:9000');
+        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
+            waitForConnection(function () {
+                return ws.send(message);
+            }, 100);
+        };
+
+        const waitForConnection = function (callback: () => void, interval: number) {
+            if (ws.readyState === 1) {
+                callback();
+            } else {
+                setTimeout(function () {
+                    waitForConnection(callback, interval);
+                }, interval);
+            }
+        };
+        send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
     };
 
     render() {
@@ -103,15 +148,15 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                         variant="contained"
                         color="primary"
                         size="large"
-                        onClick={this.startOver}
-                    >Начать заново</Button>
+                        onClick={this.restartGame}
+                    >Играть ёщё раз</Button>
                     <Button
                         className={classes.button}
                         variant="contained"
                         color="secondary"
                         size="large"
-                        onClick={this.goToLeaderboard}
-                    >Лидерборд</Button>
+                        onClick={this.startOver}
+                    >Новая игра</Button>
                 </Box>
             </Container>
         );
