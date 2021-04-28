@@ -68,23 +68,15 @@ class GameOver extends Component<GameOverProps, GameOverState> {
         await this.startGame(name, gameId);
     };
 
-    startGame = async (playerName: string | null, gameId: string): Promise<void> => { //TODO moved
-        //localStorage.setItem('gameId', gameId);
-        //this.context.changeGameId(gameId);
+    startGame = async (playerName: string | null, gameId: string): Promise<void> => { 
         await this.joinGame(playerName, gameId);
         this.props.history.push(getDomRoutes(gameId).startGame);
     };
 
     joinGame = async (player: string | null, gameId: string): Promise<void> => {
-        //await this.context.addGame(gameId); //TODO
         await this.context.restartGame(gameId);
         await this.addPlayer(gameId, player);
     };
-
-    // getAllGames = async (): Promise<void> => {
-    //     const allGames = await this.context.getAllGames();
-    //     this.setState({allGames: allGames});
-    // };
 
     addPlayer = async (gameId: string, player: string | null): Promise<void> => {
         ws = new WebSocket('ws://localhost:9000');
