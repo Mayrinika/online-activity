@@ -1,5 +1,6 @@
-.NavBar {
+#NavBar {
     height: 80px;
+    position: static;
 }
 .avatar {
     border-radius: 50%;
@@ -96,7 +97,7 @@
         top: 8px;
     }
 
-    .NavBar .menu__box {
+    #NavBar .menu__box {
         display: flex;
         flex-direction: column;
         position: fixed;
