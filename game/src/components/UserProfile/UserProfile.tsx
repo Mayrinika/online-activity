@@ -3,6 +3,7 @@ import {RouteComponentProps} from 'react-router-dom';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
+import {load, generate} from "../../utils/avatar";
 //styles
 import './UserProfile.css'
 import {withStyles, WithStyles} from "@material-ui/core/styles";
@@ -59,6 +60,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
             ...state,
+            isIncorrect: false,
             [evt.target.name]: evt.target.value
         }));
     }
@@ -93,7 +95,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
         let {oldPassword, newAvatar} = this.state;
         const name = this.context.user ? this.context.user.name : undefined;
         if (!newAvatar) {
-            newAvatar = this.generateAvatar(name);
+            newAvatar = generate(name);
         }
         const user = await this.context.changeAvatar(oldPassword, newAvatar, name);
         this.setState((state) => ({
@@ -119,32 +121,12 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
         }));
     }
 
-    generateAvatar(name: string): string {
-        const color =  '#' + (Math.random().toString(16) + '000000').substring(2,8).toUpperCase();
-        const width = 50;
-        const height = 50;
-        const elem = document.createElement('canvas');
-        elem.width = width;
-        elem.height = height;
-        const ctx = elem.getContext('2d');
-        if (ctx) {
-            ctx.fillStyle = color
-            ctx.fillRect(0, 0, 50, 50);
-            ctx.fillStyle = '#fff'
-            ctx.font = "48px serif";
-            ctx.fillText(name[0].toUpperCase(), 10, 40);
-
-        }
-        const url = elem.toDataURL();
-        return url;
-    }
-
     renderPasswordChange = (): ReactElement => {
         const {oldPassword, newPassword, isIncorrect} = this.state;
         const {classes} = this.props;
         return (
             <>
-                <form onSubmit={this.handlePasswordChange}>
+                <form onSubmit={this.handlePasswordChange} className="UserProfile-Form">
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -196,11 +178,11 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
     };
 
     renderAvatarChange = (): ReactElement => {
-        const {oldPassword, isIncorrect, avatarIsLoading} = this.state;
+        const {oldPassword, isIncorrect, avatarIsLoading, newAvatar} = this.state;
         const {classes} = this.props;
         return (
             <>
-                <form onSubmit={this.handleAvatarChange}>
+                <form onSubmit={this.handleAvatarChange} className="UserProfile-Form">
                     <TextField
                         variant="outlined"
                         margin="normal"
@@ -223,6 +205,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
                         Загрузить аватарку
                         <input type="file" onChange={this.handleLoadAvatar}/>
                     </Button>
+                    {newAvatar && <img src={newAvatar} alt='avatar' className="avatar UserProfile-Avatar"/>}
                     <Button
                         className={classes.button}
                         variant="contained"
@@ -249,29 +232,7 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
 
     handleLoadAvatar = (evt: ChangeEventHandler<HTMLInputElement>): void => {
         this.setState({avatarIsLoading: true});
-        const width = 50;
-        const height = 50;
-        const files = (evt.target as HTMLInputElement).files;
-        let file;
-        if (files && files.length) {
-            file = files[0];
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                const img = new Image();
-                img.src = reader.result as string;
-                img.onload = () => {
-                    const elem = document.createElement('canvas');
-                    elem.width = width;
-                    elem.height = height;
-                    const ctx = elem.getContext('2d');
-                    ctx?.drawImage(img, 0, 0, width, height);
-                    const url = elem.toDataURL();
-                    this.setState({newAvatar: url, avatarIsLoading: false});
-                };
-                reader.onerror = error => console.log(error);
-            };
-        }
+        load(evt, (url) => this.setState({newAvatar: url, avatarIsLoading: false}));
     };
 
     render() {
@@ -279,13 +240,13 @@ class UserProfile extends Component<UserProfileProps, UserProfileState> {
         const {classes} = this.props;
         const {isPasswordChanging, helperText, isAvatarChanging, sortedLeaderboard} = this.state;
         let currentUser;
-        let position;
-        let score;
+        let position: string | number = '-';
+        let score = 0;
         if (user) {
             currentUser = sortedLeaderboard.find((el: { player: Player, score: number }) => el.player.name === user.name);
         }
         if (currentUser) {
-            position = sortedLeaderboard.indexOf(currentUser);
+            position = sortedLeaderboard.indexOf(currentUser) + 1;
             if (position !== -1){
                 score = currentUser.score;
             }

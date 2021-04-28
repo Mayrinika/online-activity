@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
 //components
 import Main from '../Main/Main';
-import Login from "../Login/login";
-import Signup from "../Signup/signup";
+import Login from "../Login/Login";
+import Signup from "../Signup/Signup";
 import StartGame from "../StartGame/StartGame";
 import Game from "../Game/Game";
 import GameOver from "../GameOver/GameOver";

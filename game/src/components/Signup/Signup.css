@@ -7,3 +7,12 @@
 .Signup-ChooseFile {
     width: 100%;
 }
+.Img-Container {
+    display: flex;
+    align-items: center;
+}
+@media (max-width: 960px) {
+    .Signup .Img-Container {
+        display: none;
+    }
+}

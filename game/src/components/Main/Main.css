@@ -1,5 +1,5 @@
 .Main {
-    height: 60vh;
+    /*height: 60vh;*/
 }
 .Main-Container {
     display: flex;
@@ -26,4 +26,10 @@
     .Main .Main-Img-Container {
         display: none;
     }
+}
+.Main-Welcome_UserProfile-link {
+    color: #000;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
 }

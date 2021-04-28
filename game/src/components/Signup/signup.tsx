@@ -4,6 +4,7 @@ import {RouteComponentProps} from "react-router-dom";
 import {ApiContext} from "../Api/ApiProvider";
 //utils
 import getDomRoutes from "../../utils/domRoutes";
+import {load, generate} from "../../utils/avatar";
 //styles
 import './Signup.css'
 import crocoImg from "../../img/cocodrilo.png";
@@ -20,7 +21,7 @@ interface SignupProps extends RouteComponentProps, WithStyles<typeof styles> {
 interface SignupState {
     name: string;
     password: string;
-    avatar: string | ArrayBuffer | null;
+    avatar: string | null;
     possibleNames: string[];
     isNameExist: boolean;
     avatarIsLoading: boolean;
@@ -70,30 +71,11 @@ class Signup extends Component<SignupProps, SignupState> {
     addName = async (): Promise<void> => {
         let {name, password, avatar} = this.state;
         if (!avatar) {
-            avatar = this.generateAvatar(name);
+            avatar = generate(name);
         }
         await this.context.signup(name, password, avatar);
     };
 
-    generateAvatar(name: string): string {
-        const color =  '#' + (Math.random().toString(16) + '000000').substring(2,8).toUpperCase();
-        const width = 50;
-        const height = 50;
-        const elem = document.createElement('canvas');
-        elem.width = width;
-        elem.height = height;
-        const ctx = elem.getContext('2d');
-        if (ctx) {
-            ctx.fillStyle = color
-            ctx.fillRect(0, 0, 50, 50);
-            ctx.fillStyle = '#fff'
-            ctx.font = "48px serif";
-            ctx.fillText(name[0].toUpperCase(), 10, 40);
-
-        }
-        const url = elem.toDataURL();
-        return url;
-    }
 
     handleChange = (evt: React.ChangeEvent<HTMLInputElement>): void => {
         this.setState((state) => ({
@@ -112,38 +94,16 @@ class Signup extends Component<SignupProps, SignupState> {
 
     handleLoadAvatar = (evt: ChangeEventHandler<HTMLInputElement>): void => {
         this.setState({avatarIsLoading: true});
-        const width = 50;
-        const height = 50;
-        const files = (evt.target as HTMLInputElement).files;
-        let file;
-        if (files && files.length) {
-            file = files[0];
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                const img = new Image();
-                img.src = reader.result as string;
-                img.onload = () => {
-                    const elem = document.createElement('canvas');
-                    elem.width = width;
-                    elem.height = height;
-                    const ctx = elem.getContext('2d');
-                    ctx?.drawImage(img, 0, 0, width, height);
-                    const url = elem.toDataURL();
-                    this.setState({avatar: url, avatarIsLoading: false});
-                };
-                reader.onerror = error => console.log(error);
-            };
-        }
-    };
+        load(evt, (url) => this.setState({avatar: url, avatarIsLoading: false}));
+    }
 
     render() {
         const {classes} = this.props;
-        const {isNameExist, name, password, avatarIsLoading} = this.state;
+        const {isNameExist, name, password, avatarIsLoading, avatar} = this.state;
         return (
             <Container className={classes.outerContainer + " Signup"} maxWidth='md'>
                 <Grid container spacing={10} justify="center">
-                    <Grid item md={5} xs={1}>
+                    <Grid item md={5} xs={1} className="Img-Container">
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
                         </div>
@@ -188,6 +148,7 @@ class Signup extends Component<SignupProps, SignupState> {
                                 Загрузить аватарку
                                 <input type="file" onChange={this.handleLoadAvatar}/>
                             </Button>
+                            {avatar && <img src={avatar} alt='avatar' className="avatar"/>}
                             <Button
                                 className={classes.button}
                                 variant="contained"

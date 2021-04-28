@@ -1,4 +1,4 @@
-import React, {Component, ReactElement} from 'react';
+import React, {ReactElement} from 'react';
 import {Link} from 'react-router-dom';
 //components
 import {ApiContext} from "../Api/ApiProvider";
@@ -7,7 +7,7 @@ import getDomRoutes from "../../utils/domRoutes";
 //styles
 import './NavigationBar.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
-import {Button, Container, AppBar, Toolbar, Typography} from '@material-ui/core';
+import {Button, AppBar, Toolbar, Typography} from '@material-ui/core';
 
 const styles = (theme: { content: any; }) => (
     theme.content
@@ -40,14 +40,14 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
                         color="secondary"
                     >Предложить слово</Button>
                 </Link>
-                <Link to={getDomRoutes().possibleGames} className={classes.navLink +" menu__item"}>
+                <Link to={getDomRoutes().possibleGames} className={classes.navLink +" menu__item"}  onClick={this.closeMenu}>
                     <Button
                         className={classes.navButton}
                         variant="contained"
                         color="secondary"
                     >Не с кем играть</Button>
                 </Link>
-                <Link to={getDomRoutes().userProfile} className={classes.navLink +" NavigationBar-Right menu__item"} onClick={this.closeMenu}>
+                <Link to={getDomRoutes().userProfile} className={classes.navLink +" NavigationBar-Right menu__item NavBar-UserProfileLink"} onClick={this.closeMenu}>
                     <img src={this.context.user.avatar} alt="avatar" className="avatar"/>
                     <Typography variant='subtitle1'>{this.context.user ? this.context.user.name : undefined}</Typography>
                 </Link>
@@ -96,7 +96,7 @@ class NavigationBar extends React.Component<NavigationBarProps, NavigationBarSta
     render() {
         const {classes} = this.props;
         return (
-            <AppBar className={classes.navBarContainer + " NavBar"}>
+            <AppBar className={classes.navBarContainer} id="NavBar">
                 <input id="menu__toggle" type="checkbox" checked={this.state.isMenuOpen} onChange={this.toggleMenu}/>
                 <label className="menu__btn" htmlFor="menu__toggle">
                     <span></span>

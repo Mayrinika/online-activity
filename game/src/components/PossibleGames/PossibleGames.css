@@ -1,0 +1,10 @@
+.PossibleGame-Games {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+.PossibleGame-Container {
+    max-height: 50vh;
+    overflow-y: auto;
+}
