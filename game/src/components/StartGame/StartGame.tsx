@@ -91,8 +91,6 @@ class StartGame extends Component<StartGameProps, StartGameState> {
         }));
     };
 
-
-
     render() {
         const {players} = this.state;
         const {classes} = this.props;

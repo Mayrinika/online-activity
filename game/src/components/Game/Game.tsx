@@ -88,6 +88,7 @@ class Game extends Component<GameProps, GameState> {
             time: game.time,
         });
     };
+
     refreshConnection = (): void => {
         newWS = new WebSocket('ws://localhost:9000');
         const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
@@ -121,6 +122,7 @@ class Game extends Component<GameProps, GameState> {
             'message': message
         }));
     };
+
     postMarks = (value: { id: string, marks: { hot: boolean, cold: boolean } }): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.postMarks,
@@ -128,6 +130,7 @@ class Game extends Component<GameProps, GameState> {
             'value': value
         }));
     };
+
     setWinner = (winner: string | null): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.setWinner,
@@ -135,6 +138,7 @@ class Game extends Component<GameProps, GameState> {
             'winner': winner
         }));
     };
+
     sendImg = (img: string): void => {
         newWS.send(JSON.stringify({
             'messageType': websocket.sendImg,

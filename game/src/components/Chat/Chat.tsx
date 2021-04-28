@@ -1,5 +1,5 @@
 import React, {Component, ReactElement} from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 //components
 import {ApiContext} from "../Api/ApiProvider";
 //utils
@@ -16,13 +16,13 @@ const styles = (theme: { content: any; }) => (
     theme.content
 );
 
-interface ChatProps extends WithStyles<typeof styles>{
+interface ChatProps extends WithStyles<typeof styles> {
     isPainter: boolean;
     wordToGuess: string;
     painter: Player;
     sendMessage: (message: Message) => void;
     chatMessages: Message[];
-    postMarks: (value: {id: string, marks: {hot: boolean, cold: boolean}}) => void;
+    postMarks: (value: { id: string, marks: { hot: boolean, cold: boolean } }) => void;
     setWinner: (winner: string | null) => void;
 }
 
@@ -32,6 +32,7 @@ interface ChatState {
 
 class Chat extends Component<ChatProps, ChatState> {
     static contextType = ApiContext;
+
     constructor(props: ChatProps) {
         super(props);
         this.state = {
@@ -41,8 +42,8 @@ class Chat extends Component<ChatProps, ChatState> {
 
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>): void => {
         evt.preventDefault();
-        const { inputMessage } = this.state;
-        const { wordToGuess } = this.props;
+        const {inputMessage} = this.state;
+        const {wordToGuess} = this.props;
         this.setState({inputMessage: ''});
         const playerName = this.context.user ? this.context.user.name : undefined;
         const gameId = localStorage.getItem('gameId');
@@ -52,11 +53,17 @@ class Chat extends Component<ChatProps, ChatState> {
             this.wordIsGuessed();
         }
         const generatedId = uuidv4();
-        this.props.sendMessage({'name': playerName, avatar: null, 'text': inputMessage, 'id':generatedId, 'marks': {'hot': false, 'cold': false}})
+        this.props.sendMessage({
+            'name': playerName,
+            avatar: null,
+            'text': inputMessage,
+            'id': generatedId,
+            'marks': {'hot': false, 'cold': false}
+        })
     };
 
     enterMessage = (evt: React.ChangeEvent<HTMLInputElement>): void => {
-        this.setState({ ...this.state, inputMessage: evt.target.value });
+        this.setState({...this.state, inputMessage: evt.target.value});
     };
 
     wordIsGuessed = async (messageId?: string): Promise<void> => {
@@ -87,19 +94,21 @@ class Chat extends Component<ChatProps, ChatState> {
     };
 
     postMarks(messageId: string, isHot: boolean): void {
-        this.props.postMarks({ id: messageId, marks: { hot: isHot, cold: !isHot } });
+        this.props.postMarks({id: messageId, marks: {hot: isHot, cold: !isHot}});
     }
 
     showButtons = (message: Message): ReactElement => {
-        const { isPainter } = this.props;
+        const {isPainter} = this.props;
         if (isPainter) {
             return (
                 <span className="painters-icons">
                     <Tooltip title="Тепло">
-                        <WhatshotIcon className={"icon icon-hot " + (message.marks.hot? "icon-hot-active" : "")} onClick={() => this.handlePlusClick(message.id)}/>
+                        <WhatshotIcon className={"icon icon-hot " + (message.marks.hot ? "icon-hot-active" : "")}
+                                      onClick={() => this.handlePlusClick(message.id)}/>
                     </Tooltip>
                     <Tooltip title="Холодно">
-                        <AcUnitIcon className={"icon icon-cold " + (message.marks.cold? "icon-cold-active" : "")} onClick={() => this.handleMinusClick(message.id)}/>
+                        <AcUnitIcon className={"icon icon-cold " + (message.marks.cold ? "icon-cold-active" : "")}
+                                    onClick={() => this.handleMinusClick(message.id)}/>
                     </Tooltip>
                     <Tooltip title="Правильно!">
                         <CheckIcon className="icon icon-ok" onClick={() => this.wordIsGuessed(message.id)}/>
@@ -124,10 +133,39 @@ class Chat extends Component<ChatProps, ChatState> {
         );
     };
 
-    render() {
-        const { inputMessage } = this.state;
-        const { chatMessages, isPainter } = this.props;
+    renderForm = (): ReactElement => {
+        const {inputMessage} = this.state;
+        return (
+            <form onSubmit={this.addMessage} className="Chat-messages-form">
+                <TextField
+                    id="message"
+                    type="text"
+                    name="message"
+                    placeholder="ваш ответ"
+                    value={inputMessage}
+                    onChange={this.enterMessage}
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    size="small"
+                    label="ваш ответ: "
+                    autoFocus
+                />
+                <Button
+                    className={"Chat-messages-input "}
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    size="small"
+                >
+                    Отправить
+                </Button>
+            </form>
+        );
+    }
 
+    render() {
+        const {chatMessages, isPainter} = this.props;
         return (
             <div className='Chat'>
                 <div className='Chat-messages'>
@@ -135,7 +173,8 @@ class Chat extends Component<ChatProps, ChatState> {
                         <div key={message.id} className='Chat-message-wrapper'>
                             <Tooltip title={message.name}>
                                 <div>
-                                    {message.avatar && <img src={message.avatar as string} alt="avatar" className="avatar"/>}
+                                    {message.avatar &&
+                                    <img src={message.avatar as string} alt="avatar" className="avatar"/>}
                                 </div>
                             </Tooltip>
                             <div className={`Chat-message ${isPainter ? " Chat-message-painter" : ""}`}>
@@ -147,35 +186,10 @@ class Chat extends Component<ChatProps, ChatState> {
                         </div>
                     ))}
                 </div>
-                {!isPainter &&
-                <form onSubmit={this.addMessage} className="Chat-messages-form">
-                    <TextField
-                        id="message"
-                        type="text"
-                        name="message"
-                        placeholder="ваш ответ"
-                        value={inputMessage}
-                        onChange={this.enterMessage}
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        size="small"
-                        label="ваш ответ: "
-                        autoFocus
-                    />
-                    <Button
-                        className={"Chat-messages-input "}
-                        variant="contained"
-                        color="primary"
-                        type="submit"
-                        size="small"
-                    >
-                        Отправить
-                    </Button>
-                </form>
-                }
+                {!isPainter && this.renderForm()}
             </div>
         );
     }
 }
+
 export default Chat;
