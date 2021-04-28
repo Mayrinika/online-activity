@@ -48,7 +48,7 @@ class Chat extends Component<ChatProps, ChatState> {
         const gameId = localStorage.getItem('gameId');
         if (playerName === null || gameId === null)
             return;
-        if (wordToGuess === inputMessage) {
+        if (wordToGuess === inputMessage.trim()) {
             this.wordIsGuessed();
         }
         const generatedId = uuidv4();
