@@ -122,7 +122,11 @@ class Main extends Component<LoginProps, LoginState> {
                     <Grid item md={5} xs={12} className={classes.mainFormContainer}>
                         <form onSubmit={this.handleSubmit} className={classes.innerContainer}>
                             {!this.context.user ?
-                                <Typography>Пожалуйста, войдите или зарегистрируйтесь</Typography>
+                                <Typography>Пожалуйста,
+                                    <Link to={getDomRoutes().login}><Typography>войдите</Typography></Link>
+                                     или
+                                    <Link to={getDomRoutes().signup}><Typography>зарегистрируйтесь</Typography></Link>
+                                    </Typography>
                                 : <div>
                                     <div className="Main-Welcome">
                                         <Typography>Добро пожаловать,</Typography>
