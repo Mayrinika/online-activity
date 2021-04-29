@@ -7,6 +7,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import getDomRoutes from "../../utils/domRoutes";
 import {GameType} from "../../utils/Types/types";
 import websocket from "../../utils/websocket";
+import setInterval from "../../utils/setWebsocketInterval";
 //styles
 import './Main.css'
 import crocoImg from '../../img/cocodrilo.png';
@@ -43,21 +44,7 @@ class Main extends Component<LoginProps, LoginState> {
         //for local build:
         //ws = new WebSocket('ws://localhost:9000');
         ws = new WebSocket('wss://' + window.location.host);
-        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-            waitForConnection(function () {
-                return ws.send(message);
-            }, 100);
-        };
-
-        const waitForConnection = function (callback: () => void, interval: number) {
-            if (ws.readyState === 1) {
-                callback();
-            } else {
-                setTimeout(function () {
-                    waitForConnection(callback, interval);
-                }, interval);
-            }
-        };
+        const send = setInterval(ws);
         send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
     };
 
@@ -160,7 +147,7 @@ class Main extends Component<LoginProps, LoginState> {
                 <Typography variant='h4' paragraph>
                     Онлайн - активити
                 </Typography>
-                <Grid container spacing={10} justify="center" alignContent="center">
+                <Grid container spacing={10} xs={12} justify="center" alignContent="center">
                     <Grid item md={5} xs={1} className="Main-Img-Container">
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>

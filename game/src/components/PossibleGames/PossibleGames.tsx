@@ -7,6 +7,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import getDomRoutes from "../../utils/domRoutes";
 import {GameType} from "../../utils/Types/types";
 import websocket from "../../utils/websocket";
+import setInterval from "../../utils/setWebsocketInterval";
 //styles
 import './PossibleGames.css'
 import {withStyles, WithStyles} from "@material-ui/core/styles";
@@ -72,21 +73,7 @@ class PossibleGames extends Component<PossibleGamesProps, PossibleGamesState> {
         //for local build:
         //ws = new WebSocket('ws://localhost:9000');
         ws = new WebSocket('wss://' + window.location.host);
-        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-            waitForConnection(function () {
-                return ws.send(message);
-            }, 100);
-        };
-
-        const waitForConnection = function (callback: () => void, interval: number) {
-            if (ws.readyState === 1) {
-                callback();
-            } else {
-                setTimeout(function () {
-                    waitForConnection(callback, interval);
-                }, interval);
-            }
-        };
+        const send = setInterval(ws);
         send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
     };
 
