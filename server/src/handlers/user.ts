@@ -93,12 +93,21 @@ export const changeAvatar = async (req: express.Request, res: express.Response) 
         if (valid) {
             user.avatar = newAvatar;
             req.session.user = user;
+            updateAvatarInLeaderBoard(user);
             db.saveUsers(users);
             res.send(user);
         } else {
             res.send({error: true});
         }
     }
+};
+
+const updateAvatarInLeaderBoard = (user: User): void => {
+    const leaderboard = db.getLeaderboard();
+    const currentUserIndex = leaderboard.players.findIndex(item => item.player.name === user.name);
+    if (currentUserIndex !== -1)
+        leaderboard.players[currentUserIndex].player.avatar = user.avatar;
+    db.saveLeaderboard(leaderboard);
 };
 
 const hashPassword = async (password: string): Promise<string> => {
