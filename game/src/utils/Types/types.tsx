@@ -1,3 +1,6 @@
+import {GetSet} from "konva/types/types";
+import {Stage} from "konva/types/Stage";
+
 export interface Api {
     user?: User | null;
     changeGameId: (gameId: string) => void;
@@ -74,7 +77,7 @@ export interface Player {
 
 export interface Line {
     tool: string;
-    points: number[];
+    points: GetSet<number, Stage>[];
     color: string;
 }
 

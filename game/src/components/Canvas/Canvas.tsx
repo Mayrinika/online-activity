@@ -1,5 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import {Layer, Stage, Line} from "react-konva";
+import {Stage as StageType} from "konva/types/Stage";
 //components
 import ColorPalette from "../ColorPalette/ColorPalette";
 import {ApiContext} from "../Api/ApiProvider";
@@ -7,6 +8,8 @@ import {ApiContext} from "../Api/ApiProvider";
 import {Line as LineInterface} from "../../utils/Types/types"
 //styles
 import './Canvas.css';
+import Konva from "konva";
+import {GetSet} from "konva/types/types";
 
 interface canvasProps {
     sendImg: (img: string) => void;
@@ -33,10 +36,17 @@ const Canvas = (props: canvasProps) => {
         setLines(game.lines);
     };
 
-    const handleMouseDown = (e: any): void => { //TODO поправить тип
+    const handleMouseDown = (e: Konva.KonvaEventObject<MouseEvent> | Konva.KonvaEventObject<TouchEvent>): void => {
         isDrawing = true;
-        const pos = e.target.getStage().getPointerPosition();
-        setLines([...lines, { tool, points: [pos.x, pos.y], color }]);
+        if (e) {
+            if (e.target) {
+                const pos = e.target.getStage();
+                if (pos) {
+                    pos.getPointerPosition();
+                    setLines([...lines, {tool, points: [pos.x, pos.y], color}]);
+                }
+            }
+        }
     };
 
     const handleMouseMove = (e: any): void => { //TODO поправить тип
@@ -114,7 +124,7 @@ const Canvas = (props: canvasProps) => {
                 onTouchEnd={handleMouseUp}
             >
                 <Layer className="Canvas-Layer">
-                    {lines.map((line: { tool: string, points: number[], color: string }, i: number) => (
+                    {lines.map((line: { tool: string, points: GetSet<number, StageType>[], color: string }, i: number) => (
                         <Line
                             key={i}
                             points={line.points}
