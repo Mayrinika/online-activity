@@ -6,6 +6,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import getDomRoutes from "../../utils/domRoutes";
 import {Player} from "../../utils/Types/types";
 //styles
+import './Leaderboard.css'
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography} from '@material-ui/core';
 
@@ -45,15 +46,17 @@ class Leaderboard extends Component<LeaderboardProps, LeaderboardState> {
         return (
             <Container className={classes.outerContainer} maxWidth='sm'>
                 <Typography variant='h5' paragraph>Лидерборд:</Typography>
-                {sortedLeaderboard.map((item: { player: Player, score: number }) => {
-                    return (
-                        <Typography variant='subtitle1' paragraph className={classes.playerContainer}
-                                    key={item.player.name}>
-                            {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" className="avatar"/>}
-                            {item.player.name}: {item.score}
-                        </Typography>
-                    );
-                })}
+                <div className="Leaderboard-Container">
+                    {sortedLeaderboard.map((item: { player: Player, score: number }) => {
+                        return (
+                            <Typography variant='subtitle1' paragraph className={classes.playerContainer}
+                                        key={item.player.name}>
+                                {item.player.avatar && <img src={item.player.avatar as string} alt="avatar" className="avatar"/>}
+                                {item.player.name}: {item.score}
+                            </Typography>
+                        );
+                    })}
+                </div>
                 <Button
                     className={classes.button}
                     variant="contained"

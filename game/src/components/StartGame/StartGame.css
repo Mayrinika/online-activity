@@ -3,3 +3,7 @@
     justify-content: center;
     gap: 10px;
 }
+.StartGame-Container {
+    max-height: 40vh;
+    overflow-y: auto;
+}

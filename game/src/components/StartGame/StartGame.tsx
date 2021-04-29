@@ -126,7 +126,7 @@ class StartGame extends Component<StartGameProps, StartGameState> {
                     <Typography variant='h5' paragraph>
                         Все игроки в сборе?
                     </Typography>
-                    <Box className={classes.innerContainer}>
+                    <Box className={classes.innerContainer + " StartGame-Container"}>
                             {players && players.map(player => {
                                 return <div key={player.name} className={classes.playerContainer}>
                                     {player.avatar && <img src={player.avatar as string} alt="avatar" className="avatar"/>}
