@@ -4,6 +4,6 @@
     gap: 10px;
 }
 .StartGame-Container {
-    max-height: 40vh;
+    max-height: 20vh;
     overflow-y: auto;
 }
