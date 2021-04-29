@@ -28,6 +28,7 @@ interface ChatProps extends WithStyles<typeof styles> {
 
 interface ChatState {
     inputMessage: string;
+    isScrolled: boolean;
 }
 
 class Chat extends Component<ChatProps, ChatState> {
@@ -37,7 +38,20 @@ class Chat extends Component<ChatProps, ChatState> {
         super(props);
         this.state = {
             inputMessage: '',
+            isScrolled: false,
         };
+    }
+
+    componentDidUpdate () {
+        const messages = document.querySelector('.Chat-messages');
+        if (messages && !this.state.isScrolled) {
+            messages.scrollTop = messages.scrollHeight;
+        }
+    }
+
+    scroll = (): void => {
+        this.setState({isScrolled: true});
+        setTimeout(()=>{this.setState({isScrolled: false})}, 4000);
     }
 
     addMessage = (evt: React.ChangeEvent<HTMLFormElement>): void => {
@@ -168,7 +182,7 @@ class Chat extends Component<ChatProps, ChatState> {
         const {chatMessages, isPainter} = this.props;
         return (
             <div className='Chat'>
-                <div className='Chat-messages'>
+                <div className='Chat-messages' onScroll={this.scroll}>
                     {chatMessages.map((message: Message) => (
                         <div key={message.id} className='Chat-message-wrapper'>
                             <Tooltip title={message.name}>
