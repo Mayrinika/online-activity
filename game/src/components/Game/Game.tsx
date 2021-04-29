@@ -11,6 +11,7 @@ import getDomRoutes from "../../utils/domRoutes";
 import {Player, Message} from "../../utils/Types/types";
 import websocket from "../../utils/websocket";
 import copyGameId from "../../utils/copyGameId";
+import setInterval from "../../utils/setWebsocketInterval";
 //styles
 import './Game.css';
 import {withStyles, WithStyles} from "@material-ui/core/styles";
@@ -91,21 +92,7 @@ class Game extends Component<GameProps, GameState> {
 
     refreshConnection = (): void => {
         newWS = new WebSocket('ws://localhost:9000');
-        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-            waitForConnection(function () {
-                return newWS.send(message);
-            }, 500);
-        };
-
-        const waitForConnection = function (callback: () => void, interval: number) {
-            if (newWS.readyState === 1) {
-                callback();
-            } else {
-                setTimeout(function () {
-                    waitForConnection(callback, interval);
-                }, interval);
-            }
-        };
+        const send = setInterval(newWS);
         send(JSON.stringify({'messageType': websocket.refresh, 'gameId': localStorage.getItem('gameId')}));
     };
 

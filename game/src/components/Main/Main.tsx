@@ -7,6 +7,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import getDomRoutes from "../../utils/domRoutes";
 import {GameType} from "../../utils/Types/types";
 import websocket from "../../utils/websocket";
+import setInterval from "../../utils/setWebsocketInterval";
 //styles
 import './Main.css'
 import crocoImg from '../../img/cocodrilo.png';
@@ -41,21 +42,7 @@ class Main extends Component<LoginProps, LoginState> {
 
     addPlayer = async (gameId: string, player: string | null): Promise<void> => {
         ws = new WebSocket('ws://localhost:9000');
-        const send = function (message: string | ArrayBuffer | SharedArrayBuffer | Blob | ArrayBufferView) {
-            waitForConnection(function () {
-                return ws.send(message);
-            }, 100);
-        };
-
-        const waitForConnection = function (callback: () => void, interval: number) {
-            if (ws.readyState === 1) {
-                callback();
-            } else {
-                setTimeout(function () {
-                    waitForConnection(callback, interval);
-                }, interval);
-            }
-        };
+        const send = setInterval(ws);
         send(JSON.stringify({'gameId': gameId, 'messageType': websocket.register, 'player': player}));
     };
 

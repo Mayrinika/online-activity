@@ -2,7 +2,8 @@ import {GAME_TIME, games, suggestedWords, timerIds} from "./game";
 import db from "../db";
 import {GameType, Message, Player, SuggestedWord, User} from "../utils/types";
 import WebSocket from "ws";
-const webSockets: {[id: string]: WebSocket[]} = {};
+
+const webSockets: { [id: string]: WebSocket[] } = {};
 
 export function parse(message: string) {
     const parsedMessage = JSON.parse(message);
@@ -14,7 +15,7 @@ export function parse(message: string) {
     return {messageType, parsedMessage, gameId, currentGame, suggestedWord, author};
 }
 
-export function sendSuggestedWordToServer(parsedMessage: {word: string, id: string}, wss: WebSocket.Server) {
+export function sendSuggestedWordToServer(parsedMessage: { word: string, id: string }, wss: WebSocket.Server): void {
     const dictionary = db.getWords();
     if (dictionary.words.includes(parsedMessage.word)) {
         addSuggestedWord(parsedMessage, true);
@@ -27,7 +28,7 @@ export function sendSuggestedWordToServer(parsedMessage: {word: string, id: stri
     }
 }
 
-export function likeWord(suggestedWord: SuggestedWord, author: string, wss: WebSocket.Server) {
+export function likeWord(suggestedWord: SuggestedWord, author: string, wss: WebSocket.Server): void {
     if (suggestedWord.dislikes.includes(author)) {
         deleteElementFromArray(suggestedWord.dislikes, author);
     } else if (!suggestedWord.likes.includes(author)) {
@@ -42,7 +43,7 @@ export function likeWord(suggestedWord: SuggestedWord, author: string, wss: WebS
     }
 }
 
-export function dislikeWord(suggestedWord: SuggestedWord, author: string, wss: WebSocket.Server) {
+export function dislikeWord(suggestedWord: SuggestedWord, author: string, wss: WebSocket.Server): void {
     if (suggestedWord.likes.includes(author)) {
         deleteElementFromArray(suggestedWord.likes, author);
     } else if (!suggestedWord.dislikes.includes(author)) {
@@ -56,7 +57,7 @@ export function dislikeWord(suggestedWord: SuggestedWord, author: string, wss: W
     }
 }
 
-export function register(parsedMessage: {player: string}, currentGame: GameType, gameId: string, ws: WebSocket) {
+export function register(parsedMessage: { player: string }, currentGame: GameType, gameId: string, ws: WebSocket): void {
     const users = db.getUsers();
     const user = users.find((user: User) => user.name === parsedMessage.player);
     const avatar = user ? user.avatar : null;
@@ -65,26 +66,26 @@ export function register(parsedMessage: {player: string}, currentGame: GameType,
     sendGameToClientsByGameId(gameId, currentGame);
 }
 
-export function refresh(gameId: string, ws: WebSocket, currentGame: GameType) {
+export function refresh(gameId: string, ws: WebSocket, currentGame: GameType): void {
     addNewWebSocketClient(gameId, ws);
     sendGameToClientsByGameId(gameId, currentGame);
 }
 
-export function addWordAndPainter(currentGame: GameType, gameId: string) {
+export function addWordAndPainter(currentGame: GameType, gameId: string): void {
     chooseWordToGuess(currentGame);
     choosePainter(currentGame);
     setTimerForGame(currentGame, gameId);
 }
 
-export function sendMessage(currentGame: GameType, parsedMessage: { message: Message }, gameId: string) {
+export function sendMessage(currentGame: GameType, parsedMessage: { message: Message }, gameId: string): void {
     const foundPlayer = currentGame.players.find(player => player.name === parsedMessage.message.name);
-    const newAvatar = foundPlayer? foundPlayer.avatar : null;
+    const newAvatar = foundPlayer ? foundPlayer.avatar : null;
     const newMessage = {...parsedMessage.message, avatar: newAvatar};
     currentGame.chatMessages.push(newMessage);
     sendGameToClientsByGameId(gameId, currentGame);
 }
 
-export function postMarks(currentGame: GameType, parsedMessage: {value: { id: string, marks: { hot: boolean, cold: boolean } }}, gameId: string) {
+export function postMarks(currentGame: GameType, parsedMessage: { value: { id: string, marks: { hot: boolean, cold: boolean } } }, gameId: string): void {
     const currentMessage = currentGame.chatMessages
         .find(item => item.id === parsedMessage.value.id);
     if (currentMessage !== undefined) {
@@ -93,7 +94,7 @@ export function postMarks(currentGame: GameType, parsedMessage: {value: { id: st
     }
 }
 
-export function setWinner(currentGame: GameType, parsedMessage: {winner: string}, gameId: string) {
+export function setWinner(currentGame: GameType, parsedMessage: { winner: string }, gameId: string): void {
     currentGame.winner = parsedMessage.winner;
     const winner = currentGame.players.find(player => player.name === parsedMessage.winner);
     currentGame.isWordGuessed = true;
@@ -103,7 +104,7 @@ export function setWinner(currentGame: GameType, parsedMessage: {winner: string}
     updateLeaderboard(currentGame.scores);
 }
 
-export function sendImg(currentGame: GameType, parsedMessage: {img: string}, gameId: string) {
+export function sendImg(currentGame: GameType, parsedMessage: { img: string }, gameId: string): void {
     currentGame.img = parsedMessage.img;
     sendGameToClientsByGameId(gameId, currentGame);
 }
@@ -118,19 +119,19 @@ export function getPainter(players: Player[]): Player {
     return players[randomIdx];
 }
 
-export function addPlayer(currentGame: GameType, name: string, avatar: string | null | ArrayBuffer) {
+export function addPlayer(currentGame: GameType, name: string, avatar: string | null | ArrayBuffer): void {
     let isAlreadyExist = false;
-    for(const player of currentGame.players) {
-        if(player.name === name) {
+    for (const player of currentGame.players) {
+        if (player.name === name) {
             isAlreadyExist = true;
             break;
         }
     }
-    if(!isAlreadyExist)
+    if (!isAlreadyExist)
         currentGame.players.push({name: name, avatar: avatar});
 }
 
-export function sendSuggestedWordsToAllClients(wss: WebSocket.Server) {
+export function sendSuggestedWordsToAllClients(wss: WebSocket.Server): void {
     wss.clients.forEach((client: { send: (arg0: string) => void; }) => {
         client.send(JSON.stringify(suggestedWords));
     });
@@ -148,18 +149,18 @@ export function addSuggestedWord(parsedMessage: { word: string, id: string }, in
     });
 }
 
-export function addNewWordToDictionary(word: string) {
+export function addNewWordToDictionary(word: string): void {
     const words = db.getWords();
     const newWords: { words?: string[] } = {};
     newWords.words = [...words.words, word];
     db.saveWords(newWords);
 }
 
-export function deleteElementFromArray<T>(array: T[], element: T) {
+export function deleteElementFromArray<T>(array: T[], element: T): void {
     array.splice(array.indexOf(element), 1);
 }
 
-export function addNewWebSocketClient(gameId: string, ws: WebSocket) {
+export function addNewWebSocketClient(gameId: string, ws: WebSocket): void {
     if (webSockets[gameId]) {
         webSockets[gameId].push(ws);
     } else {
@@ -167,26 +168,26 @@ export function addNewWebSocketClient(gameId: string, ws: WebSocket) {
     }
 }
 
-export function sendGameToClientsByGameId(gameId: string, currentGame: GameType) {
+export function sendGameToClientsByGameId(gameId: string, currentGame: GameType): void {
     webSockets[gameId].forEach((client: { send: (arg0: string) => void; }) => {
         client.send(JSON.stringify(currentGame));
     });
 }
 
-export function chooseWordToGuess(currentGame: GameType) {
+export function chooseWordToGuess(currentGame: GameType): void {
     if (currentGame.wordToGuess === '') {
         const words = db.getWords().words;
         currentGame.wordToGuess = getRandomWord(words);
     }
 }
 
-export function choosePainter(currentGame: GameType) {
+export function choosePainter(currentGame: GameType): void {
     if (currentGame.painter.name === '') {
         currentGame.painter = getPainter(currentGame.players);
     }
 }
 
-export function setTimerForGame(currentGame: GameType, gameId: string) {
+export function setTimerForGame(currentGame: GameType, gameId: string): void {
     if (currentGame.time === GAME_TIME) {
         timerIds[currentGame.id] = setInterval((currentGame) => {
             if (currentGame.time > 0) {
@@ -208,7 +209,7 @@ export function setTimerForGame(currentGame: GameType, gameId: string) {
     }
 }
 
-export function addLocalScore(currentGame: GameType, winner: Player | undefined) {
+export function addLocalScore(currentGame: GameType, winner: Player | undefined): void {
     if (currentGame.scores.length === 0) {
         currentGame.scores.push({player: currentGame.painter, score: currentGame.time});
         if (winner !== undefined) {
@@ -217,7 +218,8 @@ export function addLocalScore(currentGame: GameType, winner: Player | undefined)
         addScoreForMarks(currentGame);
     }
 }
-export function addScoreForMarks(currentGame: GameType) {
+
+export function addScoreForMarks(currentGame: GameType): void {
     currentGame.chatMessages.map(message => {
         if (message.marks.hot) {
             const player = currentGame.scores.find(score => score.player.name === message.name);
@@ -227,14 +229,14 @@ export function addScoreForMarks(currentGame: GameType) {
                 }
             } else {
                 const foundPlayer = currentGame.players.find(player => player.name === message.name);
-                const avatar = foundPlayer? foundPlayer.avatar : null;
+                const avatar = foundPlayer ? foundPlayer.avatar : null;
                 currentGame.scores.push({player: {name: message.name, avatar}, score: 2});
             }
         }
     });
 }
 
-export function updateLeaderboard(localScores: {player: Player, score: number}[]) {
+export function updateLeaderboard(localScores: { player: Player, score: number }[]): void {
     const leaderboard = db.getLeaderboard();
     for (const {player, score} of localScores) {
         const playerFound = leaderboard.players.find((playerGlobal) => playerGlobal.player.name === player.name);
@@ -245,7 +247,7 @@ export function updateLeaderboard(localScores: {player: Player, score: number}[]
             leaderboard.players.push({player, score});
         }
     }
-    leaderboard.players.sort((item1: {player: Player, score: number}, item2: {player: Player, score: number}) =>
+    leaderboard.players.sort((item1: { player: Player, score: number }, item2: { player: Player, score: number }) =>
         item2.score - item1.score);
     db.saveLeaderboard(leaderboard);
 }
