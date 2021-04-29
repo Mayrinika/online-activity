@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, KeyboardEventHandler} from 'react';
 import {Layer, Stage, Line} from "react-konva";
 import {Stage as StageType} from "konva/types/Stage";
 //components
@@ -16,6 +16,8 @@ interface canvasProps {
 }
 
 let isDrawing = false;
+
+
 const Canvas = (props: canvasProps) => {
     const [tool, setTool] = useState('pen');
     const [lines, setLines] = useState<LineInterface[]>([]);
@@ -49,15 +51,22 @@ const Canvas = (props: canvasProps) => {
         }
     };
 
-    const handleMouseMove = (e: any): void => { //TODO поправить тип
+    const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent> | Konva.KonvaEventObject<TouchEvent>): void => {
         if (!isDrawing) {
             return;
         }
-        const pos = e.target.getStage().getPointerPosition();
-        let lastLine = lines[lines.length - 1];
-        lastLine.points = lastLine.points.concat([pos.x, pos.y]);
-        lines.splice(lines.length - 1, 1, lastLine);
-        setLines(lines.concat());
+        if (e) {
+            if (e.target) {
+                const pos = e.target.getStage();
+                if (pos) {
+                    pos.getPointerPosition();
+                    let lastLine = lines[lines.length - 1];
+                    lastLine.points = lastLine.points.concat([pos.x, pos.y]);
+                    lines.splice(lines.length - 1, 1, lastLine);
+                    setLines(lines.concat());
+                }
+            }
+        }
     };
 
     const addImage = async (img: string): Promise<void> => {
@@ -73,18 +82,18 @@ const Canvas = (props: canvasProps) => {
         isDrawing = false;
     };
 
-    const handleMouseUp = async (e: any): Promise<void> => { //TODO поправить тип
+    const handleMouseUp = async (e: Konva.KonvaEventObject<MouseEvent> | Konva.KonvaEventObject<TouchEvent>): Promise<void> => {
         await stopDrawing(e);
     };
 
-    const handleMouseLeave = async (e: any): Promise<void> => { //TODO поправить тип
+    const handleMouseLeave = async (e: Konva.KonvaEventObject<MouseEvent> | Konva.KonvaEventObject<TouchEvent>): Promise<void> => {
         await stopDrawing(e);
     };
 
     const changeColor = (color: string): void => {
         setColor(color);
     };
-    const undoLastDrawing = (e: any): void => { //TODO поправить тип
+    const undoLastDrawing = (e: KeyboardEventHandler<HTMLDivElement>): void => { //TODO поправить тип
         if (e.keyCode === 90 && e.ctrlKey) {
             let newLines = [...lines];
             newLines.pop();
