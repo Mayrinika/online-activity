@@ -241,6 +241,7 @@ export function updateLeaderboard(localScores: { player: Player, score: number }
     for (const {player, score} of localScores) {
         const playerFound = leaderboard.players.find((playerGlobal) => playerGlobal.player.name === player.name);
         if (playerFound) {
+            //playerFound.player = player;
             playerFound.score += score;
         } else {
             leaderboard.players.push({player, score});
