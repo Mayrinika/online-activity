@@ -158,7 +158,7 @@ class Main extends Component<LoginProps, LoginState> {
                 <Typography variant='h4' paragraph>
                     Онлайн - активити
                 </Typography>
-                <Grid container spacing={10} justify="center" alignContent="center">
+                <Grid container spacing={10} xs={12} justify="center" alignContent="center">
                     <Grid item md={5} xs={1} className="Main-Img-Container">
                         <div className={classes.imgContainer}>
                             <img className="Main-Img" src={crocoImg} alt="Крокодил"/>
