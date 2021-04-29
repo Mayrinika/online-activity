@@ -6,6 +6,7 @@ import {ApiContext} from "../Api/ApiProvider";
 import getDomRoutes from "../../utils/domRoutes";
 import {Player} from "../../utils/Types/types";
 //styles
+import './GameOver.css'
 import {withStyles, WithStyles} from "@material-ui/core/styles";
 import {Button, Container, Typography, Box} from '@material-ui/core';
 
@@ -81,7 +82,7 @@ class GameOver extends Component<GameOverProps, GameOverState> {
                         {scores.length > 0 &&
                         <div>
                             <Typography variant='h6' paragraph>Заработанные очки: </Typography>
-                            <div className={classes.innerContainer}>
+                            <div className={classes.innerContainer + " GameOver-Container"}>
                                 {scores.map(item => {
                                     return (
                                         <Typography variant='subtitle1' paragraph

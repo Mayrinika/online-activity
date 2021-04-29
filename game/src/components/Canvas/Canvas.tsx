@@ -4,6 +4,7 @@ import {Layer, Stage, Line} from "react-konva";
 import ColorPalette from "../ColorPalette/ColorPalette";
 import {ApiContext} from "../Api/ApiProvider";
 //utils
+import {Line as LineInterface} from "../../utils/Types/types"
 //styles
 import './Canvas.css';
 
@@ -14,7 +15,7 @@ interface canvasProps {
 let isDrawing = false;
 const Canvas = (props: canvasProps) => {
     const [tool, setTool] = useState('pen');
-    const [lines, setLines]: [any, any] = useState([]); //TODO поправить тип
+    const [lines, setLines] = useState<LineInterface[]>([]);
     const [color, setColor] = useState('#03161d');
     const [[stageWidth, stageHeight], setStageSize] = useState([550, 750]);
     const context = useContext(ApiContext);
