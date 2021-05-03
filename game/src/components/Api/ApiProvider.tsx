@@ -60,6 +60,7 @@ class ApiMethods implements Api {
     };
 
     getUserLoginData = async (): Promise<UserLoginData> => {
+        await fetch('/cookie-auth-protected-route',{ credentials: 'include' });
         const result = await fetch(getRoutes().login)
             .then(res => {
                 this.checkStatus(res);
@@ -72,6 +73,7 @@ class ApiMethods implements Api {
     };
 
     signup = async (name: string, password: string, avatar: string | ArrayBuffer | null): Promise<User> => {
+        await fetch('/cookie-auth-protected-route',{ credentials: 'include' });
         const user = await fetch(getRoutes().signup, {
             method: 'POST',
             headers: {
@@ -91,6 +93,7 @@ class ApiMethods implements Api {
     };
 
     getAllUsers = async (): Promise<User[]> => {
+        await fetch('/cookie-auth-protected-route',{ credentials: 'include' });
         return await fetch(getRoutes().signup)
             .then(res => {
                 this.checkStatus(res);
@@ -101,6 +104,7 @@ class ApiMethods implements Api {
     };
 
     login = async (name: string, password: string): Promise<User> => {
+        await fetch('/cookie-auth-protected-route',{ credentials: 'include' });
         const user = await fetch(getRoutes().login, {
             method: 'POST',
             headers: {
@@ -120,6 +124,7 @@ class ApiMethods implements Api {
     };
 
     logout = async (): Promise<void> => {
+        await fetch('/cookie-auth-protected-route',{ credentials: 'include' });
         await fetch(getRoutes().logout, {
             method: 'POST',
             headers: {
@@ -214,6 +219,7 @@ class ApiMethods implements Api {
     };
 
     changePassword = async (oldPassword: string, newPassword: string, name: string): Promise<boolean> => {
+        await fetch('/cookie-auth-protected-route',{ credentials: 'include' });
         const response = await fetch(getRoutes().changePassword, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -229,6 +235,7 @@ class ApiMethods implements Api {
     };
 
     changeAvatar = async (oldPassword: string, newAvatar: string, name: string): Promise<User> => {
+        await fetch('/cookie-auth-protected-route',{ credentials: 'include' });
         const user = await fetch(getRoutes().changeAvatar, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
